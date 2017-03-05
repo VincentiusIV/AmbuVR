@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Valve.VR;
 
 public class SettingsController : MonoBehaviour {
 
@@ -9,9 +10,12 @@ public class SettingsController : MonoBehaviour {
 
     public bool enableVR;
 
+    // Sound
+    public float volume;
+
     void Start()
     {
-        if (enableVR)
+        if (SteamVR.active)
             Instantiate(playerVR, spawnPos.position, Quaternion.identity);
         else Instantiate(player, spawnPos.position, Quaternion.identity);
     }
