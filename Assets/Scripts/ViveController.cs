@@ -6,28 +6,35 @@ using UnityEngine;
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class ViveController : MonoBehaviour
 {
+    // Private SteamVR fields
     SteamVR_TrackedObject motionCon;
     SteamVR_Controller.Device device;
 
-    // animator
-    //private Animator anime;
+    // Private fields
     LineRenderer pointer;
+    UIController UI;
+
+    // Private & Serialized fields
     [SerializeField]Transform pointerOrigin;
     [SerializeField]float pointerLength;
 
     private void Awake()
     {
+        // SteamVR ref
         motionCon = GetComponent<SteamVR_TrackedObject>();
-        // anime = Getcom..
+        // references
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
+
+        UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
+        
     }
 
     private void Update()
     {
         device = SteamVR_Controller.Input((int)motionCon.index);
 
-        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
+        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled)
         {
             Debug.Log("touching the touchpad");
             DrawPointer();
@@ -38,8 +45,17 @@ public class ViveController : MonoBehaviour
             pointer.enabled = false;
         }
 
-        if (device.GetTouch(SteamVR_Controller.ButtonMask.ApplicationMenu))
+        if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+        {
             Debug.Log("touching the application menu");
+            // show/hide in game menu
+            if (UI.ToggleUI())
+            {
+                // ui is now enabled
+            }
+            else pointer.enabled = false;
+        }
+            
     }
 
     private void OnTriggerStay(Collider other)
@@ -76,6 +92,11 @@ public class ViveController : MonoBehaviour
         if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit, pointerLength))
         {
             pointer.SetPosition(1, hit.point);
+
+            if(hit.collider.CompareTag("Button"))
+            {
+                hit.collider.GetComponent<ButtonScript>().Highlight();
+            }
         }
         else
         {
