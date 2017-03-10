@@ -96,6 +96,9 @@ public class ViveController : MonoBehaviour
             if(hit.collider.CompareTag("Button"))
             {
                 hit.collider.GetComponent<ButtonScript>().Highlight();
+
+                if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
+                    hit.collider.GetComponent<ButtonScript>().Click();
             }
         }
         else

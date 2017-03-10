@@ -15,6 +15,8 @@ public class ButtonScript : MonoBehaviour {
     {
         highlight.SetActive(false);
     }
+
+    // Called when pointer hits the collider of this button
     public void Highlight()
     {
         if(!highlight.activeInHierarchy)
@@ -33,5 +35,13 @@ public class ButtonScript : MonoBehaviour {
         yield return new WaitForSeconds(.1f);
         highlight.SetActive(false);
         isTurnOffActive = false;
+    }
+
+    // Called when a button is highlighted and trigger is pressed
+    public void Click()
+    {
+        Debug.Log("you clicked");
+        // play sound
+        // perform action
     }
 }
