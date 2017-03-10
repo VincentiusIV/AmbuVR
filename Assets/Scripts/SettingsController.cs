@@ -4,6 +4,7 @@ using Valve.VR;
 
 public class SettingsController : MonoBehaviour {
 
+    [SerializeField]bool autoConfigure = false;
     [SerializeField]GameObject player;
     [SerializeField]GameObject playerVR;
     [SerializeField]Transform spawnPos;
@@ -15,8 +16,11 @@ public class SettingsController : MonoBehaviour {
 
     void Start()
     {
-        if (SteamVR.active)
-            Instantiate(playerVR, spawnPos.position, Quaternion.identity);
-        else Instantiate(player, spawnPos.position, Quaternion.identity);
+        if(autoConfigure)
+        {
+            if (SteamVR.active)
+                Instantiate(playerVR, spawnPos.position, Quaternion.identity);
+            else Instantiate(player, spawnPos.position, Quaternion.identity);
+        }
     }
 }
