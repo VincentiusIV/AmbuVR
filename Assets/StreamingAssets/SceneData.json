@@ -1,8 +1,8 @@
 
 [
  {
-  "SceneName" : "Bakery",
-  "EnvironmentID" : 3,
-  "Difficulty"    : 1
+  "SceneName" : "Church",
+  "EnvironmentID" : 2,
+  "Difficulty"    : 3
  }
 ]
