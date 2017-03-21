@@ -55,26 +55,20 @@ public class ViveController : MonoBehaviour
         DrawPointer();
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled)
         {
-            Debug.Log("touching the touchpad");
             drawPointer = true;
         }
         if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            Debug.Log("released touchpad");
             drawPointer = false;
         }
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
         {
-            Debug.Log("touching the application menu");
-            // show/hide in game menu
             if (!UI.ToggleUI())
                 pointer.enabled = false;
         }
 
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger) && currentHeldObject == null)
         {
-            // when aiming at an object it is highlighted
-            // when trigger is pressed it hovers in front of the hand (portal gun)
             if(hit.collider.CompareTag("Pick Up") && !isHolding && !otherController.isHolding)
             {
                 isHolding = true;
@@ -99,8 +93,6 @@ public class ViveController : MonoBehaviour
 
                 if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit2, 8))
                 {
-                    Debug.Log("Hitting " + hit.collider.gameObject.name + " while holding");
-
                     if (hit.collider.CompareTag("Interactable"))
                     {
                         currentHeldObject.transform.position = hit.point;
@@ -115,8 +107,6 @@ public class ViveController : MonoBehaviour
 
                 currentHeldObject.layer = oldLayer;
 
-                Debug.Log(currentHeldObject.layer + " , " + oldLayer);
-
                 if (currentHeldObject.GetComponent<Rigidbody>() != null)
                 {
                     currentHeldObject.GetComponent<Rigidbody>().isKinematic = false;
@@ -124,11 +114,6 @@ public class ViveController : MonoBehaviour
                 }
             }
         }
-
-        //TODO
-        // If you are holding something, send out a second raycast that ignores the held object
-
-        
     }
 
     // Pointer

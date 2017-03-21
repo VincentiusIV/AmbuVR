@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OnCollision : MonoBehaviour {
+public class Patient : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -13,11 +13,4 @@ public class OnCollision : MonoBehaviour {
 	void Update () {
 		
 	}
-
-
-    private void OnCollisionStay(Collision collision)
-    {
-        //todo
-        // upon release trigger
-    }
 }
