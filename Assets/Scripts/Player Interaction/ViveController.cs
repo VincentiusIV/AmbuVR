@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ControllerID { LEFT, RIGHT}
 // Contains functionality for the motion controllers
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class ViveController : MonoBehaviour
@@ -15,6 +16,7 @@ public class ViveController : MonoBehaviour
     UIController UI;
 
     // Private & Serialized fields
+    [SerializeField] ControllerID id;
     [SerializeField] Transform pointerOrigin;
     [SerializeField] float pointerLength;
     [SerializeField] Transform holdPosition;
@@ -23,12 +25,17 @@ public class ViveController : MonoBehaviour
     // Private 
     int oldLayer;
     RaycastHit hit;
-    [SerializeField]GameObject currentHeldObject;
+    public GameObject currentHeldObject;
+    public bool isHolding;
+
+    // other controller
+    [SerializeField] ViveController otherController;
 
     bool drawPointer;
 
     private void Awake()
     {
+        holdPosition = transform.FindChild("HoldPosition");
         // SteamVR ref
         motionCon = GetComponent<SteamVR_TrackedObject>();
         // references
@@ -36,7 +43,10 @@ public class ViveController : MonoBehaviour
         pointer.enabled = drawPointer =  false;
 
         UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
-        
+
+        if (id == ControllerID.LEFT)
+            otherController = transform.parent.FindChild(ControllerID.RIGHT.ToString()).GetComponent<ViveController>();
+        else otherController = transform.parent.FindChild(ControllerID.LEFT.ToString()).GetComponent<ViveController>();
     }
 
     private void Update()
@@ -65,8 +75,10 @@ public class ViveController : MonoBehaviour
         {
             // when aiming at an object it is highlighted
             // when trigger is pressed it hovers in front of the hand (portal gun)
-            if(hit.collider.CompareTag("Pick Up") || hit.collider.CompareTag("Interactable"))
+            if(hit.collider.CompareTag("Pick Up") && !isHolding && !otherController.isHolding)
             {
+                isHolding = true;
+
                 currentHeldObject = hit.collider.gameObject;
                 currentHeldObject.transform.SetParent(holdPosition);
 
@@ -78,10 +90,11 @@ public class ViveController : MonoBehaviour
                     currentHeldObject.GetComponent<Rigidbody>().isKinematic = true;
             }
         }
-        if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger) && currentHeldObject != null)
+        if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger) && isHolding)
         {
-            if (currentHeldObject != null)
+            if (isHolding)
             {
+                isHolding = false;
                 RaycastHit hit2;
 
                 if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit2, 8))
@@ -93,6 +106,9 @@ public class ViveController : MonoBehaviour
                         currentHeldObject.transform.position = hit.point;
                         currentHeldObject.transform.SetParent(hit.collider.transform);
                     }
+
+                    if (currentHeldObject.transform.parent != hit.collider.transform)
+                        currentHeldObject.transform.SetParent(null);
                 }
                 else
                     currentHeldObject.transform.SetParent(null);
