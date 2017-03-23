@@ -7,8 +7,8 @@ public enum IA_Tags { None, Patient, BurnS, Water, PainMed, PWrap }
 
 public class ItemData : MonoBehaviour
 {
-    [SerializeField]IA_Tags thisItem;
-    
+    [SerializeField]public IA_Tags thisItem;
+    [SerializeField] public IA_Areas correctArea;
 }
 
 
