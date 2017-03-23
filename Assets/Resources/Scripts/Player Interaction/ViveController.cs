@@ -44,6 +44,7 @@ public class ViveController : MonoBehaviour
 
         UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
 
+        // get reference to other controller
         if (id == ControllerID.LEFT)
             otherController = transform.parent.FindChild(ControllerID.RIGHT.ToString()).GetComponent<ViveController>();
         else otherController = transform.parent.FindChild(ControllerID.LEFT.ToString()).GetComponent<ViveController>();

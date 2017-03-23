@@ -56,6 +56,12 @@ public class PlayerController : MonoBehaviour {
                 if (Input.GetButtonDown("Fire1"))
                     hit.collider.GetComponent<ButtonScript>().Click();
             }
+
+            if(hit.collider.CompareTag("Patient"))
+            {
+                if(Input.GetButton("Fire1"))
+                    hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord);
+            }
         }
         else
         {
