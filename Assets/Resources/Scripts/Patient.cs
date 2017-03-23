@@ -4,13 +4,27 @@ using UnityEngine;
 
 public class Patient : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Serialize fields
+    [SerializeField]public List<GameObject> snappedObjects = new List<GameObject>();
+
+    // Reference fields
+    private SettingsController sc;
+
+    private void Start()
+    {
+        sc = GameObject.FindWithTag("VariousController").GetComponent<SettingsController>();
+    }
+
+    private void Update()
+    {
+
+    }
+
+    public void AddObject(GameObject objToAdd)
+    {
+        Debug.Log("adding object "+objToAdd.name+" to patient");
+        // saves reference from added object to know which objects are active
+        snappedObjects.Add(objToAdd);
+    }
 }

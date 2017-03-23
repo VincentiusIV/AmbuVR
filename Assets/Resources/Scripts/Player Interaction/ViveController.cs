@@ -95,9 +95,12 @@ public class ViveController : MonoBehaviour
                 {
                     if (hit.collider.CompareTag("Interactable"))
                     {
+                        // prob rewrite this into a interactable
                         currentHeldObject.transform.position = hit.point;
                         currentHeldObject.transform.SetParent(hit.collider.transform);
                     }
+                    else if (hit.collider.CompareTag("Patient"))
+                        hit.collider.GetComponent<Patient>().AddObject(gameObject);
 
                     if (currentHeldObject.transform.parent != hit.collider.transform)
                         currentHeldObject.transform.SetParent(null);
