@@ -41,8 +41,12 @@ public class SkinTexture : MonoBehaviour {
             for (int y = yPos - radius; y < yPos + radius; y++)
             {
                 Color col = burned.GetPixel(x, y);
-                mix.SetPixel(x, y, col);
-                pixelCounter++;
+
+                if(mix.GetPixel(x,y) != col)
+                {
+                    mix.SetPixel(x, y, col);
+                    pixelCounter++;
+                }  
             }
         }
         float newTbsa = GetTBSA();
