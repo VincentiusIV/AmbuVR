@@ -7,10 +7,17 @@ public class SkinTexture : MonoBehaviour {
     [SerializeField] private Texture2D unburned;
     [SerializeField] private Texture2D burned;
     [SerializeField] private int radius;
+    [SerializeField] private float updateTime;
+    [SerializeField] private PerlinValues pv;
 
     private Renderer rend;
+
     private Texture2D mix;
+    private Texture2D savedMix;
+
     private Camera cam;
+
+    private float nextUpdate;
 
     // Counter for the amount of pixels that are changed
     private int pixelCounter;
@@ -21,13 +28,24 @@ public class SkinTexture : MonoBehaviour {
         rend = GetComponent<Renderer>();
         cam = Camera.main;
         // Make a copy of the given unburned texture and use it
-        mix = Instantiate(unburned) as Texture2D;
+        savedMix = mix = Instantiate(unburned) as Texture2D;
         rend.material.mainTexture = mix;
-
-        SetPixels(new Vector2(512 / mix.width, 512 / mix.height));
     }
 
-    public void SetPixels(Vector2 textureCoord)
+    public void Highlight(Vector2 textureCoord)
+    {
+        if (Time.time < nextUpdate)
+            return;
+
+        nextUpdate = Time.time + updateTime;
+
+        mix = Instantiate(savedMix) as Texture2D;
+        rend.material.mainTexture = mix;
+
+        SetPixels(textureCoord, false);
+    }
+
+    public void SetPixels(Vector2 textureCoord, bool save)
     {
         Vector2 pixelUV = textureCoord;
         pixelUV.x *= unburned.width;
@@ -40,21 +58,47 @@ public class SkinTexture : MonoBehaviour {
         {
             for (int y = yPos - radius; y < yPos + radius; y++)
             {
+                if (GetPerlinHeight(x, y) > pv.burnHeight)
+                    continue;
+
                 Color col = burned.GetPixel(x, y);
 
-                if(mix.GetPixel(x,y) != col)
+                if(save && savedMix.GetPixel(x,y) != col)
                 {
-                    mix.SetPixel(x, y, col);
+                    savedMix.SetPixel(x, y, col);
                     pixelCounter++;
-                }  
+                }
+                else if (mix.GetPixel(x, y) != col)
+                    mix.SetPixel(x, y, col); 
             }
         }
-        float newTbsa = GetTBSA();
-        mix.Apply(true);
+        //float newTbsa = GetTBSA();
+        if (save)
+            savedMix.Apply(true);
+        else mix.Apply(true);
 
         // actually apply all SetPixels, don't recalculate mip levels
         
     }
+
+    private float GetPerlinHeight(int x, int y)
+    {
+        float frequency = 1;
+        float amplitude = 1;
+        float height = 0;
+
+        for (int i = 0; i < pv.numOfLayers; i++)
+        {
+            float perlin = Mathf.PerlinNoise(x / pv.scale * frequency, y / pv.scale * frequency);
+            height += perlin * amplitude;
+
+            amplitude *= pv.ampPerLayer;
+            frequency *= pv.frePerLayer;
+        }
+
+        return height;
+    }
+
 
     public float GetTBSA()
     {
@@ -64,4 +108,14 @@ public class SkinTexture : MonoBehaviour {
         
         return tbsa;
     }
+}
+
+[System.Serializable]
+public struct PerlinValues
+{
+    public float scale;
+    public int numOfLayers;
+    public float ampPerLayer;
+    public float frePerLayer;
+    public float burnHeight;
 }

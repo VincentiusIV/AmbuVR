@@ -43,11 +43,11 @@ public class PlayerController : MonoBehaviour {
     {
         RaycastHit hit;
 
-        pointer.SetPosition(0, pointerOrigin.position);
+        //pointer.SetPosition(0, pointerOrigin.position);
 
         if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit, pointerLength))
         {
-            pointer.SetPosition(1, hit.point);
+            //pointer.SetPosition(1, hit.point);
 
             if (hit.collider.CompareTag("Button"))
             {
@@ -59,13 +59,15 @@ public class PlayerController : MonoBehaviour {
 
             if(hit.collider.CompareTag("Patient"))
             {
+                hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
+
                 if(Input.GetButton("Fire1"))
-                    hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord);
+                    hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true);
             }
         }
         else
         {
-            pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
+            //pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
         }
     }
 }
