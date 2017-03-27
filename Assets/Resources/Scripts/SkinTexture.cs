@@ -11,14 +11,12 @@ public class SkinTexture : MonoBehaviour {
     [SerializeField] private PerlinValues pv;
 
     private Renderer rend;
-
     private Texture2D mix;
     private Texture2D savedMix;
 
-    private Camera cam;
+    private BurnController bc;
 
     private float nextUpdate;
-
     // Counter for the amount of pixels that are changed
     private int pixelCounter;
 
@@ -26,7 +24,8 @@ public class SkinTexture : MonoBehaviour {
     void Start ()
     {
         rend = GetComponent<Renderer>();
-        cam = Camera.main;
+        bc = GetComponent<BurnController>();
+
         // Make a copy of the given unburned texture and use it
         savedMix = mix = Instantiate(unburned) as Texture2D;
         rend.material.mainTexture = mix;
@@ -45,7 +44,7 @@ public class SkinTexture : MonoBehaviour {
         SetPixels(textureCoord, false);
     }
 
-    public void SetPixels(Vector2 textureCoord, bool save)
+    public void SetPixels(Vector2 textureCoord, bool save, Vector3 worldPoint = new Vector3())
     {
         Vector2 pixelUV = textureCoord;
         pixelUV.x *= unburned.width;
@@ -66,6 +65,7 @@ public class SkinTexture : MonoBehaviour {
                 if(save && savedMix.GetPixel(x,y) != col)
                 {
                     savedMix.SetPixel(x, y, col);
+                    
                     pixelCounter++;
                 }
                 else if (mix.GetPixel(x, y) != col)
@@ -74,7 +74,10 @@ public class SkinTexture : MonoBehaviour {
         }
         //float newTbsa = GetTBSA();
         if (save)
+        {
             savedMix.Apply(true);
+            bc.PlaceBurn(worldPoint);
+        } 
         else mix.Apply(true);
 
         // actually apply all SetPixels, don't recalculate mip levels

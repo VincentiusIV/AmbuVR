@@ -41,28 +41,37 @@ public class PlayerController : MonoBehaviour {
     // Pointer
     private void DrawPointer()
     {
-        RaycastHit hit;
-
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(pointerOrigin.position, pointerOrigin.forward, pointerLength);
         //pointer.SetPosition(0, pointerOrigin.position);
 
-        if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit, pointerLength))
+        if (hits.Length > 0)
         {
-            //pointer.SetPosition(1, hit.point);
-
-            if (hit.collider.CompareTag("Button"))
+            foreach (RaycastHit hit in hits)
             {
-                hit.collider.GetComponent<ButtonScript>().Highlight();
+                if (hit.collider.gameObject.layer == 10 && Input.GetButtonDown("Fire2"))
+                        transform.position = hit.point;
 
-                if (Input.GetButtonDown("Fire1"))
-                    hit.collider.GetComponent<ButtonScript>().Click();
-            }
+                else if (hit.collider.CompareTag("Button"))
+                {
+                    hit.collider.GetComponent<ButtonScript>().Highlight();
 
-            if(hit.collider.CompareTag("Patient"))
-            {
-                hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
+                    if (Input.GetButtonDown("Fire1"))
+                        hit.collider.GetComponent<ButtonScript>().Click();
 
-                if(Input.GetButton("Fire1"))
-                    hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true);
+                    return;
+                }
+
+                else if (hit.collider.CompareTag("Burn"))
+                    return;
+
+                else if (hit.collider.CompareTag("Patient"))
+                {
+                    hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
+
+                    if (Input.GetButtonDown("Fire1"))
+                        hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, hit.point);
+                }
             }
         }
         else

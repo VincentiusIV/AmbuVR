@@ -30,7 +30,6 @@ public class ViveController : MonoBehaviour
 
     // other controller
     [SerializeField] ViveController otherController;
-
     bool drawPointer;
 
     private void Awake()
@@ -52,6 +51,9 @@ public class ViveController : MonoBehaviour
 
     private void Update()
     {
+        // TODO:
+        // Touchpad swipes, more UI control
+
         device = SteamVR_Controller.Input((int)motionCon.index);
         DrawPointer();
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled)

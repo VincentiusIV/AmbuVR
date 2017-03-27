@@ -12,7 +12,6 @@ public class IA_Area : MonoBehaviour {
     private Patient pt;
 
     public int burnDegree;
-    public int tBSA;
 
     private void Start()
     {
