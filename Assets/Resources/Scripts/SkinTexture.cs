@@ -14,7 +14,7 @@ public class SkinTexture : MonoBehaviour {
     private Texture2D mix;
     private Texture2D savedMix;
 
-    private BurnController bc;
+    private Patient pt;
 
     private float nextUpdate;
     // Counter for the amount of pixels that are changed
@@ -24,7 +24,7 @@ public class SkinTexture : MonoBehaviour {
     void Start ()
     {
         rend = GetComponent<Renderer>();
-        bc = GetComponent<BurnController>();
+        pt = GetComponent<Patient>();
 
         // Make a copy of the given unburned texture and use it
         savedMix = mix = Instantiate(unburned) as Texture2D;
@@ -76,7 +76,7 @@ public class SkinTexture : MonoBehaviour {
         if (save)
         {
             savedMix.Apply(true);
-            bc.PlaceBurn(worldPoint);
+            pt.PlaceBurn(worldPoint);
         } 
         else mix.Apply(true);
 

@@ -6,21 +6,18 @@ public class Patient : MonoBehaviour
 {    
     // Serialize fields
     [SerializeField] private List<IA_Tags> correctOrder = new List<IA_Tags>();
-    private List<IA_Tags> placeOrder = new List<IA_Tags>();
+    private List<IA_Area> placeOrder = new List<IA_Area>();
     // only serialized for testing
-    [SerializeField]public List<GameObject> snappedObjects = new List<GameObject>();
+    [SerializeField]private List<GameObject> snappedObjects = new List<GameObject>();
 
     // Reference fields
     private SettingsController sc;
 
+    public List<IA_Tags> GetCorrectOrder{ get { return correctOrder; } }
+
     private void Start()
     {
         sc = GameObject.FindWithTag("VariousController").GetComponent<SettingsController>();
-    }
-
-    private void Update()
-    {
-
     }
 
     public void AddObject(GameObject objToAdd)
@@ -30,37 +27,28 @@ public class Patient : MonoBehaviour
         snappedObjects.Add(objToAdd);
         objToAdd.layer = 9;
         objToAdd.transform.SetParent(transform); 
-
-        
-        
     }
 
-    public void ApplyMed(ItemData med, IA_Areas area)
+    public void UpdateBurnStatus(ItemData med, IA_Areas area)
     {
-        Debug.Log("Applying med: "+med.thisItem.ToString());
-
-        if (area == med.correctArea)
-            placeOrder.Add(med.thisItem);
-        else placeOrder.Add(IA_Tags.None);
-
-        if (correctOrder[placeOrder.Count] != med.thisItem)
-            Debug.Log("Wrong order, should have placed " + correctOrder[placeOrder.Count - 1].ToString());
+        
     }
 
-    void CheckOrder()
+    // Adding burn wounds
+    [SerializeField]
+    private GameObject burnWoundPrefab;
+
+    private List<GameObject> burnWounds = new List<GameObject>();
+
+    public void PlaceBurn(Vector3 pos)
     {
-        // 
-        if (placeOrder.Count != correctOrder.Count)
-            for (int i = 0; i < correctOrder.Count - placeOrder.Count; i++)
-                placeOrder.Add(IA_Tags.None);
+        // set burn degree
+        GameObject newBurn = Instantiate(burnWoundPrefab, pos, Quaternion.identity) as GameObject;
+        burnWounds.Add(newBurn);
+        burnWounds[burnWounds.Count - 1].GetComponent<IA_Area>().id = burnWounds.Count;
 
-        for (int i = 0; i < placeOrder.Count; i++)
-        {
-            if (placeOrder[i] == correctOrder[i])
-            { }// correct
-            else { }// false
-        }
-
-        // sc.something
+        Debug.Log("Placed burn wound with id " + burnWounds[burnWounds.Count - 1].GetComponent<IA_Area>().id);
+        // combine mesh?
     }
+
 }
