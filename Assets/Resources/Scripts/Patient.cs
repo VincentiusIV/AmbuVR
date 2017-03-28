@@ -29,23 +29,20 @@ public class Patient : MonoBehaviour
         objToAdd.transform.SetParent(transform); 
     }
 
-    public void UpdateBurnStatus(ItemData med, IA_Areas area)
-    {
-        
-    }
-
     // Adding burn wounds
     [SerializeField]
     private GameObject burnWoundPrefab;
-
     private List<GameObject> burnWounds = new List<GameObject>();
 
     public void PlaceBurn(Vector3 pos)
     {
         // set burn degree
+        if (burnWounds.Count > 250)
+            return;
+
         GameObject newBurn = Instantiate(burnWoundPrefab, pos, Quaternion.identity) as GameObject;
         burnWounds.Add(newBurn);
-        burnWounds[burnWounds.Count - 1].GetComponent<IA_Area>().id = burnWounds.Count;
+        burnWounds[burnWounds.Count - 1].GetComponent<IA_Area>().id = burnWounds.Count - 1;
 
         Debug.Log("Placed burn wound with id " + burnWounds[burnWounds.Count - 1].GetComponent<IA_Area>().id);
         // combine mesh?

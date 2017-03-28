@@ -18,12 +18,14 @@ public class IA_Area : MonoBehaviour
     private List<IA_Tags> correctOrder = new List<IA_Tags>();
 
     private Patient pt;
+    private Renderer rend;
 
     private int burnDegree;
 
     private void Start()
     {
         pt = GameObject.FindWithTag("Patient").GetComponent<Patient>();
+        rend = GetComponent<Renderer>();
         correctOrder = pt.GetCorrectOrder;
 
         status = App_Status.UNFINISHED;
@@ -46,9 +48,14 @@ public class IA_Area : MonoBehaviour
 
         placeOrder.Add(item.thisItem);
 
-        // check correct order from patient
-        // update burn status to patient
-        pt.UpdateBurnStatus(item, thisArea);
+        if (placeOrder.Count == correctOrder.Count)
+        {
+            if (CheckOrder())
+                rend.material.color = Color.green;
+            else rend.material.color = Color.yellow;
+        }
+            
+                
     }
 
     public bool CheckOrder()
