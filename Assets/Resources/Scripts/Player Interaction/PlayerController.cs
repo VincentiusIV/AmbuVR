@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public enum FPS_State { LOCKED, UNLOCKED }
 [RequireComponent(typeof(LineRenderer))]
 public class PlayerController : MonoBehaviour {
 
@@ -13,20 +15,31 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] Transform pointerOrigin;
     [SerializeField] float pointerLength;
 
+    private FPS_State state;
+    private CameraController cam;
+
     // Use this for initialization
     void Start () {
         Cursor.lockState = CursorLockMode.Locked;
+        state = FPS_State.UNLOCKED;
         pointer = GetComponent<LineRenderer>();
+
+        cam = transform.GetChild(0).GetComponent<CameraController>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        if(state == FPS_State.UNLOCKED)
+        {
+            float vPos = Input.GetAxisRaw("Vertical") * speed;
+            float hPos = Input.GetAxisRaw("Horizontal") * speed;
 
-        float vPos = Input.GetAxisRaw("Vertical") * speed;
-        float hPos = Input.GetAxisRaw("Horizontal") * speed;
+            Vector3 newPos = new Vector3(hPos, 0f, vPos) * Time.deltaTime;
+            transform.Translate(newPos);
 
-        Vector3 newPos = new Vector3(hPos, 0f, vPos) * Time.deltaTime;
-        transform.Translate(newPos);
+            cam.RotateCamera(state);
+        }
         
         if (Input.GetButtonDown("Cancel"))
         {
@@ -35,6 +48,15 @@ public class PlayerController : MonoBehaviour {
             else Cursor.lockState = CursorLockMode.Locked;
         }
 
+        if(Input.GetButtonDown("Submit"))
+        {
+            if (state == FPS_State.UNLOCKED)
+                state = FPS_State.LOCKED;
+            else state = FPS_State.UNLOCKED;
+
+            Debug.Log(string.Format("Switching state to: {0}", state));
+        }
+            
         DrawPointer();
 	}
 

@@ -41,6 +41,7 @@ public class IA_Area : MonoBehaviour
 
     private void ApplyMed(ItemData item)
     {
+        Debug.Log(string.Format("{0} {1} being applied with {2}", status, thisArea, item.thisItem));
         // TODO
         // Add if status is not finished correctly
         if (status == App_Status.FIN_CORRECT)
@@ -53,9 +54,7 @@ public class IA_Area : MonoBehaviour
             if (CheckOrder())
                 rend.material.color = Color.green;
             else rend.material.color = Color.yellow;
-        }
-            
-                
+        } 
     }
 
     public bool CheckOrder()

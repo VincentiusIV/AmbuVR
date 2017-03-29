@@ -6,14 +6,14 @@ public class Patient : MonoBehaviour
 {    
     // Serialize fields
     [SerializeField] private List<IA_Tags> correctOrder = new List<IA_Tags>();
-    private List<IA_Area> placeOrder = new List<IA_Area>();
     // only serialized for testing
-    [SerializeField]private List<GameObject> snappedObjects = new List<GameObject>();
+    [SerializeField]private List<GameObject> snappedObjects = new List<GameObject>(); // unsure if necessary
 
     // Reference fields
     private SettingsController sc;
 
-    public List<IA_Tags> GetCorrectOrder{ get { return correctOrder; } }
+    // Public Get
+    public List<IA_Tags> GetCorrectOrder { get { return correctOrder; } }
 
     private void Start()
     {

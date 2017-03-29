@@ -5,7 +5,10 @@ using UnityEngine;
 public class SkinTexture : MonoBehaviour {
 
     [SerializeField] private Texture2D unburned;
-    [SerializeField] private Texture2D burned;
+    [SerializeField] private Texture2D burnedFirst;
+    [SerializeField] private Texture2D burnedSecond;
+    [SerializeField] private Texture2D burnedThird;
+
     [SerializeField] private int radius;
     [SerializeField] private float updateTime;
     [SerializeField] private PerlinValues pv;
@@ -13,12 +16,14 @@ public class SkinTexture : MonoBehaviour {
     private Renderer rend;
     private Texture2D mix;
     private Texture2D savedMix;
-
     private Patient pt;
 
     private float nextUpdate;
     // Counter for the amount of pixels that are changed
     private int pixelCounter;
+    private Vector2 currentTC;
+
+    private float[,] noiseMap;
 
     // Use this for initialization
     void Start ()
@@ -29,13 +34,16 @@ public class SkinTexture : MonoBehaviour {
         // Make a copy of the given unburned texture and use it
         savedMix = mix = Instantiate(unburned) as Texture2D;
         rend.material.mainTexture = mix;
+
+        CalcNoiseMap();
     }
 
     public void Highlight(Vector2 textureCoord)
     {
-        if (Time.time < nextUpdate)
+        if (Time.time < nextUpdate || textureCoord == currentTC)
             return;
 
+        currentTC = textureCoord;
         nextUpdate = Time.time + updateTime;
 
         mix = Instantiate(savedMix) as Texture2D;
@@ -57,10 +65,10 @@ public class SkinTexture : MonoBehaviour {
         {
             for (int y = yPos - radius; y < yPos + radius; y++)
             {
-                if (GetPerlinHeight(x, y) > pv.burnHeight)
+                if (noiseMap[x,y] > pv.burnHeight)
                     continue;
 
-                Color col = burned.GetPixel(x, y);
+                Color col = burnedFirst.GetPixel(x, y);
 
                 if(save && savedMix.GetPixel(x,y) != col)
                 {
@@ -84,19 +92,32 @@ public class SkinTexture : MonoBehaviour {
         
     }
 
+    private void CalcNoiseMap()
+    {
+        noiseMap = new float[unburned.width, unburned.height];
+        for (int x = 0; x < unburned.width; x++)
+        {
+            for (int y = 0; y < unburned.height; y++)
+            {
+                noiseMap[x, y] = GetPerlinHeight(x,y);
+            }
+        }
+    }
     private float GetPerlinHeight(int x, int y)
     {
-        float frequency = 1;
+        float xFrequency = 1;
+        float yFrequency = 1;
         float amplitude = 1;
         float height = 0;
 
         for (int i = 0; i < pv.numOfLayers; i++)
         {
-            float perlin = Mathf.PerlinNoise(x / pv.scale * frequency, y / pv.scale * frequency);
+            float perlin = Mathf.PerlinNoise(x / pv.scale * xFrequency, y / pv.scale * yFrequency);
             height += perlin * amplitude;
 
             amplitude *= pv.ampPerLayer;
-            frequency *= pv.frePerLayer;
+            xFrequency *= pv.xFrePerLayer;
+            yFrequency *= pv.yFrePerLayer;
         }
 
         return height;
@@ -119,6 +140,6 @@ public struct PerlinValues
     public float scale;
     public int numOfLayers;
     public float ampPerLayer;
-    public float frePerLayer;
+    public float xFrePerLayer, yFrePerLayer;
     public float burnHeight;
 }
