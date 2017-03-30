@@ -10,14 +10,14 @@ public class Patient : MonoBehaviour
     [SerializeField]private List<GameObject> snappedObjects = new List<GameObject>(); // unsure if necessary
 
     // Reference fields
-    private SettingsController sc;
+    //private SettingsController sc;
 
     // Public Get
     public List<IA_Tags> GetCorrectOrder { get { return correctOrder; } }
 
     private void Start()
     {
-        sc = GameObject.FindWithTag("VariousController").GetComponent<SettingsController>();
+        //sc = GameObject.FindWithTag("VariousController").GetComponent<SettingsController>();
     }
 
     public void AddObject(GameObject objToAdd)

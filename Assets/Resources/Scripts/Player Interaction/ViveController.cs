@@ -69,7 +69,7 @@ public class ViveController : MonoBehaviour, IManager
                 pointer.enabled = false;
     }
     /// <summary>
-    /// 
+    /// Checks what and how can be interacted based on the first 2 raycast hits & controller state 
     /// </summary>
     private void AimChecking(bool drawPointer)
     {
@@ -89,7 +89,6 @@ public class ViveController : MonoBehaviour, IManager
                 pointer.SetPosition(1, hits[0].point);
 
             for (int i = 0; i < (int)curConState; i++)
-            {
                 switch (hits[i].collider.tag)
                 {
                     case "Pick Up":
@@ -112,12 +111,8 @@ public class ViveController : MonoBehaviour, IManager
                     default:
                         break;
                 }
-            }
         }
-        else
-        {
-            pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
-        }
+        else pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
     }
     /// <summary>
     /// Interaction with UI, checks when player clicks
