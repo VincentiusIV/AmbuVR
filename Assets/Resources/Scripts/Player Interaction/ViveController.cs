@@ -35,9 +35,7 @@ public class ViveController : MonoBehaviour, IManager
     // Private 
     int oldLayer;
 
-    public GameObject currentHeldObject;
-    public bool isHolding;
-
+    public GameObject currentHeldObject { get; private set; }
     // other controller
     bool drawPointer;
 
@@ -63,7 +61,7 @@ public class ViveController : MonoBehaviour, IManager
         // TODO:
         // Touchpad swipes, more UI control
         device = SteamVR_Controller.Input((int)motionCon.index);
-        DrawPointer();
+        AimChecking();
 
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled)
         {
@@ -82,7 +80,7 @@ public class ViveController : MonoBehaviour, IManager
         
     }
     // Pointer
-    private void DrawPointer()
+    private void AimChecking()
     {
         pointer.enabled = true;
 
@@ -96,101 +94,29 @@ public class ViveController : MonoBehaviour, IManager
 
         if (hits.Length > 0)
         {
-            string firstTag = hits[0].collider.tag;
+            if (drawPointer)
+                pointer.SetPosition(1, hits[0].point);
 
-            switch (firstTag)
+            for (int i = 0; i < (int)curConState; i++)
             {
-                case "Pick Up":
-                    curConState = ControllerState.AimAtObject; break;
-                case "Button":
-                    curConState = ControllerState.AimAtUI; break;
-                case "TP_Spot":
-                    curConState = ControllerState.AimAtTPSpot; break;
-                default:
-                    break;
+                switch (hits[(i].collider.tag)
+                {
+                    case "Pick Up":
+                        Grab_Check(hits[i]); break;
+                    case "Button":
+                        UI_Check(hits[i]); break;
+                    case "TP_Spot":
+                        TP_Check(hits[i]); break;
+                    case "Patient":
+                        Paint_Check(hits[i]); break;
+                    default:
+                        Release_Check(hits[i]); break;
+                }
             }
         }
-        else // When aiming at nothing; early exit;
+        else
         {
-            curConState = ControllerState.AimAtNothing;
             pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
-            return;
-        }
-
-        if (drawPointer)
-            pointer.SetPosition(1, hits[0].point);
-
-        foreach (RaycastHit hit in hits)
-        {
-            switch (curConState)
-            {
-                case ControllerState.AimAtUI:
-                    UI_Check(hit); break;
-                case ControllerState.AimAtTPSpot:
-                    TP_Check(hit); break;
-                case ControllerState.AimAtObject:
-                    break;
-                case ControllerState.Holding:
-                    break;
-                default:
-                    break;
-            }
-
-
-            if (hit.collider.CompareTag("Burn"))
-                return;
-
-            else if (hit.collider.CompareTag("Patient"))
-            {
-                hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
-
-                if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
-                    hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, hit.point);
-            }
-            else if (hit.collider.CompareTag("Pick Up") && !isHolding && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
-            {
-                isHolding = true;
-
-                currentHeldObject = hit.collider.gameObject;
-                currentHeldObject.transform.SetParent(holdPosition);
-
-                if (currentHeldObject.layer != 2)
-                    oldLayer = currentHeldObject.layer;
-                currentHeldObject.layer = 2;
-
-                if (currentHeldObject.GetComponent<Rigidbody>() != null)
-                    currentHeldObject.GetComponent<Rigidbody>().isKinematic = true;
-            }
-            else if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger) && isHolding)
-            {
-                isHolding = false;
-                RaycastHit hit2;
-
-                if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit2, 8))
-                {
-                    if (hit.collider.CompareTag("Interactable"))
-                    {
-                        // prob rewrite this into a interactable
-                        currentHeldObject.transform.position = hit.point;
-                        currentHeldObject.transform.SetParent(hit.collider.transform);
-                    }
-                    else if (hit.collider.CompareTag("Patient"))
-                        hit.collider.GetComponent<Patient>().AddObject(gameObject);
-
-                    if (currentHeldObject.transform.parent != hit.collider.transform)
-                        currentHeldObject.transform.SetParent(null);
-                }
-                else
-                    currentHeldObject.transform.SetParent(null);
-
-                currentHeldObject.layer = oldLayer;
-
-                if (currentHeldObject.GetComponent<Rigidbody>() != null)
-                {
-                    currentHeldObject.GetComponent<Rigidbody>().isKinematic = false;
-                    ThrowVelocity(currentHeldObject.GetComponent<Rigidbody>());
-                }
-            }
         }
     }
     /// <summary>
@@ -213,6 +139,74 @@ public class ViveController : MonoBehaviour, IManager
         if (hit.collider.gameObject.layer == 10 && device.GetTouchDown(SteamVR_Controller.ButtonMask.Grip))
             transform.parent.position = hit.point;
 
+        // TODO
+        // upgrade functionality with fade to black animation, 
+
+    }
+    /// <summary>
+    /// Checks if player can grab something
+    /// </summary>
+    /// <param name="hit"></param>
+    private void Grab_Check(RaycastHit hit)
+    {
+        if (curConState != ControllerState.Holding && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+        {
+            curConState = ControllerState.Holding;
+
+            currentHeldObject = hit.collider.gameObject;
+            currentHeldObject.transform.SetParent(holdPosition);
+
+            if (currentHeldObject.layer != 2)
+                oldLayer = currentHeldObject.layer;
+            currentHeldObject.layer = 2;
+
+            if (currentHeldObject.GetComponent<Rigidbody>() != null)
+                currentHeldObject.GetComponent<Rigidbody>().isKinematic = true;
+        }
+    }
+    /// <summary>
+    /// Check when the player releases a held object
+    /// </summary>
+    /// <param name="hit"></param>
+    private void Release_Check(RaycastHit hit)
+    {
+        if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger) && curConState == ControllerState.Holding)
+        {
+            curConState = ControllerState.Aiming;
+
+            if (hit.collider.CompareTag("Interactable"))
+            {
+                // prob rewrite this into a interactable
+                currentHeldObject.transform.position = hit.point;
+                currentHeldObject.transform.SetParent(hit.collider.transform);
+            }
+            else if (hit.collider.CompareTag("Patient"))
+                hit.collider.GetComponent<Patient>().AddObject(gameObject);
+
+            if (currentHeldObject.transform.parent != hit.collider.transform)
+                currentHeldObject.transform.SetParent(null);
+
+            currentHeldObject.transform.SetParent(null);
+
+            currentHeldObject.layer = oldLayer;
+
+            if (currentHeldObject.GetComponent<Rigidbody>() != null)
+            {
+                currentHeldObject.GetComponent<Rigidbody>().isKinematic = false;
+                ThrowVelocity(currentHeldObject.GetComponent<Rigidbody>());
+            }
+        }
+    }
+    /// <summary>
+    /// Checking if the player can paint burn wounds on patient
+    /// </summary>
+    /// <param name="hit"></param>
+    private void Paint_Check(RaycastHit hit)
+    {
+        hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
+
+        if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+            hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, hit.point);
     }
 
     private void ThrowVelocity(Rigidbody rb)
