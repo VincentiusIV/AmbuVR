@@ -9,8 +9,6 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField]private float speed = 10.0f;
 
-    LineRenderer pointer;
-
     // Private & Serialized fields
     [SerializeField] Transform pointerOrigin;
     [SerializeField] float pointerLength;
@@ -22,7 +20,6 @@ public class PlayerController : MonoBehaviour {
     void Start () {
         Cursor.lockState = CursorLockMode.Locked;
         state = FPS_State.UNLOCKED;
-        pointer = GetComponent<LineRenderer>();
 
         cam = transform.GetChild(0).GetComponent<CameraController>();
 	}
@@ -65,7 +62,6 @@ public class PlayerController : MonoBehaviour {
     {
         RaycastHit[] hits;
         hits = Physics.RaycastAll(pointerOrigin.position, pointerOrigin.forward, pointerLength);
-        //pointer.SetPosition(0, pointerOrigin.position);
 
         if (hits.Length > 0)
         {
@@ -95,10 +91,6 @@ public class PlayerController : MonoBehaviour {
                         hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, hit.point);
                 }
             }
-        }
-        else
-        {
-            //pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
         }
     }
 }

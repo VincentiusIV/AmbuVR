@@ -13,8 +13,10 @@ public enum ControllerID { LEFT, RIGHT}
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class ViveController : MonoBehaviour, IManager
 {
+    // Public Getters
     public ManagerState curManState { get; private set; }
     public ControllerState curConState { get; private set; }
+    public GameObject currentHeldObject { get; private set; }
 
     // Private SteamVR fields
     SteamVR_TrackedObject motionCon;
@@ -35,10 +37,6 @@ public class ViveController : MonoBehaviour, IManager
     // Private 
     int oldLayer;
 
-    public GameObject currentHeldObject { get; private set; }
-    // other controller
-    bool drawPointer;
-
     public void BootSequence(ControllerManager _cm)
     {
         Debug.Log(string.Format("{0} {1} is booting up", GetType().Name, id));
@@ -49,38 +47,31 @@ public class ViveController : MonoBehaviour, IManager
         motionCon = GetComponent<SteamVR_TrackedObject>();
         // references
         pointer = GetComponent<LineRenderer>();
-        pointer.enabled = drawPointer = false;
+        pointer.enabled = false;
 
         UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
         curManState = ManagerState.Completed;
+        curConState = ControllerState.Aiming;
         Debug.Log(string.Format("{0} {1} status = {2}", GetType().Name, id, curManState));
     }
 
     private void Update()
     {
+        if (curManState != ManagerState.Completed)
+            return;
         // TODO:
         // Touchpad swipes, more UI control
         device = SteamVR_Controller.Input((int)motionCon.index);
-        AimChecking();
+        AimChecking(device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled);
 
-        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled)
-        {
-            drawPointer = true;
-        }
-        else if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Touchpad))
-        {
-            drawPointer = false;
-        }
-        else if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
-        {
+        if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
             if (!UI.ToggleUI())
                 pointer.enabled = false;
-        }
-
-        
     }
-    // Pointer
-    private void AimChecking()
+    /// <summary>
+    /// 
+    /// </summary>
+    private void AimChecking(bool drawPointer)
     {
         pointer.enabled = true;
 
@@ -99,10 +90,19 @@ public class ViveController : MonoBehaviour, IManager
 
             for (int i = 0; i < (int)curConState; i++)
             {
-                switch (hits[(i].collider.tag)
+                switch (hits[i].collider.tag)
                 {
                     case "Pick Up":
-                        Grab_Check(hits[i]); break;
+                        switch (curConState)
+                        {
+                            case ControllerState.Aiming:
+                                Grab_Check(hits[i]); break;
+                            case ControllerState.Holding:
+                                Release_Check(hits[i]); break;
+                            default:
+                                break;
+                        }
+                        break;
                     case "Button":
                         UI_Check(hits[i]); break;
                     case "TP_Spot":
@@ -110,7 +110,7 @@ public class ViveController : MonoBehaviour, IManager
                     case "Patient":
                         Paint_Check(hits[i]); break;
                     default:
-                        Release_Check(hits[i]); break;
+                        break;
                 }
             }
         }
@@ -149,7 +149,7 @@ public class ViveController : MonoBehaviour, IManager
     /// <param name="hit"></param>
     private void Grab_Check(RaycastHit hit)
     {
-        if (curConState != ControllerState.Holding && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+        if (cm.CanGrab(id, hit.collider.gameObject) && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
         {
             curConState = ControllerState.Holding;
 
@@ -163,6 +163,8 @@ public class ViveController : MonoBehaviour, IManager
             if (currentHeldObject.GetComponent<Rigidbody>() != null)
                 currentHeldObject.GetComponent<Rigidbody>().isKinematic = true;
         }
+        else if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+            Debug.Log("Cannot grab the object the other controller is holding");
     }
     /// <summary>
     /// Check when the player releases a held object
@@ -182,12 +184,12 @@ public class ViveController : MonoBehaviour, IManager
             }
             else if (hit.collider.CompareTag("Patient"))
                 hit.collider.GetComponent<Patient>().AddObject(gameObject);
-
-            if (currentHeldObject.transform.parent != hit.collider.transform)
+            /////////////////////////////////////////////////////////////////// Why? test this
+            if (currentHeldObject.transform.parent != hit.collider.transform) 
                 currentHeldObject.transform.SetParent(null);
 
             currentHeldObject.transform.SetParent(null);
-
+            /////////////////////////////////////////////////////////////////
             currentHeldObject.layer = oldLayer;
 
             if (currentHeldObject.GetComponent<Rigidbody>() != null)
