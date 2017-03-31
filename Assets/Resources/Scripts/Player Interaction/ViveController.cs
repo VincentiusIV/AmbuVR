@@ -80,36 +80,31 @@ public class ViveController : MonoBehaviour, IManager
         else if (pointer.enabled)
             pointer.enabled = false;
 
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(pointerOrigin.position, pointerOrigin.forward, pointerLength);
+        RaycastHit hit;
 
-        if (hits.Length > 0)
+        if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit))
         {
             if (drawPointer)
-                pointer.SetPosition(1, hits[0].point);
+                pointer.SetPosition(1, hit.point);
 
+            if(curConState == ControllerState.Holding)
+            {
+                Release_Check(hit);
+                return;
+            }
             for (int i = 0; i < (int)curConState; i++)
-                switch (hits[i].collider.tag)
+                switch (hit.collider.tag)
                 {
                     case "Pick Up":
-                        switch (curConState)
-                        {
-                            case ControllerState.Aiming:
-                                Grab_Check(hits[i]); break;
-                            case ControllerState.Holding:
-                                Release_Check(hits[i]); break;
-                            default:
-                                break;
-                        }
-                        break;
+                        Grab_Check(hit); break;
                     case "Button":
-                        UI_Check(hits[i]); break;
+                        UI_Check(hit); break;
                     case "TP_Spot":
-                        TP_Check(hits[i]); break;
+                        TP_Check(hit); break;
                     case "Patient":
-                        Paint_Check(hits[i]); break;
+                        Paint_Check(hit); break;
                     default:
-                        break;
+                        return;
                 }
         }
         else pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
@@ -120,6 +115,7 @@ public class ViveController : MonoBehaviour, IManager
     /// <param name="hit"></param>
     private void UI_Check(RaycastHit hit)
     {
+        Debug.Log(string.Format("hit {0}, performing UI Check", hit.collider.tag));
         hit.collider.GetComponent<ButtonScript>().Highlight();
 
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
@@ -131,6 +127,7 @@ public class ViveController : MonoBehaviour, IManager
     /// <param name="hit"></param>
     private void TP_Check(RaycastHit hit)
     {
+        Debug.Log(string.Format("hit {0}, performing TP Check", hit.collider.tag));
         if (hit.collider.gameObject.layer == 10 && device.GetTouchDown(SteamVR_Controller.ButtonMask.Grip))
             transform.parent.position = hit.point;
 
@@ -144,6 +141,7 @@ public class ViveController : MonoBehaviour, IManager
     /// <param name="hit"></param>
     private void Grab_Check(RaycastHit hit)
     {
+        Debug.Log(string.Format("hit {0}, performing GRAB Check", hit.collider.tag));
         if (cm.CanGrab(id, hit.collider.gameObject) && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
         {
             curConState = ControllerState.Holding;
@@ -169,8 +167,6 @@ public class ViveController : MonoBehaviour, IManager
     {
         if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger) && curConState == ControllerState.Holding)
         {
-            curConState = ControllerState.Aiming;
-
             if (hit.collider.CompareTag("Interactable"))
             {
                 // prob rewrite this into a interactable
@@ -179,12 +175,10 @@ public class ViveController : MonoBehaviour, IManager
             }
             else if (hit.collider.CompareTag("Patient"))
                 hit.collider.GetComponent<Patient>().AddObject(gameObject);
-            /////////////////////////////////////////////////////////////////// Why? test this
-            if (currentHeldObject.transform.parent != hit.collider.transform) 
+
+            if (currentHeldObject.transform.parent != hit.collider.transform)
                 currentHeldObject.transform.SetParent(null);
 
-            currentHeldObject.transform.SetParent(null);
-            /////////////////////////////////////////////////////////////////
             currentHeldObject.layer = oldLayer;
 
             if (currentHeldObject.GetComponent<Rigidbody>() != null)
@@ -192,6 +186,9 @@ public class ViveController : MonoBehaviour, IManager
                 currentHeldObject.GetComponent<Rigidbody>().isKinematic = false;
                 ThrowVelocity(currentHeldObject.GetComponent<Rigidbody>());
             }
+
+            currentHeldObject = null;
+            curConState = ControllerState.Aiming;
         }
     }
     /// <summary>
@@ -200,6 +197,7 @@ public class ViveController : MonoBehaviour, IManager
     /// <param name="hit"></param>
     private void Paint_Check(RaycastHit hit)
     {
+        Debug.Log(string.Format("hit {0}, performing PAINT Check", hit.collider.tag));
         hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
 
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
@@ -219,6 +217,6 @@ public class ViveController : MonoBehaviour, IManager
             rb.velocity = device.velocity;
             rb.angularVelocity = device.angularVelocity;
         }
-        currentHeldObject = null;
+        
     }
 }
