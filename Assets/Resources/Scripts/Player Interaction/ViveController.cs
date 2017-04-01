@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 
 [Serializable]
 public enum ControllerID { LEFT, RIGHT}
@@ -26,6 +27,7 @@ public class ViveController : MonoBehaviour, IManager
     LineRenderer pointer;
     UIController UI;
     ControllerManager cm;
+    TouchpadInterface ti;
 
     // Private & Serialized fields
     [SerializeField] ControllerID id;
@@ -47,6 +49,8 @@ public class ViveController : MonoBehaviour, IManager
         motionCon = GetComponent<SteamVR_TrackedObject>();
         // references
         pointer = GetComponent<LineRenderer>();
+
+        ti = transform.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
         pointer.enabled = false;
 
         UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
@@ -59,6 +63,12 @@ public class ViveController : MonoBehaviour, IManager
     {
         if (curManState != ManagerState.Completed)
             return;
+
+        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
+        {
+            Debug.Log(string.Format("Option{0} has been selected", ti.GetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad))));
+        }
+
         // TODO:
         // Touchpad swipes, more UI control
         device = SteamVR_Controller.Input((int)motionCon.index);
