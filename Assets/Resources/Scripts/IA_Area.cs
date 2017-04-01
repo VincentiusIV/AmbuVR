@@ -5,9 +5,15 @@ using UnityEngine;
 [System.Serializable]
 public enum IA_Areas { Mouth, Burn}
 
-[System.Serializable]
+[System.Serializable]// likely be removed
 public enum App_Status { UNFINISHED, FIN_INCORRECT, FIN_CORRECT}
 
+[System.Serializable]
+public struct BurnWoundStatus
+{
+    public bool isCooled;
+    public bool 
+}
 public class IA_Area : MonoBehaviour
 {
     public int id;

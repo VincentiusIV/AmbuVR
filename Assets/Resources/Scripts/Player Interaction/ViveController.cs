@@ -7,10 +7,6 @@ using Valve.VR;
 [Serializable]
 public enum ControllerID { LEFT, RIGHT}
 // Contains functionality for the motion controllers
-
-// TODO
-// Refactor code to:
-// - Move functionality to different script, have only input being handled in this one
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class ViveController : MonoBehaviour, IManager
 {
@@ -28,6 +24,7 @@ public class ViveController : MonoBehaviour, IManager
     UIController UI;
     ControllerManager cm;
     TouchpadInterface ti;
+    GameObject model;
 
     // Private & Serialized fields
     [SerializeField] ControllerID id;
@@ -49,9 +46,11 @@ public class ViveController : MonoBehaviour, IManager
         motionCon = GetComponent<SteamVR_TrackedObject>();
         // references
         pointer = GetComponent<LineRenderer>();
+        pointer.enabled = false;
 
         ti = transform.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
-        pointer.enabled = false;
+
+        model = transform.FindChild("Model").gameObject;
 
         UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
         curManState = ManagerState.Completed;
@@ -81,6 +80,11 @@ public class ViveController : MonoBehaviour, IManager
     /// <summary>
     /// Checks what and how can be interacted based on the first 2 raycast hits & controller state 
     /// </summary>
+    private void OnTriggerStay(Collider other)
+    {
+        Grab_Check(other);
+    }
+
     private void AimChecking(bool drawPointer)
     {
         pointer.enabled = true;
@@ -105,8 +109,6 @@ public class ViveController : MonoBehaviour, IManager
             for (int i = 0; i < (int)curConState; i++)
                 switch (hit.collider.tag)
                 {
-                    case "Pick Up":
-                        Grab_Check(hit); break;
                     case "Button":
                         UI_Check(hit); break;
                     case "TP_Spot":
@@ -142,21 +144,28 @@ public class ViveController : MonoBehaviour, IManager
             transform.parent.position = hit.point;
 
         // TODO
-        // upgrade functionality with fade to black animation, 
+        // upgrade functionality with fade to black animation,
 
     }
     /// <summary>
     /// Checks if player can grab something
+    /// TODO: - Turn of hand/controller model
+    ///       - Put held item on the spot of the hand/controller
+    ///       
     /// </summary>
     /// <param name="hit"></param>
-    private void Grab_Check(RaycastHit hit)
+    private void Grab_Check(Collider col)
     {
-        Debug.Log(string.Format("hit {0}, performing GRAB Check", hit.collider.tag));
-        if (cm.CanGrab(id, hit.collider.gameObject) && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+        Debug.Log(string.Format("hit {0}, performing GRAB Check", col.tag));
+        if (cm.CanGrab(id, col.gameObject) && device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
         {
             curConState = ControllerState.Holding;
 
-            currentHeldObject = hit.collider.gameObject;
+            if(model.activeInHierarchy)
+                model.SetActive(false);
+
+            currentHeldObject = col.gameObject;
+            currentHeldObject.transform.position = holdPosition.position;
             currentHeldObject.transform.SetParent(holdPosition);
 
             if (currentHeldObject.layer != 2)
@@ -196,6 +205,9 @@ public class ViveController : MonoBehaviour, IManager
                 currentHeldObject.GetComponent<Rigidbody>().isKinematic = false;
                 ThrowVelocity(currentHeldObject.GetComponent<Rigidbody>());
             }
+
+            if (!model.activeInHierarchy)
+                model.SetActive(true);
 
             currentHeldObject = null;
             curConState = ControllerState.Aiming;
