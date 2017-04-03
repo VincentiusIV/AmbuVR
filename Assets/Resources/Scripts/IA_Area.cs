@@ -11,17 +11,26 @@ public enum App_Status { UNFINISHED, FIN_INCORRECT, FIN_CORRECT}
 [System.Serializable]
 public struct BurnWoundStatus
 {
+    // Types
+    public IA_Tags coolType;
+    public IA_Tags medType;
+    
+    // State
     public bool isCooled;
-    public bool 
+    public bool didReceivePainMed;
+    public bool isWrapped;
 }
+
 public class IA_Area : MonoBehaviour
 {
+    // ID of the burn wound
     public int id;
 
     public IA_Areas thisArea;
     public App_Status status;
-    private List<IA_Tags> placeOrder = new List<IA_Tags>();
-    private List<IA_Tags> correctOrder = new List<IA_Tags>();
+    public BurnWoundStatus bws;
+    // Tracks place order
+    public List<IA_Tags> PlaceOrder { get; private set; }
 
     private Patient pt;
     private Renderer rend;
@@ -32,8 +41,6 @@ public class IA_Area : MonoBehaviour
     {
         pt = GameObject.FindWithTag("Patient").GetComponent<Patient>();
         rend = GetComponent<Renderer>();
-        correctOrder = pt.GetCorrectOrder;
-
         status = App_Status.UNFINISHED;
     }
 
@@ -52,33 +59,23 @@ public class IA_Area : MonoBehaviour
         // Add if status is not finished correctly
         if (status == App_Status.FIN_CORRECT)
             return;
+        
+        PlaceOrder.Add(item.thisItem);
 
-        placeOrder.Add(item.thisItem);
-
-        if (placeOrder.Count == correctOrder.Count)
-        {
-            if (CheckOrder())
-                rend.material.color = Color.green;
-            else rend.material.color = Color.yellow;
-        } 
+        // Updates status of the wound
+        if (bws.coolType == item.thisItem)
+            bws.isCooled = true;
+        else if (bws.medType == item.thisItem)
+            bws.didReceivePainMed = true;
+        else if (item.thisItem == IA_Tags.PlasticWrap)
+            bws.isWrapped = true;
     }
 
-    public bool CheckOrder()
+    public void FinishStatus(bool fin)
     {
-        bool correct = false;
-
-        if (placeOrder.Count != correctOrder.Count)
-            for (int i = 0; i < correctOrder.Count - placeOrder.Count; i++)
-                placeOrder.Add(IA_Tags.None);
-
-        for (int i = 0; i < placeOrder.Count; i++)
-        {
-            if (placeOrder[i] == correctOrder[i])
-            { correct = true; }// correct
-            else { return correct = false; }// false
-        }
-        return correct;
-        // sc.something
+        if (fin)
+            rend.material.color = Color.green;
+        else rend.material.color = Color.yellow;
     }
 }
 

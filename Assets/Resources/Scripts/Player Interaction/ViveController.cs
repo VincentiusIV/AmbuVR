@@ -115,6 +115,7 @@ public class ViveController : MonoBehaviour, IManager
                         TP_Check(hit); break;
                     case "Patient":
                         Paint_Check(hit); break;
+                    case "Burn":
                     default:
                         return;
                 }
@@ -149,9 +150,6 @@ public class ViveController : MonoBehaviour, IManager
     }
     /// <summary>
     /// Checks if player can grab something
-    /// TODO: - Turn of hand/controller model
-    ///       - Put held item on the spot of the hand/controller
-    ///       
     /// </summary>
     /// <param name="hit"></param>
     private void Grab_Check(Collider col)

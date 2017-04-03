@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public enum IA_Tags { None, Patient, BurnS, Water, PainMed, PWrap }
+public enum IA_Tags { None, BurnS, Water, PM_Paracetamol, PM_Opiaten, PlasticWrap}
 
 public class ItemData : MonoBehaviour
 {
