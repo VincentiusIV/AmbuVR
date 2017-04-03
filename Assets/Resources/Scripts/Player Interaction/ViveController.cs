@@ -49,7 +49,7 @@ public class ViveController : MonoBehaviour, IManager
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
 
-        ti = transform.parent.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
+        ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
 
         model = transform.FindChild("Model").gameObject;
 
