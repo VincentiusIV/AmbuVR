@@ -39,35 +39,51 @@ public class IA_Area : MonoBehaviour
 
     private void Start()
     {
+        PlaceOrder = new List<IA_Tags>();
         pt = GameObject.FindWithTag("Patient").GetComponent<Patient>();
         rend = GetComponent<Renderer>();
         status = App_Status.UNFINISHED;
     }
 
+    // for testing on keyboard
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            ApplyMed(IA_Tags.BurnS);
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            ApplyMed(IA_Tags.Water);
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            ApplyMed(IA_Tags.PM_Opiaten);
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            ApplyMed(IA_Tags.PM_Paracetamol);
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+            ApplyMed(IA_Tags.PlasticWrap);
+
+    }
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Pick Up"))
         {
-            ApplyMed(other.GetComponent<ItemData>());
+            ApplyMed(other.GetComponent<ItemData>().thisItem);
         }
     }
 
-    private void ApplyMed(ItemData item)
+    private void ApplyMed(IA_Tags item)
     {
-        Debug.Log(string.Format("{0} {1} being applied with {2}", status, thisArea, item.thisItem));
+        Debug.Log(string.Format("{0} {1} being applied with {2}", status, thisArea, item));
         // TODO
         // Add if status is not finished correctly
         if (status == App_Status.FIN_CORRECT)
             return;
         
-        PlaceOrder.Add(item.thisItem);
+        PlaceOrder.Add(item);
 
         // Updates status of the wound
-        if (bws.coolType == item.thisItem)
+        if (bws.coolType == item)
             bws.isCooled = true;
-        else if (bws.medType == item.thisItem)
+        else if (bws.medType == item)
             bws.didReceivePainMed = true;
-        else if (item.thisItem == IA_Tags.PlasticWrap)
+        else if (item == IA_Tags.PlasticWrap)
             bws.isWrapped = true;
     }
 
