@@ -1,0 +1,22 @@
+[
+  {
+    "NPC_ID": 1,
+    "textLine": "This is a test for event 1",
+    "audioFile": "",
+    "Fx_stress": 2,
+    "Responses": [
+      {
+        "ResponseText": "This is test 1 response for event 1",
+        "NextTextID": 1
+      },
+      {
+        "ResponseText": "This is test 2 response for event 1",
+        "NextTextID": 2
+      },
+      {
+        "ResponseText": "This is test 3 response for event 1",
+        "NextTextID": 3
+      }
+    ]
+  }
+]
