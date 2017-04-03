@@ -35,6 +35,7 @@ public class ViveController : MonoBehaviour, IManager
 
     // Private 
     int oldLayer;
+    public bool isTouching { get; private set; }
 
     public void BootSequence(ControllerManager _cm)
     {
@@ -48,11 +49,14 @@ public class ViveController : MonoBehaviour, IManager
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
 
-        ti = transform.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
+        ti = transform.parent.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
 
         model = transform.FindChild("Model").gameObject;
 
         UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
+
+        isTouching = false;
+
         curManState = ManagerState.Completed;
         curConState = ControllerState.Aiming;
         Debug.Log(string.Format("{0} {1} status = {2}", GetType().Name, id, curManState));
@@ -63,14 +67,18 @@ public class ViveController : MonoBehaviour, IManager
         if (curManState != ManagerState.Completed)
             return;
 
-        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
-        {
-            Debug.Log(string.Format("Option{0} has been selected", ti.GetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad))));
-        }
-
         // TODO:
         // Touchpad swipes, more UI control
         device = SteamVR_Controller.Input((int)motionCon.index);
+
+        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && cm.CanTouch(id))
+        {
+            Debug.Log(string.Format("Option{0} has been selected", ti.GetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad))));
+            isTouching = true;
+        }
+        else if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Touchpad)) isTouching = false;
+
+        
         AimChecking(device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled);
 
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
@@ -82,7 +90,8 @@ public class ViveController : MonoBehaviour, IManager
     /// </summary>
     private void OnTriggerStay(Collider other)
     {
-        Grab_Check(other);
+        if(other != null && curConState != ControllerState.Holding)
+            Grab_Check(other);
     }
 
     private void AimChecking(bool drawPointer)
@@ -151,7 +160,7 @@ public class ViveController : MonoBehaviour, IManager
     /// <summary>
     /// Checks if player can grab something
     /// </summary>
-    /// <param name="hit"></param>
+    /// <param name="col"></param>
     private void Grab_Check(Collider col)
     {
         Debug.Log(string.Format("hit {0}, performing GRAB Check", col.tag));

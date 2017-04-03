@@ -13,7 +13,9 @@ public class AI_Movement : MonoBehaviour {
 
 	void Start () {
         agent = GetComponent<NavMeshAgent>();
-        StartCoroutine(Patrol());
+
+        if(spots.Length > 0)
+            StartCoroutine(Patrol());
     }
 	
 	IEnumerator Patrol()
@@ -24,5 +26,10 @@ public class AI_Movement : MonoBehaviour {
             yield return new WaitUntil(() => transform.position == agent.destination);
         }
         StartCoroutine(Patrol());
+    }
+
+    void SaySomething()
+    {
+
     }
 }

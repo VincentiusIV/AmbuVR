@@ -51,4 +51,17 @@ public class ControllerManager : MonoBehaviour
         }
 
     }
+
+    public bool CanTouch(ControllerID id)
+    {
+        switch (id)
+        {
+            case ControllerID.LEFT:
+                return RIGHT.isTouching ? false : true;
+            case ControllerID.RIGHT:
+                return LEFT.isTouching ? false : true;
+            default:
+                return true;
+        }
+    }
 }
