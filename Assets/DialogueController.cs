@@ -9,13 +9,8 @@ public class DialogueController : MonoBehaviour {
 
     private void Start()
     {
-        //DialogueEvent newEvent = JSONAssembly.GetDialogueList(1);
-        
-        //Debug.Log(string.Format("{0} {1}", newEvent.dialogues[0].NPC_ID, newEvent.dialogues[0].textLine));
-
-        Dialogue dstruct = new Dialogue();
-        dstruct.NPC_ID = 1;
-
+        DialogueEvent de = JSONAssembly.RunJSONFactoryForScene(1);
+        Debug.Log(de.dialogues[0].NPC_ID + de.dialogues[0].textLine);
     }
 
 }
