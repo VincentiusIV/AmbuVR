@@ -32,7 +32,7 @@ public class IA_Area : MonoBehaviour
     // Tracks place order
     public List<IA_Tags> PlaceOrder { get; private set; }
 
-    private Patient pt;
+    //private Patient pt;
     private Renderer rend;
 
     private int burnDegree;
@@ -40,7 +40,7 @@ public class IA_Area : MonoBehaviour
     private void Start()
     {
         PlaceOrder = new List<IA_Tags>();
-        pt = GameObject.FindWithTag("Patient").GetComponent<Patient>();
+        //pt = GameObject.FindWithTag("Patient").GetComponent<Patient>();
         rend = GetComponent<Renderer>();
         status = App_Status.UNFINISHED;
     }

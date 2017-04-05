@@ -4,16 +4,21 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class AI_Movement : MonoBehaviour {
+public class AI_Movement : MonoBehaviour
+{
+    // Public getters
+    [SerializeField]public int ID { get; private set; }
 
     // Serialized
     [SerializeField] private Transform[] spots;
 
     NavMeshAgent agent;
+    DialogueController dc;
 
 	void Start () {
         agent = GetComponent<NavMeshAgent>();
-
+        dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
+        
         if(spots.Length > 0)
             StartCoroutine(Patrol());
     }
@@ -28,8 +33,8 @@ public class AI_Movement : MonoBehaviour {
         StartCoroutine(Patrol());
     }
 
-    void SaySomething()
+    public void DialogueRequest()
     {
-
+        dc.StartDialogue();
     }
 }

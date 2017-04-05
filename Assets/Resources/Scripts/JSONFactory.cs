@@ -12,14 +12,15 @@ namespace JSONFactory
     {
         private static Dictionary<int, string> _resourceList = new Dictionary<int, string>
         {
-            {1, "/Resources/Dialogue_Scripts/Event1.json" }
+            {1, "/Resources/Dialogue_Scripts/Event1.json" },
+            {2, "/Resources/Dialogue_Scripts/Event2.json" }
         };
 
         public static DialogueEvent[] RunJSONFactoryForScene(int sceneNumber)
         {
             string resourcePath = PathForScene(sceneNumber);
 
-            if (IsValidJSON(resourcePath) == true)
+            if (IsValidJSON(resourcePath))
             {
                 string jsonString = File.ReadAllText(Application.dataPath + resourcePath);
                 DialogueEvent[] de = JsonMapper.ToObject<DialogueEvent[]>(jsonString);

@@ -14,6 +14,7 @@ public class ViveController : MonoBehaviour, IManager
     public ManagerState curManState { get; private set; }
     public ControllerState curConState { get; private set; }
     public GameObject currentHeldObject { get; private set; }
+    public bool isTouching { get; private set; }
 
     // Private SteamVR fields
     SteamVR_TrackedObject motionCon;
@@ -35,7 +36,6 @@ public class ViveController : MonoBehaviour, IManager
 
     // Private 
     int oldLayer;
-    public bool isTouching { get; private set; }
 
     public void BootSequence(ControllerManager _cm)
     {
@@ -70,15 +70,17 @@ public class ViveController : MonoBehaviour, IManager
         // TODO:
         // Touchpad swipes, more UI control
         device = SteamVR_Controller.Input((int)motionCon.index);
-
+        
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && cm.CanTouch(id))
         {
-            Debug.Log(string.Format("Option{0} has been selected", ti.GetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad))));
+            Debug.Log(string.Format("Option{0} has been selected", ti.SetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad))));
             isTouching = true;
+
+            if (device.GetTouchDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
+                ti.TouchpadPress();
         }
         else if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Touchpad)) isTouching = false;
 
-        
         AimChecking(device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled);
 
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))

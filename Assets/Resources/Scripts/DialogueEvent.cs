@@ -11,8 +11,12 @@ public class DialogueEvent
     public int TextID;
     public string TextLine;
     public string AudioFile;
-    public int Fx_stress;
-    public int[] Responses;
+    public Response[] Responses;
 }
-
-
+[System.Serializable]
+public class Response
+{
+    public string ResponseText;
+    public int Fx_stress;
+    public int NextTextID;
+}

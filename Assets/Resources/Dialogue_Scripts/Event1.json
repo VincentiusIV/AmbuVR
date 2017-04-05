@@ -1,12 +1,13 @@
-/* If text block should be said by an NPC:
-     - NPC_ID should be above 0, representing the npc that should talk
-     - TextLine is purely for your own reference, and could be used for possible subtitles
-   
-   If text block is a response by player:
-     - NPC_ID should be -1
-   
-   TextID = number of the text block (eg. first = 0, second = 1, etc.)
-   you can link responses by filling the TextID number in the Responses array
+/* Explanation on each variable:
+
+  - NPC_ID = ID for the NPC that should be talking
+  - TextID = ID for the text block (0, 1, 2, etc.)
+  - TextLine = text line that the NPC says
+  - AudioFile = name of the audio file that should be played
+  - Responses = list of responses that the player can choose
+  - ResponseText = the line that the player can choose to say
+  - Fx_Stress = the affect this choice has on the stress lvl of the NPC
+  - NextTextID = the response of the NPC to the chosen response of the player
  */
 
 [
@@ -15,23 +16,43 @@
     "TextID": 0,
     "TextLine": "this is a test line in text block 0",
     "AudioFile": "",
-    "Fx_stress": -1,
     "Responses": [
-      1,
-      2,
-      3
+      {
+        "ResponseText": "This is response 1, leading to text 1",
+        "Fx_stress": -1,
+        "NextTextID": 1
+      },
+      {
+        "ResponseText": "This is response 2, leading to text 2",
+        "Fx_stress": 1,
+        "NextTextID": 2
+      }
     ]
   },
   {
-    "NPC_ID": 3,
+    "NPC_ID": 1,
     "TextID": 1,
-    "TextLine": "fuck off",
+    "TextLine": "this is a test line in text block 1",
     "AudioFile": "",
-    "Fx_stress": -1,
     "Responses": [
-      1,
-      2,
-      3
+      {
+        "ResponseText": "This is response 1",
+        "Fx_stress": -1,
+        "NextTextID": 1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 1,
+    "TextID": 2,
+    "TextLine": "this is a test line in text block 2",
+    "AudioFile": "",
+    "Responses": [
+      {
+        "ResponseText": "This is response 1",
+        "Fx_stress": -1,
+        "NextTextID": 1
+      }
     ]
   }
 ]
