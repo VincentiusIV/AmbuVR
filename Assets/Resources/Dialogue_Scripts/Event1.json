@@ -1,9 +1,20 @@
+/* If text block should be said by an NPC:
+     - NPC_ID should be above 0, representing the npc that should talk
+     - TextLine is purely for your own reference, and could be used for possible subtitles
+   
+   If text block is a response by player:
+     - NPC_ID should be -1
+   
+   TextID = number of the text block (eg. first = 0, second = 1, etc.)
+   you can link responses by filling the TextID number in the Responses array
+ */
+
 [
   {
     "NPC_ID": 1,
-    "textID": 0,
-    "textLine": "this is a test line in text block 0",
-    "audioFile": "",
+    "TextID": 0,
+    "TextLine": "this is a test line in text block 0",
+    "AudioFile": "",
     "Fx_stress": -1,
     "Responses": [
       1,
@@ -12,12 +23,15 @@
     ]
   },
   {
-    "NPC_ID": -1,
-    "textID": 1,
-    "textLine": "response 1 for text ",
-    "audioFile": "",
+    "NPC_ID": 3,
+    "TextID": 1,
+    "TextLine": "fuck off",
+    "AudioFile": "",
     "Fx_stress": -1,
     "Responses": [
+      1,
+      2,
+      3
     ]
   }
 ]

@@ -4,18 +4,13 @@ using LitJson;
 
 public enum StressLevel { Calm = 1, Agitated = 2, Furious = 3}
 
+[System.Serializable]
 public class DialogueEvent
-{
-    public Dialogue[] dialogues;
-}
-
-public struct Dialogue
 {
     public int NPC_ID;
     public int TextID;
-    public string textLine;
-    public string audioFile;
-    // animation
+    public string TextLine;
+    public string AudioFile;
     public int Fx_stress;
     public int[] Responses;
 }

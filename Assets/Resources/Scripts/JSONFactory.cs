@@ -15,14 +15,14 @@ namespace JSONFactory
             {1, "/Resources/Dialogue_Scripts/Event1.json" }
         };
 
-        public static DialogueEvent RunJSONFactoryForScene(int sceneNumber)
+        public static DialogueEvent[] RunJSONFactoryForScene(int sceneNumber)
         {
             string resourcePath = PathForScene(sceneNumber);
 
             if (IsValidJSON(resourcePath) == true)
             {
                 string jsonString = File.ReadAllText(Application.dataPath + resourcePath);
-                DialogueEvent de = JsonMapper.ToObject<DialogueEvent>(jsonString);
+                DialogueEvent[] de = JsonMapper.ToObject<DialogueEvent[]>(jsonString);
 
                 return de;
             }

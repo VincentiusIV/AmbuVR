@@ -9,8 +9,9 @@ public class DialogueController : MonoBehaviour {
 
     private void Start()
     {
-        DialogueEvent de = JSONAssembly.RunJSONFactoryForScene(1);
-        Debug.Log(de.dialogues[0].NPC_ID + de.dialogues[0].textLine);
+        DialogueEvent[] de = JSONAssembly.RunJSONFactoryForScene(1);
+        Debug.Log(de[0].NPC_ID + de[0].TextLine);
+        Debug.Log(de[1].NPC_ID + de[1].TextLine);
     }
 
 }
