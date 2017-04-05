@@ -6,7 +6,7 @@ using UnityEngine;
 public enum IA_Areas { Mouth, Burn}
 
 [System.Serializable]// likely be removed
-public enum App_Status { UNFINISHED, FIN_INCORRECT, FIN_CORRECT}
+public enum App_Status { UNFINISHED, FIN_INCORRECT, FIN_CORRECT }
 
 [System.Serializable]
 public struct BurnWoundStatus
