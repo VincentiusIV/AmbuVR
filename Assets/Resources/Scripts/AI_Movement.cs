@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -25,12 +26,17 @@ public class AI_Movement : MonoBehaviour
 	
 	IEnumerator Patrol()
     {
-        for (int i = 0; i < spots.Length; i++)
+        if(agent.isOnNavMesh)
         {
-            agent.SetDestination(spots[i].position);
-            yield return new WaitUntil(() => transform.position == agent.destination);
+            for (int i = 0; i < spots.Length; i++)
+            {
+                agent.SetDestination(spots[i].position);
+                yield return new WaitUntil(() => transform.position == agent.destination);
+            }
+            StartCoroutine(Patrol());
         }
-        StartCoroutine(Patrol());
+        else throw new Exception(string.Format("NPC {0} is not on a navMesh", ID));
+
     }
 
     public void DialogueRequest()
