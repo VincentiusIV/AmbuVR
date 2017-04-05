@@ -126,6 +126,8 @@ public class ViveController : MonoBehaviour, IManager
                         TP_Check(hit); break;
                     case "Patient":
                         Paint_Check(hit); break;
+                    case "Slider":
+                        hit.collider.GetComponent<VR_Slider>().SetPosition(hit.point); break;
                     case "Burn":
                     default:
                         return;
