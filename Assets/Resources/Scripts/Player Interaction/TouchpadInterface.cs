@@ -4,7 +4,11 @@ using UnityEngine;
 
 [System.Serializable]
 public enum TouchpadOptions { None = 0, Option1 = 1, Option2 = 2, Option3 = 3, Option4 = 4}
-
+/* TODO
+ * - Add touchpad interface states
+ * - Be able to interact with environment (dialogue, tbsa, 
+ * 
+ * */
 public class TouchpadInterface : MonoBehaviour {
 
     TouchpadOptions to { get; set; }
