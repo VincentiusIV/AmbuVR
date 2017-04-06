@@ -4,6 +4,9 @@ using UnityEngine;
 
 [System.Serializable]
 public enum TouchpadOptions { None = 0, Option1 = 1, Option2 = 2, Option3 = 3, Option4 = 4}
+
+[System.Serializable]
+public enum TouchpadState { DialogueSelect, Numpad, InteractOption }
 /* TODO
  * - Add touchpad interface states
  * - Be able to interact with environment (dialogue, tbsa, 
@@ -35,7 +38,8 @@ public class TouchpadInterface : MonoBehaviour {
     public int SetSelectedOption(Vector2 touchpadCoord)
     {
         // Add animation blend tree
-        panels[(int)to - 1].GetComponent<Renderer>().material.color = colors[(int)to - 1];
+        if(to != TouchpadOptions.None)
+            panels[(int)to - 1].GetComponent<Renderer>().material.color = colors[(int)to - 1];
 
         if (touchpadCoord.x < 0 && touchpadCoord.y > 0)
             to = TouchpadOptions.Option1;
@@ -53,14 +57,13 @@ public class TouchpadInterface : MonoBehaviour {
 
     public void TouchpadPress()
     {
-        if(to != TouchpadOptions.None)
-        {
+        Debug.Log("You pressed down on touchpad");
+        if (to != TouchpadOptions.None)
             dc.PressSelectedOption(to);
-            return;
-        }
         // Play fade out animation or smth 
     }
-    // TESTING TOOLS ///////////////
+
+    // TESTING input ///////////////
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))

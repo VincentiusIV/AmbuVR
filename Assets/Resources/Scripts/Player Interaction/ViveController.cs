@@ -41,7 +41,7 @@ public class ViveController : MonoBehaviour, IManager
     {
         Debug.Log(string.Format("{0} {1} is booting up", GetType().Name, id));
 
-        cm = _cm;
+        cm = _cm;   
         holdPosition = transform.FindChild("HoldPosition");
         // SteamVR ref
         motionCon = GetComponent<SteamVR_TrackedObject>();
@@ -49,7 +49,7 @@ public class ViveController : MonoBehaviour, IManager
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
 
-        ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
+        ti = transform.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
 
         model = transform.FindChild("Model").gameObject;
 
@@ -76,8 +76,12 @@ public class ViveController : MonoBehaviour, IManager
             Debug.Log(string.Format("Option{0} has been selected", ti.SetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad))));
             isTouching = true;
 
-            if (device.GetTouchDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
+            if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
+            {
                 ti.TouchpadPress();
+                
+            }
+                
         }
         else if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Touchpad)) isTouching = false;
 

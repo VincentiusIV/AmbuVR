@@ -11,9 +11,9 @@ public class VR_Slider : MonoBehaviour
 
     public void SetPosition(Vector3 hitPosition)
     {
-        if(hitPosition.z < rightBounds.position.z && hitPosition.z > leftBounds.position.z)
+        if(hitPosition.x < rightBounds.position.x && hitPosition.x > leftBounds.position.x)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y, hitPosition.z);
+            transform.position = new Vector3(hitPosition.x, transform.position.y, transform.position.z);
             // calc value
         }
         
