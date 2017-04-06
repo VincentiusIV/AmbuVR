@@ -73,9 +73,8 @@ public class ViveController : MonoBehaviour, IManager
         
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && cm.CanTouch(id))
         {
-            Debug.Log(string.Format("Option{0} has been selected", ti.SetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad))));
             isTouching = true;
-
+            ti.SetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
             if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
             {
                 ti.TouchpadPress();
@@ -146,7 +145,14 @@ public class ViveController : MonoBehaviour, IManager
     private void UI_Check(RaycastHit hit)
     {
         Debug.Log(string.Format("hit {0}, performing UI Check", hit.collider.tag));
-        hit.collider.GetComponent<ButtonScript>().Highlight();
+        try
+        {
+            hit.collider.GetComponent<ButtonScript>().Highlight();
+        }
+        catch(NullReferenceException e)
+        {
+            Debug.Log("Hit collider is not UI or does not have a ButtonScript component; " + e.Message);
+        }
 
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
             hit.collider.GetComponent<ButtonScript>().Click();
