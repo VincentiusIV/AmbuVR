@@ -74,7 +74,7 @@ public class ViveController : MonoBehaviour, IManager
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && cm.CanTouch(id))
         {
             isTouching = true;
-            ti.SetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
+            ti.RotateWheelSelector(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
             if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
             {
                 ti.TouchpadPress();

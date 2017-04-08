@@ -39,8 +39,4 @@ public class AI_Movement : MonoBehaviour
 
     }
 
-    public void DialogueRequest()
-    {
-        dc.Interact_Dialogue();
-    }
 }

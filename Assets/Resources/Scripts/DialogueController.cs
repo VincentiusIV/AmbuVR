@@ -6,7 +6,7 @@ using JSONFactory;
 public class DialogueController : MonoBehaviour {
 
     private TouchpadInterface ti;
-    private TouchpadOptions lastPressedOption;
+    private int lastPressedOption;
     private bool isPressed = false;
     private bool isActive = false;
 
@@ -19,18 +19,17 @@ public class DialogueController : MonoBehaviour {
         ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
     }
 
-    public void Interact_Dialogue()
+    public void Interact_Dialogue(int currentSelection)
     {
-        Debug.Log("Attempting to start dialogue");
-
         if (!isActive)
         {
+            Debug.Log("Attempting to start dialogue");
             StartCoroutine(DialogueSession());
             return;
         }
         else
         {
-
+            PressSelectedOption(currentSelection);
         }
             
     }
@@ -55,7 +54,7 @@ public class DialogueController : MonoBehaviour {
         isActive = false;
     }
 
-    public void PressSelectedOption(TouchpadOptions _to)
+    public void PressSelectedOption(int _to)
     {
         lastPressedOption = _to;
         isPressed = true;
