@@ -14,9 +14,14 @@ public class DialogueController : MonoBehaviour {
     private DialogueEvent[] currentDialogueEvent;
     private int currentStep;
 
+    private GameObject[] npcs;
+
     private void Start()
     {
         ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
+
+        npcs = GameObject.FindGameObjectsWithTag("AI");
+        Debug.Log(npcs.Length + npcs[0].name);
     }
 
     public void Interact_Dialogue(int currentSelection)
@@ -44,13 +49,29 @@ public class DialogueController : MonoBehaviour {
 
         for (int i = 0; i < de.Length; i = nextSelection)
         {
-            UpdateNPC(de[i].TextLine);
+            if(de[i].AudioFile != "")
+            {
+                AudioClip ac = Resources.Load<AudioClip>("Dialogue/Audio/" + de[i].AudioFile);
+                npcs[de[i].NPC_ID].GetComponent<AI_Movement>().PlayVoice(ac);
+                yield return new WaitForSeconds(ac.length);
+            }
             ti.UpdateText(de[i].Responses);
             yield return new WaitUntil(() => isPressed == true);
             isPressed = false;
-            nextSelection = de[i].Responses[(int)lastPressedOption].NextTextID;
+
+            npcs[de[i].NPC_ID].GetComponent<AI_Movement>().StressLevel = de[i].Responses[nextSelection].Fx_stress;
+
+            if(i != de.Length - 1)
+            {
+                int lastSelection = nextSelection;
+                nextSelection = de[i].Responses[lastPressedOption].NextTextID;
+
+                if (nextSelection == lastSelection)
+                    break;
+            }
         }
         Debug.Log("Conversation ended");
+        ti.gameObject.SetActive(false);
         isActive = false;
     }
 
@@ -58,24 +79,5 @@ public class DialogueController : MonoBehaviour {
     {
         lastPressedOption = _to;
         isPressed = true;
-    }
-
-    // TODO
-    // - Play corresponding animation & sound
-    private void UpdateNPC(string line)
-    {
-        Debug.Log(line);
-
-    }
-
-    // TODO
-    // - Update response text when response can be said
-    private void UpdateTI(Response[] responses)
-    {
-        for (int i = 0; i < responses.Length; i++)
-        {
-            Debug.Log(responses[i].ResponseText);
-        }
-        
     }
 }

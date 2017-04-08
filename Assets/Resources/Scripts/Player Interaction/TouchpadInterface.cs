@@ -22,7 +22,6 @@ public class TouchpadInterface : MonoBehaviour {
     [SerializeField] private GameObject uiPrefab;
     private List<GameObject> panels;
 
-    [SerializeField] private TextMesh[] texts;
     // Reference
     private DialogueController dc;
     private int currentSelection { get; set; }
@@ -32,30 +31,25 @@ public class TouchpadInterface : MonoBehaviour {
         dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         panels = new List<GameObject>();
 
-        DrawMenu();
+        DrawMenu(amountOfOptions);
     }
 
     private bool isDrawMenuActive = false;
 
-    private void DrawMenu()
+    private void DrawMenu(int newAmount)
     {
         isDrawMenuActive = true;
-        Debug.Log("Drawing Menu");
-        
+        amountOfOptions = newAmount;
+
         for (int i = 0; i < amountOfOptions; i++)
         {
             float angle = i * Mathf.PI * 2 / amountOfOptions;
             Vector3 newPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * uiRadius;
-            Debug.Log(string.Format("Setting obj {0} pos to new position at degree", i));
-            Debug.Log(string.Format("newPos: {0}", newPos));
             if (i >= panels.Count)
             {
-                Debug.Log("Spawning new obj cause panels.Count != amountOfOptions");
                 GameObject obj = Instantiate(uiPrefab, transform.position,Quaternion.Euler(new Vector3(-90f, 0f, 0f)));
                 panels.Add(obj);
-                //panels[i].transform.position = transform.position + newPos;
                 obj.transform.SetParent(transform);
-                
             }
             else if(i == amountOfOptions - 1 && panels.Count != amountOfOptions)
             {
@@ -66,10 +60,8 @@ public class TouchpadInterface : MonoBehaviour {
                     if (currentSelection == a)
                         currentSelection = Mathf.Clamp(currentSelection - 1, 0, amountOfOptions);
                 }
-                
             }
             panels[i].transform.position = transform.position + newPos;
-            
         }
         isDrawMenuActive = false;
     }
@@ -94,8 +86,6 @@ public class TouchpadInterface : MonoBehaviour {
                 currentSelection = amountOfOptions - 1;
             else currentSelection--;
         }
-        
-
         panels[currentSelection].GetComponent<Renderer>().material.color = Color.black;
     }
 
@@ -118,7 +108,6 @@ public class TouchpadInterface : MonoBehaviour {
         return selection;
     }*/
 
-
     public void TouchpadPress()
     {
         Debug.Log("You pressed down on touchpad");
@@ -127,13 +116,14 @@ public class TouchpadInterface : MonoBehaviour {
 
     public void UpdateText(Response[] responses)
     {
+        Debug.Log("Updating text...");
+        DrawMenu(responses.Length);
         for (int i = 0; i < responses.Length; i++)
         {
-            texts[i].text = responses[i].ResponseText;
+            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = responses[i].ResponseText;
             amountOfOptions = responses.Length;
         }
     }
-
 
     private void Update()
     {
@@ -149,13 +139,11 @@ public class TouchpadInterface : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            amountOfOptions++;
-            DrawMenu();
+            DrawMenu(amountOfOptions++);
         }
         else if (Input.GetKeyDown(KeyCode.F3))
         {
-            amountOfOptions--;
-            DrawMenu();
+            DrawMenu(amountOfOptions--);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -163,4 +151,6 @@ public class TouchpadInterface : MonoBehaviour {
             dc.Interact_Dialogue(currentSelection);
         }
     }
+
+
 }

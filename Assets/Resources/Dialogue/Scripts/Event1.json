@@ -1,0 +1,89 @@
+/* Explanation on each variable:
+
+  - NPC_ID = ID for the NPC that should be talking
+  - TextID = ID for the text block (0, 1, 2, etc.)
+  - TextLine = text line that the NPC says
+  - AudioFile = name of the audio file that should be played
+  - Responses = list of responses that the player can choose
+  - ResponseText = the line that the player can choose to say
+  - Fx_Stress = the affect this choice has on the stress lvl of the NPC
+  - NextTextID = the response of the NPC to the chosen response of the player
+ */
+
+[
+  {
+    "NPC_ID": 0,
+    "TextID": 0,
+    "TextLine": "Kom snel binnen, hij is in de woonkamer",
+    "AudioFile": "Intro",
+    "Responses": [
+      {
+        "ResponseText": "Kan ik meer details krijgen?",
+        "Fx_stress": -1,
+        "NextTextID": 1
+      },
+      {
+        "ResponseText": "Leg uit wat je gaat doen",
+        "Fx_stress": 1,
+        "NextTextID": 2
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 1,
+    "TextLine": "We hebben hem gekoeld met koud water",
+    "AudioFile": "1.1",
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "Fx_stress": 1,
+        "NextTextID": 2
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 2,
+    "TextLine": "Het is een paar uur geleden gebeurd, we dachten dat we hem zelf konden behandelen",
+    "AudioFile": "1.2",
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "Fx_stress": 1,
+        "NextTextID": 3
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 3,
+    "TextLine": "Ik had mijn kopje thee op tafel toen ik werd gebeld. Ik kwam terug toen ik hem hoorde huilen.",
+    "AudioFile": "1.3",
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "Fx_stress": 1,
+        "NextTextID": 4
+      },
+      {
+        "ResponseText": "[no response, get to work]",
+        "Fx_stress": 1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 3,
+    "TextLine": "Ik had mijn kopje thee op tafel toen ik werd gebeld. Ik kwam terug toen ik hem hoorde huilen.",
+    "AudioFile": "",
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "Fx_stress": 1,
+        "NextTextID": 4
+      }
+    ]
+  }
+]

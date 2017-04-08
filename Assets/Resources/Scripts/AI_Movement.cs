@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(AudioSource))]
 public class AI_Movement : MonoBehaviour
 {
     // Public getters
@@ -15,10 +16,15 @@ public class AI_Movement : MonoBehaviour
 
     NavMeshAgent agent;
     DialogueController dc;
+    AudioSource voice;
+
+    private int stressLevel;
+    public int StressLevel { get { return stressLevel; } set { stressLevel += value; } }
 
 	void Start () {
         agent = GetComponent<NavMeshAgent>();
         dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
+        voice = GetComponent<AudioSource>();
         
         if(spots.Length > 0)
             StartCoroutine(Patrol());
@@ -39,4 +45,9 @@ public class AI_Movement : MonoBehaviour
 
     }
 
+    public void PlayVoice(AudioClip newClip)
+    {
+        voice.clip = newClip;
+        voice.Play();
+    }
 }
