@@ -6,7 +6,7 @@ using UnityEngine;
 public enum TouchpadOptions { Option0 = 0, Option1 = 1, Option2 = 2, Option3 = 3, Option4 = 4, Option5 = 5, Option6 = 6, Option7 = 7, Option8 = 8, Option9 = 9}
 
 [System.Serializable]
-public enum TouchpadState { DialogueSelect, Numpad, InteractOption }
+public enum TouchpadState { Default, DialogueSelect, Numpad }
 /* TODO
  * - Add touchpad interface states
  * - Be able to interact with environment (dialogue, tbsa, 
@@ -14,13 +14,15 @@ public enum TouchpadState { DialogueSelect, Numpad, InteractOption }
  * */
 public class TouchpadInterface : MonoBehaviour {
 
-    TouchpadOptions to { get; set; }
+    private TouchpadOptions to { get; set; }
+    private TouchpadState state { get; set; }
     [SerializeField]private int amountOfOptions = 10;
-    private GameObject[] panels;
-    [SerializeField]private Color[] colors;
 
+    private GameObject[] panels;
+    private Color[] colors;
+    [SerializeField] private TextMesh[] texts;
     // Reference
-    DialogueController dc;
+    private DialogueController dc;
 
     public void Start()
     {
@@ -29,6 +31,7 @@ public class TouchpadInterface : MonoBehaviour {
         panels = new GameObject[amountOfOptions];
         colors = new Color[amountOfOptions];
         Debug.Log(360 / amountOfOptions);
+
         for (int i = 0; i < colors.Length; i++)
         {
             colors[i] = new Color(Random.Range(0f, 255f), Random.Range(0f, 255f), Random.Range(0f, 255f));
@@ -42,7 +45,6 @@ public class TouchpadInterface : MonoBehaviour {
 
     private void Update()
     {
-        
         // Testing Input //
         if (Input.GetKeyDown(KeyCode.Alpha1))
             dc.PressSelectedOption(TouchpadOptions.Option1);
@@ -55,7 +57,7 @@ public class TouchpadInterface : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            dc.StartDialogue();
+            dc.Interact_Dialogue();
         }
     }
 
@@ -90,8 +92,18 @@ public class TouchpadInterface : MonoBehaviour {
     public void TouchpadPress()
     {
         Debug.Log("You pressed down on touchpad");
-            dc.PressSelectedOption(to);
+
+        dc.PressSelectedOption(to);
         // Play fade out animation or smth 
+    }
+
+    public void UpdateText(Response[] responses)
+    {
+        for (int i = 0; i < responses.Length; i++)
+        {
+            texts[i].text = responses[i].ResponseText;
+            amountOfOptions = responses.Length;
+        }
     }
 
 }

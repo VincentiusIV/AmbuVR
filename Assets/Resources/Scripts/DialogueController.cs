@@ -5,23 +5,34 @@ using JSONFactory;
 
 public class DialogueController : MonoBehaviour {
 
-    //private TouchpadInterface ti;
-
-    private TouchpadOptions to;
+    private TouchpadInterface ti;
+    private TouchpadOptions lastPressedOption;
     private bool isPressed = false;
-    private bool isActive;
+    private bool isActive = false;
+
+    // Continue with this
+    private DialogueEvent[] currentDialogueEvent;
+    private int currentStep;
 
     private void Start()
     {
-        //ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
+        ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
     }
 
-    public void StartDialogue()
+    public void Interact_Dialogue()
     {
         Debug.Log("Attempting to start dialogue");
 
         if (!isActive)
+        {
             StartCoroutine(DialogueSession());
+            return;
+        }
+        else
+        {
+
+        }
+            
     }
 
     IEnumerator DialogueSession()
@@ -35,10 +46,10 @@ public class DialogueController : MonoBehaviour {
         for (int i = 0; i < de.Length; i = nextSelection)
         {
             UpdateNPC(de[i].TextLine);
-            UpdateTI(de[i].Responses);
+            ti.UpdateText(de[i].Responses);
             yield return new WaitUntil(() => isPressed == true);
             isPressed = false;
-            nextSelection = de[i].Responses[(int)to].NextTextID;
+            nextSelection = de[i].Responses[(int)lastPressedOption].NextTextID;
         }
         Debug.Log("Conversation ended");
         isActive = false;
@@ -46,7 +57,7 @@ public class DialogueController : MonoBehaviour {
 
     public void PressSelectedOption(TouchpadOptions _to)
     {
-        to = _to;
+        lastPressedOption = _to;
         isPressed = true;
     }
 
