@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public enum TouchpadOptions { Option0 = 0, Option1 = 1, Option2 = 2, Option3 = 3, Option4 = 4, Option5 = 5, Option6 = 6, Option7 = 7, Option8 = 8, Option9 = 9}
-
-[System.Serializable]
 public enum TouchpadState { Default, DialogueSelect, Numpad }
 /* TODO
  * - Add touchpad interface states
@@ -21,7 +18,7 @@ public class TouchpadInterface : MonoBehaviour {
     [SerializeField] private float uiRadius = 1;
     [SerializeField] private GameObject uiPrefab;
     private List<GameObject> panels;
-
+    private TextMesh displayText;
     // Reference
     private DialogueController dc;
     private int currentSelection { get; set; }
@@ -29,8 +26,9 @@ public class TouchpadInterface : MonoBehaviour {
     public void Start()
     {
         dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
+        displayText = transform.GetChild(0).GetComponent<TextMesh>();
         panels = new List<GameObject>();
-
+        state = TouchpadState.DialogueSelect;
         DrawMenu(amountOfOptions);
     }
 
@@ -111,7 +109,18 @@ public class TouchpadInterface : MonoBehaviour {
     public void TouchpadPress()
     {
         Debug.Log("You pressed down on touchpad");
-        dc.PressSelectedOption(currentSelection);
+        switch (state)
+        {
+            case TouchpadState.Default:
+                break;
+            case TouchpadState.DialogueSelect:
+                dc.Interact_Dialogue(currentSelection); break;
+            case TouchpadState.Numpad:
+                UpdateNumpad(currentSelection); break;
+            default:
+                break;
+        }
+        
     }
 
     public void UpdateText(Response[] responses)
@@ -121,36 +130,45 @@ public class TouchpadInterface : MonoBehaviour {
         for (int i = 0; i < responses.Length; i++)
         {
             panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = responses[i].ResponseText;
-            amountOfOptions = responses.Length;
         }
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
             SetSelectedOption(false);
-        }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
             SetSelectedOption(true);
-        }
-
 
         if (Input.GetKeyDown(KeyCode.F2))
-        {
             DrawMenu(amountOfOptions++);
-        }
         else if (Input.GetKeyDown(KeyCode.F3))
-        {
             DrawMenu(amountOfOptions--);
-        }
 
         if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            dc.Interact_Dialogue(currentSelection);
-        }
+            TouchpadPress();
+        else if (Input.GetKeyDown(KeyCode.LeftAlt))
+            SwitchToNumpad();
     }
 
+    private void SwitchToNumpad()
+    {
+        if (state == TouchpadState.Numpad)
+            return;
+        state = TouchpadState.Numpad;
+        displayText.text = "0%";
+        DrawMenu(10);
+        for (int i = 0; i < 10; i++)
+        {
+            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = i.ToString();
+        }
+    }
+    int numpadValue;
 
+    private void UpdateNumpad(int change)
+    {
+        numpadValue += change;
+        numpadValue = Mathf.Clamp(numpadValue, 0, 100);
+        displayText.text = numpadValue + "%";
+    }
 }
