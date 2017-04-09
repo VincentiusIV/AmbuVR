@@ -12,24 +12,72 @@ public enum TouchpadState { Default, DialogueSelect, Numpad }
  * */
 public class TouchpadInterface : MonoBehaviour {
 
-    //private TouchpadOptions to { get; set; }
+    public bool isActive { get; private set; }
     private TouchpadState state { get; set; }
-    [SerializeField]private int amountOfOptions = 10;
+    private int currentSelection { get; set; }
+    // Serialized
+    [SerializeField] private int amountOfOptions = 10;
     [SerializeField] private float uiRadius = 1;
     [SerializeField] private GameObject uiPrefab;
+    // Reference
+    private GameObject obj;
     private List<GameObject> panels;
     private TextMesh displayText;
-    // Reference
     private DialogueController dc;
-    private int currentSelection { get; set; }
+    private MeshRenderer mr;
 
     public void Start()
     {
+        obj = transform.GetChild(0).gameObject;
         dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
-        displayText = transform.GetChild(0).GetComponent<TextMesh>();
+        displayText = transform.GetChild(0).GetChild(0).GetComponent<TextMesh>();
+        mr = GetComponent<MeshRenderer>();
         panels = new List<GameObject>();
-        state = TouchpadState.DialogueSelect;
-        DrawMenu(amountOfOptions);
+
+        ConfigureMenu(TouchpadState.Default);
+    }
+
+    public void ToggleTI()
+    {
+        if (dc.isActive)
+            return;
+        obj.SetActive(isActive = !isActive);
+    }
+
+    public void ConfigureMenu(TouchpadState newState, int amountOfDia = 0)
+    {
+        state = newState;
+        switch (newState)
+        {
+            case TouchpadState.Default:
+                SwitchToDefault(); break;
+            case TouchpadState.DialogueSelect:
+                DrawMenu(amountOfDia); break;
+            case TouchpadState.Numpad:
+                SwitchToNumpad(); break;
+            default:
+                break;
+        }
+    }
+
+    private void SwitchToDefault()
+    {
+        Debug.Log("Switching to default");
+        displayText.text = "Menu";
+        DrawMenu(2);
+        panels[0].transform.GetChild(0).GetComponent<TextMesh>().text = "Say";
+        panels[1].transform.GetChild(0).GetComponent<TextMesh>().text = "TBSA";
+    }
+
+    private void SwitchToNumpad()
+    {
+        Debug.Log("Switching to numpad");
+        displayText.text = "0%";
+        DrawMenu(10);
+        for (int i = 0; i < 10; i++)
+        {
+            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = i.ToString();
+        }
     }
 
     private bool isDrawMenuActive = false;
@@ -39,54 +87,54 @@ public class TouchpadInterface : MonoBehaviour {
         isDrawMenuActive = true;
         amountOfOptions = newAmount;
 
+        for (int i = 0; i < panels.Count; i++)
+            Destroy(panels[i]);
+
+        panels = new List<GameObject>();
+
         for (int i = 0; i < amountOfOptions; i++)
         {
             float angle = i * Mathf.PI * 2 / amountOfOptions;
             Vector3 newPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * uiRadius;
             if (i >= panels.Count)
             {
-                GameObject obj = Instantiate(uiPrefab, transform.position,Quaternion.Euler(new Vector3(-90f, 0f, 0f)));
-                panels.Add(obj);
-                obj.transform.SetParent(transform);
+                GameObject _obj = Instantiate(uiPrefab, obj.transform.position,Quaternion.Euler(new Vector3(-90f, 0f, 0f)));
+                panels.Add(_obj);
+                _obj.transform.SetParent(obj.transform);
             }
-            else if(i == amountOfOptions - 1 && panels.Count != amountOfOptions)
-            {
-                for (int a = amountOfOptions; a < panels.Count; a++)
-                {
-                    Destroy(panels[a]);
-                    panels.Remove(panels[a]);
-                    if (currentSelection == a)
-                        currentSelection = Mathf.Clamp(currentSelection - 1, 0, amountOfOptions);
-                }
-            }
-            panels[i].transform.position = transform.position + newPos;
+            panels[i].transform.position = obj.transform.position + newPos;
         }
         isDrawMenuActive = false;
+        SetSelectedOption(false, true);
     }
 
     public bool CanRedrawMenu { get { return !isDrawMenuActive; } }
 
-    public void SetSelectedOption(bool increase)
+    // Sets the selected option based on input
+    public void SetSelectedOption(bool increase = false, bool reset = false)
     {
         if (!CanRedrawMenu)
             return;
-
-        panels[currentSelection].GetComponent<Renderer>().material.color = Color.white;
-        if(increase)
+        if (reset == false)
         {
-            if (currentSelection == amountOfOptions - 1)
-                currentSelection = 0;
-            else currentSelection++;
+            panels[currentSelection].GetComponent<Renderer>().material.color = Color.white;
+            if (increase)
+            {
+                if (currentSelection == amountOfOptions - 1)
+                    currentSelection = 0;
+                else currentSelection++;
+            }
+            else
+            {
+                if (currentSelection == 0)
+                    currentSelection = amountOfOptions - 1;
+                else currentSelection--;
+            }
         }
-        else
-        {
-            if (currentSelection == 0)
-                currentSelection = amountOfOptions - 1;
-            else currentSelection--;
-        }
+        else currentSelection = 0;
         panels[currentSelection].GetComponent<Renderer>().material.color = Color.black;
     }
-
+    // Converts touchpadCoord into selected option
     public void RotateWheelSelector(Vector2 touchpadCoord)
     {
 
@@ -106,13 +154,14 @@ public class TouchpadInterface : MonoBehaviour {
         return selection;
     }*/
 
+    // Handles touchpad press
     public void TouchpadPress()
     {
         Debug.Log("You pressed down on touchpad");
         switch (state)
         {
             case TouchpadState.Default:
-                break;
+                DefaultPress(); break;
             case TouchpadState.DialogueSelect:
                 dc.Interact_Dialogue(currentSelection); break;
             case TouchpadState.Numpad:
@@ -121,6 +170,28 @@ public class TouchpadInterface : MonoBehaviour {
                 break;
         }
         
+    }
+
+    private void DefaultPress()
+    {
+        if(currentSelection == 0)
+        {
+            dc.Interact_Dialogue(currentSelection);
+        }
+        else if(currentSelection == 1)
+        {
+            ConfigureMenu(TouchpadState.Numpad);
+        }
+    }
+
+    public int numpadValue { get; private set; }
+    private void UpdateNumpad(int change, bool reset = false)
+    {
+        numpadValue += change;
+        if (reset)
+            numpadValue = change;
+        numpadValue = Mathf.Clamp(numpadValue, 0, 100);
+        displayText.text = numpadValue + "%";
     }
 
     public void UpdateText(Response[] responses)
@@ -149,26 +220,9 @@ public class TouchpadInterface : MonoBehaviour {
             TouchpadPress();
         else if (Input.GetKeyDown(KeyCode.LeftAlt))
             SwitchToNumpad();
-    }
-
-    private void SwitchToNumpad()
-    {
-        if (state == TouchpadState.Numpad)
-            return;
-        state = TouchpadState.Numpad;
-        displayText.text = "0%";
-        DrawMenu(10);
-        for (int i = 0; i < 10; i++)
-        {
-            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = i.ToString();
-        }
-    }
-    int numpadValue;
-
-    private void UpdateNumpad(int change)
-    {
-        numpadValue += change;
-        numpadValue = Mathf.Clamp(numpadValue, 0, 100);
-        displayText.text = numpadValue + "%";
+        else if (Input.GetKeyDown(KeyCode.LeftShift))
+            ToggleTI();
+        else if (Input.GetKeyDown(KeyCode.Escape))
+            ConfigureMenu(TouchpadState.Default);
     }
 }

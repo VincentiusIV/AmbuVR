@@ -49,7 +49,8 @@ public class ViveController : MonoBehaviour, IManager
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
 
-        ti = transform.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
+        if(id == ControllerID.RIGHT)
+            ti = transform.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
 
         model = transform.FindChild("Model").gameObject;
 
@@ -71,18 +72,25 @@ public class ViveController : MonoBehaviour, IManager
         // Touchpad swipes, more UI control
         device = SteamVR_Controller.Input((int)motionCon.index);
         
-        if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && cm.CanTouch(id))
+        if(id == ControllerID.RIGHT )
         {
-            isTouching = true;
-            ti.RotateWheelSelector(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
-            if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
+            if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || Input.GetKeyDown(KeyCode.LeftShift))
             {
-                ti.TouchpadPress();
-                
+                curConState = ControllerState.TouchInputActive;
+                ti.ToggleTI();
+                ti.RotateWheelSelector(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
+
+                if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
+                {
+                    ti.TouchpadPress();
+                }
             }
-                
-        }
-        else if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Touchpad)) isTouching = false;
+            else if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Touchpad) && curConState != ControllerState.Holding)
+            {
+                curConState = ControllerState.Aiming;
+                ti.ToggleTI();
+            }
+        }       
 
         AimChecking(device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled);
 
@@ -101,6 +109,9 @@ public class ViveController : MonoBehaviour, IManager
 
     private void AimChecking(bool drawPointer)
     {
+        if (curConState == ControllerState.TouchInputActive)
+            return;
+
         pointer.enabled = true;
 
         if (drawPointer)
@@ -115,7 +126,7 @@ public class ViveController : MonoBehaviour, IManager
             if (drawPointer)
                 pointer.SetPosition(1, hit.point);
 
-            if(curConState == ControllerState.Holding)
+            if (curConState == ControllerState.Holding)
             {
                 Release_Check(hit);
                 return;
@@ -129,8 +140,6 @@ public class ViveController : MonoBehaviour, IManager
                         TP_Check(hit); break;
                     case "Patient":
                         Paint_Check(hit); break;
-                    case "Slider":
-                        hit.collider.GetComponent<VR_Slider>().SetPosition(hit.point); break;
                     case "Burn":
                     default:
                         return;

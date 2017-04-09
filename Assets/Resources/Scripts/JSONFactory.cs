@@ -17,6 +17,7 @@ namespace JSONFactory
     {
         private static Dictionary<int, string> _resourceList = new Dictionary<int, string>
         {
+            {0, "/Resources/Dialogue/Scripts/DefaultInteraction.json" },
             {1, "/Resources/Dialogue/Scripts/Event1.json" },
             {2, "/Resources/Dialogue/Scripts/Event2.json" }
         };

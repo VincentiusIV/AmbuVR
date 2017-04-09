@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public enum ControllerState
 {
-    Aiming = 1, Holding = 2
+    Aiming = 1, Holding = 2, TouchInputActive = 3
 }
 
 public class ControllerManager : MonoBehaviour
@@ -14,10 +14,14 @@ public class ControllerManager : MonoBehaviour
     [SerializeField] ViveController LEFT;
     [SerializeField] ViveController RIGHT;
 
+    private DialogueController dc;
+
     private void Awake()
     {
         LEFT.BootSequence(this);
         RIGHT.BootSequence(this);
+
+        dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         //Debug.Log(string.Format("{0} is {1}, {2} is {3}", LEFT, LEFT.curManState, RIGHT, RIGHT.curManState));
     }
     /// <summary>
@@ -34,7 +38,7 @@ public class ControllerManager : MonoBehaviour
                 if (RIGHT.currentHeldObject == objToGrab && LEFT.curConState != ControllerState.Holding)
                 {
                     if (RIGHT.currentHeldObject == objToGrab)
-                    Debug.Log("Objects are equal");
+                        Debug.Log("Objects are equal");
                     return false;
                 }
                 else return true;
@@ -50,18 +54,5 @@ public class ControllerManager : MonoBehaviour
                 return true;
         }
 
-    }
-
-    public bool CanTouch(ControllerID id)
-    {
-        switch (id)
-        {
-            case ControllerID.LEFT:
-                return RIGHT.isTouching ? false : true;
-            case ControllerID.RIGHT:
-                return LEFT.isTouching ? false : true;
-            default:
-                return true;
-        }
     }
 }

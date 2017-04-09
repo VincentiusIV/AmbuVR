@@ -8,7 +8,7 @@ public class DialogueController : MonoBehaviour {
     private TouchpadInterface ti;
     private int lastPressedOption;
     private bool isPressed = false;
-    private bool isActive = false;
+    public bool isActive { get; private set; }
 
     // Continue with this
     private DialogueEvent[] currentDialogueEvent;
@@ -18,8 +18,9 @@ public class DialogueController : MonoBehaviour {
 
     private void Start()
     {
+        isActive = false;
         ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
-
+        ti.ToggleTI();
         npcs = GameObject.FindGameObjectsWithTag("AI");
         Debug.Log(npcs.Length + npcs[0].name);
     }
@@ -36,7 +37,6 @@ public class DialogueController : MonoBehaviour {
         {
             PressSelectedOption(currentSelection);
         }
-            
     }
 
     IEnumerator DialogueSession()
@@ -55,6 +55,7 @@ public class DialogueController : MonoBehaviour {
                 npcs[de[i].NPC_ID].GetComponent<AI_Movement>().PlayVoice(ac);
                 yield return new WaitForSeconds(ac.length);
             }
+            ti.ConfigureMenu(TouchpadState.DialogueSelect, de[i].Responses.Length);
             ti.UpdateText(de[i].Responses);
             yield return new WaitUntil(() => isPressed == true);
             isPressed = false;

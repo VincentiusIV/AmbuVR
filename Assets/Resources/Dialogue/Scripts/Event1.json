@@ -25,7 +25,7 @@
       {
         "ResponseText": "Leg uit wat je gaat doen",
         "Fx_stress": 1,
-        "NextTextID": 2
+        "NextTextID": 3
       }
     ]
   },
@@ -76,13 +76,13 @@
   {
     "NPC_ID": 0,
     "TextID": 3,
-    "TextLine": "Ik had mijn kopje thee op tafel toen ik werd gebeld. Ik kwam terug toen ik hem hoorde huilen.",
+    "TextLine": "Oh oke",
     "AudioFile": "",
     "Responses": [
       {
         "ResponseText": "Continue..",
         "Fx_stress": 1,
-        "NextTextID": 4
+        "NextTextID": -1
       }
     ]
   }
