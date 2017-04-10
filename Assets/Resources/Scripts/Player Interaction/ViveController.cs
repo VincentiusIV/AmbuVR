@@ -204,6 +204,9 @@ public class ViveController : MonoBehaviour, IManager
 
             if (currentHeldObject.GetComponent<Rigidbody>() != null)
                 currentHeldObject.GetComponent<Rigidbody>().isKinematic = true;
+
+            if (currentHeldObject.name == "WaterBottle")
+                currentHeldObject.GetComponent<WaterBottle>().SetController(this);
         }
         else if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
             Debug.Log("Cannot grab the object the other controller is holding");
@@ -218,7 +221,6 @@ public class ViveController : MonoBehaviour, IManager
         {
             if (hit.collider.CompareTag("Interactable"))
             {
-                // prob rewrite this into a interactable
                 currentHeldObject.transform.position = hit.point;
                 currentHeldObject.transform.SetParent(hit.collider.transform);
             }
@@ -270,5 +272,12 @@ public class ViveController : MonoBehaviour, IManager
             rb.angularVelocity = device.angularVelocity;
         }
         
+    }
+
+    public bool IsGripPressed(GameObject go)
+    {
+        if (curConState == ControllerState.Holding && currentHeldObject == go)
+            return device.GetTouch(SteamVR_Controller.ButtonMask.Grip);
+        else return false;
     }
 }
