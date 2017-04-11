@@ -12,14 +12,14 @@ public class Patient : MonoBehaviour
     // Public Get
     public List<IA_Tags> GetCorrectOrder { get { return correctOrder; } }
 
-    public void AddObject(GameObject objToAdd)// Unsure if necessary
+    /* void AddObject(GameObject objToAdd)// Unsure if necessary
     {
         Debug.Log("adding object "+objToAdd.name+" to patient");
         // saves reference from added object to know which objects are active
         snappedObjects.Add(objToAdd);
         objToAdd.layer = 9;
         objToAdd.transform.SetParent(transform); 
-    }
+    }*/
 
     [SerializeField]private GameObject burnWoundPrefab;
     // List of all burns

@@ -8,7 +8,6 @@ public class WaterBottle : MonoBehaviour {
 
     private Transform tf;
     private ParticleLauncher pl;
-    private ViveController controller;
 
     private void Start()
     {
@@ -16,17 +15,9 @@ public class WaterBottle : MonoBehaviour {
         pl = transform.GetChild(0).GetChild(0).GetComponent<ParticleLauncher>();
     }
 
-    private void Update()
+    public void SprinkleWater()
     {
-        if(controller != null && controller.IsGripPressed(gameObject))
-        {
-            pl.LaunchParticle();
-        }
-    }
-
-    public void SetController(ViveController _controller)
-    {
-        controller = _controller;
+        pl.LaunchParticle();
     }
 
     /*private bool IsBottleOverflowing()

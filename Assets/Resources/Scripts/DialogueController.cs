@@ -5,7 +5,7 @@ using JSONFactory;
 
 public class DialogueController : MonoBehaviour {
 
-    private TouchpadInterface ti;
+    public TouchpadInterface ti;
     private int lastPressedOption;
     private bool isPressed = false;
     public bool isActive { get; private set; }
@@ -19,10 +19,8 @@ public class DialogueController : MonoBehaviour {
     private void Start()
     {
         isActive = false;
-        ti = GameObject.FindWithTag("TouchpadInterface").GetComponent<TouchpadInterface>();
         ti.ToggleTI();
         npcs = GameObject.FindGameObjectsWithTag("AI");
-        Debug.Log(npcs.Length + npcs[0].name);
     }
 
     public void Interact_Dialogue(int currentSelection)
@@ -60,16 +58,17 @@ public class DialogueController : MonoBehaviour {
             yield return new WaitUntil(() => isPressed == true);
             isPressed = false;
 
-            npcs[de[i].NPC_ID].GetComponent<AI_Movement>().StressLevel = de[i].Responses[nextSelection].Fx_stress;
+            npcs[de[i].NPC_ID].GetComponent<AI_Movement>().UpdateStressLevel(de[i].Responses[lastPressedOption].Fx_stress);
 
-            if(i != de.Length - 1)
+            if (i != de.Length - 1)
             {
                 int lastSelection = nextSelection;
                 nextSelection = de[i].Responses[lastPressedOption].NextTextID;
 
-                if (nextSelection == lastSelection)
+                if (nextSelection == lastSelection || nextSelection == -1)
                     break;
             }
+            
         }
         Debug.Log("Conversation ended");
         ti.gameObject.SetActive(false);

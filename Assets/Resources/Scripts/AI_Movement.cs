@@ -18,8 +18,8 @@ public class AI_Movement : MonoBehaviour
     DialogueController dc;
     AudioSource voice;
 
-    private int stressLevel;
-    public int StressLevel { get { return stressLevel; } set { stressLevel += value; } }
+    
+
 
 	void Start () {
         agent = GetComponent<NavMeshAgent>();
@@ -49,5 +49,12 @@ public class AI_Movement : MonoBehaviour
     {
         voice.clip = newClip;
         voice.Play();
+    }
+
+    public int stressLevel { get; private set; }
+
+    public void UpdateStressLevel(int change)
+    {
+        stressLevel += change;
     }
 }

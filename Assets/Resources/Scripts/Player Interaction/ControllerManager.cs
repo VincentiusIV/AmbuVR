@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public enum ControllerState
 {
-    Aiming = 1, Holding = 2, TouchInputActive = 3
+    Aiming = 1, Holding = 2
 }
 
 public class ControllerManager : MonoBehaviour
@@ -14,12 +14,19 @@ public class ControllerManager : MonoBehaviour
     [SerializeField] ViveController LEFT;
     [SerializeField] ViveController RIGHT;
 
+    private ViveController[] controllers;
     private DialogueController dc;
 
     private void Awake()
     {
-        LEFT.BootSequence(this);
-        RIGHT.BootSequence(this);
+        controllers = new ViveController[2];
+        controllers[0] = LEFT;
+        controllers[1] = RIGHT;
+
+        for (int i = 0; i < 2; i++)
+        {
+            controllers[i].BootSequence(this);
+        }
 
         dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         //Debug.Log(string.Format("{0} is {1}, {2} is {3}", LEFT, LEFT.curManState, RIGHT, RIGHT.curManState));
@@ -28,31 +35,22 @@ public class ControllerManager : MonoBehaviour
     /// Checks if given controller id can grab an object
     /// Can only grab if other controller is not holding the same object
     /// </summary>
-    /// <param name="id">ID of the controller requesting permission</param>
+    /// <param name="_id">ID of the controller requesting permission</param>
     /// <returns></returns>
-    public bool CanGrab(ControllerID id, GameObject objToGrab)
+    public bool CanGrab(ControllerID _id, GameObject objToGrab)
     {
-        switch (id)
-        {
-            case ControllerID.LEFT:
-                if (RIGHT.currentHeldObject == objToGrab && LEFT.curConState != ControllerState.Holding)
-                {
-                    if (RIGHT.currentHeldObject == objToGrab)
-                        Debug.Log("Objects are equal");
-                    return false;
-                }
-                else return true;
-            case ControllerID.RIGHT:
-                if (LEFT.currentHeldObject == objToGrab && RIGHT.curConState != ControllerState.Holding)
-                {
-                    if (LEFT.currentHeldObject == objToGrab)
-                        Debug.Log("Objects are equal");
-                    return false;
-                }
-                else return true;
-            default:
-                return true;
-        }
+        int otherID;
+        if (_id == ControllerID.LEFT)
+            otherID = (int)ControllerID.RIGHT;
+        else otherID = (int)ControllerID.LEFT;
 
+        GameObject otherHeldObj = controllers[otherID].currentHeldObject;
+        if (otherHeldObj != objToGrab)
+        {
+            if (otherHeldObj != null && otherHeldObj.tag == "Patient" && objToGrab.tag == "Patient")
+                return false;
+            return true;
+        }
+        else return false;
     }
 }

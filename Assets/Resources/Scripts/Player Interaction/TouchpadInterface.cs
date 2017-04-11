@@ -20,16 +20,16 @@ public class TouchpadInterface : MonoBehaviour {
     [SerializeField] private float uiRadius = 1;
     [SerializeField] private GameObject uiPrefab;
     // Reference
-    private GameObject obj;
+    public GameObject obj;
     private List<GameObject> panels;
     private TextMesh displayText;
-    private DialogueController dc;
+    public DialogueController dc;
     private MeshRenderer mr;
 
-    public void Start()
+    public void Awake()
     {
-        obj = transform.GetChild(0).gameObject;
-        dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
+        //obj = transform.GetChild(0).gameObject;
+        //dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         displayText = transform.GetChild(0).GetChild(0).GetComponent<TextMesh>();
         mr = GetComponent<MeshRenderer>();
         panels = new List<GameObject>();
@@ -39,7 +39,7 @@ public class TouchpadInterface : MonoBehaviour {
 
     public void ToggleTI()
     {
-        if (dc.isActive)
+        if (obj.activeInHierarchy)
             return;
         obj.SetActive(isActive = !isActive);
     }
@@ -137,7 +137,14 @@ public class TouchpadInterface : MonoBehaviour {
     // Converts touchpadCoord into selected option
     public void RotateWheelSelector(Vector2 touchpadCoord)
     {
+        // Rotation
+        float angle = Mathf.Atan2(touchpadCoord.x, touchpadCoord.y);
+        float degrees = (180 / Mathf.PI) * angle;
 
+        int selection = Mathf.Clamp((int)((degrees + 180f) / (360 / amountOfOptions)), 0, amountOfOptions + 1);
+
+        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+        Debug.Log(selection);
     }
     /*
     private int Rotation(Vector2 touchpadCoord)
@@ -203,7 +210,7 @@ public class TouchpadInterface : MonoBehaviour {
             panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = responses[i].ResponseText;
         }
     }
-
+    /*
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -224,5 +231,5 @@ public class TouchpadInterface : MonoBehaviour {
             ToggleTI();
         else if (Input.GetKeyDown(KeyCode.Escape))
             ConfigureMenu(TouchpadState.Default);
-    }
+    }*/
 }
