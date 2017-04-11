@@ -12,6 +12,7 @@ public enum TIButtonMask { Option1 = 0, Option2 = 1, Option3 = 2, Option4 = 3 }
 [System.Serializable]
 public enum TIButtonFunction {  Say = 0, TBSA = 1, PlaceHolder = 2, Placeholder = 3,
                                 Plus = 4, Minus = 5, Enter = 6, Back = 7,
+                                Hi = 8, Bye = 9, Yolo = 10, ImGay = 11,
                              }
 
 public class TouchpadInterface : MonoBehaviour {
@@ -29,6 +30,7 @@ public class TouchpadInterface : MonoBehaviour {
     private TextMesh displayText;
     public DialogueController dc;
     private MeshRenderer mr;
+    private GameController gc;
 
     public void Awake()
     {
@@ -36,8 +38,10 @@ public class TouchpadInterface : MonoBehaviour {
         //dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         displayText = transform.GetChild(0).GetComponent<TextMesh>();
         mr = GetComponent<MeshRenderer>();
-
+        gc = GameObject.FindWithTag("VariousController").GetComponent<GameController>();
         currentSelection = TIButtonMask.Option1;
+
+        ConfigureMenu(TouchpadState.Default);
     }
 
     public void ToggleTI()
@@ -52,11 +56,14 @@ public class TouchpadInterface : MonoBehaviour {
         state = newState;
         displayText.text = newState.ToString();
 
-        int start = (int)newState;
-        
-        for (int i = start; i < start + 4; i++)
+        if (newState != TouchpadState.DialogueSelect )
         {
-            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = ((TIButtonFunction)i).ToString();
+            int start = (int)newState;
+
+            for (int i = start; i < start + 4; i++)
+            {
+                panels[i - start].transform.GetChild(0).GetComponent<TextMesh>().text = ((TIButtonFunction)i).ToString();
+            }
         }
     }
 
@@ -84,7 +91,7 @@ public class TouchpadInterface : MonoBehaviour {
             case TouchpadState.DialogueSelect:
                 dc.Interact_Dialogue((int)currentSelection); break;
             case TouchpadState.Numpad:
-                UpdateNumpad((int)currentSelection); break;
+                NumpadPress(); break;
             default:
                 break;
         }
@@ -95,13 +102,32 @@ public class TouchpadInterface : MonoBehaviour {
         switch (currentSelection)
         {
             case TIButtonMask.Option1:
-                ConfigureMenu(TouchpadState.Numpad); break;
+                ConfigureMenu(TouchpadState.DialogueSelect); break;
             case TIButtonMask.Option2:
-                break;
+                ConfigureMenu(TouchpadState.Numpad); break;
             case TIButtonMask.Option3:
                 break;
             case TIButtonMask.Option4:
                 break;
+            default:
+                break;
+        }
+    }
+
+    private void NumpadPress()
+    {
+        TIButtonFunction keyNumber = (TIButtonFunction)((int)currentSelection + (int)state);
+
+        switch (keyNumber)
+        {
+            case TIButtonFunction.Plus:
+                UpdateNumpad(1); break;
+            case TIButtonFunction.Minus:
+                UpdateNumpad(-1); break;
+            case TIButtonFunction.Enter:
+                gc.SendTBSAEstimation(numpadValue); break;
+            case TIButtonFunction.Back:
+                ConfigureMenu(TouchpadState.Default); break;
             default:
                 break;
         }
@@ -121,7 +147,12 @@ public class TouchpadInterface : MonoBehaviour {
     {
         for (int i = 0; i < amountOfOptions; i++)
         {
-            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = responses[i].ResponseText;
+            string newText;
+            if (i < responses.Length)
+                newText = responses[i].ResponseText;
+            else newText = "";
+
+            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = newText;
         }
     }
     /*
