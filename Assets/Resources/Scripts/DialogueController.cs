@@ -53,7 +53,7 @@ public class DialogueController : MonoBehaviour {
                 npcs[de[i].NPC_ID].GetComponent<AI_Movement>().PlayVoice(ac);
                 yield return new WaitForSeconds(ac.length);
             }
-            ti.ConfigureMenu(TouchpadState.DialogueSelect, de[i].Responses.Length);
+            ti.ConfigureMenu(TouchpadState.DialogueSelect);
             ti.UpdateText(de[i].Responses);
             yield return new WaitUntil(() => isPressed == true);
             isPressed = false;

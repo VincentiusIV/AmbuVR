@@ -4,24 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public enum TouchpadState { Default, DialogueSelect, Numpad }
-/* TODO
- * - Add touchpad interface states
- * - Be able to interact with environment (dialogue, tbsa, 
- * 
- * */
+public enum TouchpadState { Default = 0, DialogueSelect = 8, Numpad = 4}
+
+[System.Serializable]
+public enum TIButtonMask { Option1 = 0, Option2 = 1, Option3 = 2, Option4 = 3 }
+
+[System.Serializable]
+public enum TIButtonFunction {  Say = 0, TBSA = 1, PlaceHolder = 2, Placeholder = 3,
+                                Plus = 4, Minus = 5, Enter = 6, Back = 7,
+                             }
+
 public class TouchpadInterface : MonoBehaviour {
 
     public bool isActive { get; private set; }
     private TouchpadState state { get; set; }
-    private int currentSelection { get; set; }
+    private TIButtonMask currentSelection { get; set; }
     // Serialized
-    [SerializeField] private int amountOfOptions = 10;
+    [SerializeField] private int amountOfOptions = 4;
     [SerializeField] private float uiRadius = 1;
     [SerializeField] private GameObject uiPrefab;
     // Reference
-    public GameObject obj;
-    private List<GameObject> panels;
+    public GameObject mainPanel;
+    public List<GameObject> panels;
     private TextMesh displayText;
     public DialogueController dc;
     private MeshRenderer mr;
@@ -30,164 +34,76 @@ public class TouchpadInterface : MonoBehaviour {
     {
         //obj = transform.GetChild(0).gameObject;
         //dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
-        displayText = transform.GetChild(0).GetChild(0).GetComponent<TextMesh>();
+        displayText = transform.GetChild(0).GetComponent<TextMesh>();
         mr = GetComponent<MeshRenderer>();
-        panels = new List<GameObject>();
 
-        ConfigureMenu(TouchpadState.Default);
+        currentSelection = TIButtonMask.Option1;
     }
 
     public void ToggleTI()
     {
-        if (obj.activeInHierarchy)
+        if (mainPanel.activeInHierarchy)
             return;
-        obj.SetActive(isActive = !isActive);
+        mainPanel.SetActive(isActive = !isActive);
     }
 
-    public void ConfigureMenu(TouchpadState newState, int amountOfDia = 0)
+    public void ConfigureMenu(TouchpadState newState)
     {
         state = newState;
-        switch (newState)
-        {
-            case TouchpadState.Default:
-                SwitchToDefault(); break;
-            case TouchpadState.DialogueSelect:
-                DrawMenu(amountOfDia); break;
-            case TouchpadState.Numpad:
-                SwitchToNumpad(); break;
-            default:
-                break;
-        }
-    }
+        displayText.text = newState.ToString();
 
-    private void SwitchToDefault()
-    {
-        Debug.Log("Switching to default");
-        displayText.text = "Menu";
-        DrawMenu(2);
-        panels[0].transform.GetChild(0).GetComponent<TextMesh>().text = "Say";
-        panels[1].transform.GetChild(0).GetComponent<TextMesh>().text = "TBSA";
-    }
-
-    private void SwitchToNumpad()
-    {
-        Debug.Log("Switching to numpad");
-        displayText.text = "0%";
-        DrawMenu(10);
-        for (int i = 0; i < 10; i++)
-        {
-            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = i.ToString();
-        }
-    }
-
-    private bool isDrawMenuActive = false;
-
-    private void DrawMenu(int newAmount)
-    {
-        isDrawMenuActive = true;
-        amountOfOptions = newAmount;
-
-        for (int i = 0; i < panels.Count; i++)
-            Destroy(panels[i]);
-
-        panels = new List<GameObject>();
-
-        for (int i = 0; i < amountOfOptions; i++)
-        {
-            float angle = i * Mathf.PI * 2 / amountOfOptions;
-            Vector3 newPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * uiRadius;
-            if (i >= panels.Count)
-            {
-                GameObject _obj = Instantiate(uiPrefab, obj.transform.position,Quaternion.Euler(new Vector3(-90f, 0f, 0f)));
-                panels.Add(_obj);
-                _obj.transform.SetParent(obj.transform);
-            }
-            panels[i].transform.position = obj.transform.position + newPos;
-        }
-        isDrawMenuActive = false;
-        SetSelectedOption(false, true);
-    }
-
-    public bool CanRedrawMenu { get { return !isDrawMenuActive; } }
-
-    // Sets the selected option based on input
-    public void SetSelectedOption(bool increase = false, bool reset = false)
-    {
-        if (!CanRedrawMenu)
-            return;
-        if (reset == false)
-        {
-            panels[currentSelection].GetComponent<Renderer>().material.color = Color.white;
-            if (increase)
-            {
-                if (currentSelection == amountOfOptions - 1)
-                    currentSelection = 0;
-                else currentSelection++;
-            }
-            else
-            {
-                if (currentSelection == 0)
-                    currentSelection = amountOfOptions - 1;
-                else currentSelection--;
-            }
-        }
-        else currentSelection = 0;
-        panels[currentSelection].GetComponent<Renderer>().material.color = Color.black;
-    }
-    // Converts touchpadCoord into selected option
-    public void RotateWheelSelector(Vector2 touchpadCoord)
-    {
-        // Rotation
-        float angle = Mathf.Atan2(touchpadCoord.x, touchpadCoord.y);
-        float degrees = (180 / Mathf.PI) * angle;
-
-        int selection = Mathf.Clamp((int)((degrees + 180f) / (360 / amountOfOptions)), 0, amountOfOptions + 1);
-
-        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-        Debug.Log(selection);
-    }
-    /*
-    private int Rotation(Vector2 touchpadCoord)
-    {
-        // Rotation
-        float angle = Mathf.Atan2(touchpadCoord.x, touchpadCoord.y);
-        float degrees = (180 / Mathf.PI) * angle;
-
-        int selection = Mathf.Clamp((int)((degrees + 180f) / (360 / amountOfOptions)), 0, amountOfOptions + 1);
+        int start = (int)newState;
         
-        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-        Debug.Log(selection);
-        //transform.localRotation = Quaternion.Euler(transform.localRotation.x, degrees, transform.localRotation.z);
-        return selection;
-    }*/
+        for (int i = start; i < start + 4; i++)
+        {
+            panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = ((TIButtonFunction)i).ToString();
+        }
+    }
+
+    public void SetSelectedOption(Vector2 touchpadCoord )
+    {
+        panels[(int)currentSelection].GetComponent<Renderer>().material.color = Color.white;
+        if (touchpadCoord.x < 0 && touchpadCoord.y > 0)
+            currentSelection = TIButtonMask.Option1;
+        else if (touchpadCoord.x > 0 && touchpadCoord.y > 0)
+            currentSelection = TIButtonMask.Option2;
+        else if (touchpadCoord.x < 0 && touchpadCoord.y < 0)
+            currentSelection = TIButtonMask.Option3;
+        else if (touchpadCoord.x > 0 && touchpadCoord.y < 0)
+            currentSelection = TIButtonMask.Option4;
+        panels[(int)currentSelection].GetComponent<Renderer>().material.color = Color.black;
+    }
 
     // Handles touchpad press
     public void TouchpadPress()
     {
-        Debug.Log("You pressed down on touchpad");
         switch (state)
         {
             case TouchpadState.Default:
                 DefaultPress(); break;
             case TouchpadState.DialogueSelect:
-                dc.Interact_Dialogue(currentSelection); break;
+                dc.Interact_Dialogue((int)currentSelection); break;
             case TouchpadState.Numpad:
-                UpdateNumpad(currentSelection); break;
+                UpdateNumpad((int)currentSelection); break;
             default:
                 break;
         }
-        
     }
 
     private void DefaultPress()
     {
-        if(currentSelection == 0)
+        switch (currentSelection)
         {
-            dc.Interact_Dialogue(currentSelection);
-        }
-        else if(currentSelection == 1)
-        {
-            ConfigureMenu(TouchpadState.Numpad);
+            case TIButtonMask.Option1:
+                ConfigureMenu(TouchpadState.Numpad); break;
+            case TIButtonMask.Option2:
+                break;
+            case TIButtonMask.Option3:
+                break;
+            case TIButtonMask.Option4:
+                break;
+            default:
+                break;
         }
     }
 
@@ -203,9 +119,7 @@ public class TouchpadInterface : MonoBehaviour {
 
     public void UpdateText(Response[] responses)
     {
-        Debug.Log("Updating text...");
-        DrawMenu(responses.Length);
-        for (int i = 0; i < responses.Length; i++)
+        for (int i = 0; i < amountOfOptions; i++)
         {
             panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = responses[i].ResponseText;
         }
@@ -231,5 +145,62 @@ public class TouchpadInterface : MonoBehaviour {
             ToggleTI();
         else if (Input.GetKeyDown(KeyCode.Escape))
             ConfigureMenu(TouchpadState.Default);
+    }*/
+
+
+    /*private void DrawMenu()
+    {
+        newAmount = Mathf.Clamp(newAmount, 0, 4);
+        isDrawMenuActive = true;
+        amountOfOptions = newAmount;
+
+        Vector3 position = obj.transform.position;
+        obj.transform.SetParent(null);
+        obj.transform.position = Vector3.zero;
+        for (int i = 0; i < panels.Count; i++)
+            Destroy(panels[i]);
+
+        panels = new List<GameObject>();
+
+        for (int i = 0; i < amountOfOptions; i++)
+        {
+            float angle = i * Mathf.PI * 2 / amountOfOptions;
+            Vector3 newPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * uiRadius;
+            if (i >= panels.Count)
+            {
+                GameObject _obj = Instantiate(uiPrefab, obj.transform.position,obj.transform.rotation);
+                panels.Add(_obj);
+                _obj.transform.SetParent(obj.transform);
+            }
+            panels[i].transform.position = obj.transform.position + newPos;
+        }
+        obj.transform.SetParent(transform);
+        obj.transform.position = position;
+        isDrawMenuActive = false;
+    }*/
+
+    // Sets the selected option based on input
+    /*public void SetSelectedOption(bool increase = false, bool reset = false)
+    {
+        if (!CanRedrawMenu)
+            return;
+        if (reset == false)
+        {
+            panels[currentSelection].GetComponent<Renderer>().material.color = Color.white;
+            if (increase)
+            {
+                if (currentSelection == amountOfOptions - 1)
+                    currentSelection = 0;
+                else currentSelection++;
+            }
+            else
+            {
+                if (currentSelection == 0)
+                    currentSelection = amountOfOptions - 1;
+                else currentSelection--;
+            }
+        }
+        else currentSelection = 0;
+        panels[currentSelection].GetComponent<Renderer>().material.color = Color.black;
     }*/
 }

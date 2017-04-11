@@ -74,10 +74,11 @@ public class ViveController : MonoBehaviour, IManager
 
         if (id == ControllerID.RIGHT )
         {
+            if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+                ti.ToggleTI();
             if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || Input.GetKeyDown(KeyCode.LeftShift))
             {
-                ti.ToggleTI();
-                ti.RotateWheelSelector(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
+                ti.SetSelectedOption(device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad));
 
                 if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
                 {
@@ -91,8 +92,9 @@ public class ViveController : MonoBehaviour, IManager
             }
         }
 
-        if (curConState == ControllerState.Holding && currentHeldObject.name == "WaterBottle")
+        if (curConState == ControllerState.Holding && currentHeldObject.name == "WaterBottle" && device.GetTouch(SteamVR_Controller.ButtonMask.Grip))
             currentHeldObject.GetComponent<WaterBottle>().SprinkleWater();
+
 
         AimChecking(device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled);
 
