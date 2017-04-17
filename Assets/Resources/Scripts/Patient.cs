@@ -6,24 +6,16 @@ public class Patient : MonoBehaviour
 {    
     // Serialize fields
     [SerializeField] private List<IA_Tags> correctOrder = new List<IA_Tags>();
-    // only serialized for testing
-    [SerializeField]private List<GameObject> snappedObjects = new List<GameObject>(); // unsure if necessary
+    [SerializeField] private GameObject burnWoundPrefab;
 
+    [HideInInspector] public IA_Tags correctPainMed;
+    [HideInInspector] public bool didReceiveCorrectPainMed;
     // Public Get
     public List<IA_Tags> GetCorrectOrder { get { return correctOrder; } }
 
-    /* void AddObject(GameObject objToAdd)// Unsure if necessary
-    {
-        Debug.Log("adding object "+objToAdd.name+" to patient");
-        // saves reference from added object to know which objects are active
-        snappedObjects.Add(objToAdd);
-        objToAdd.layer = 9;
-        objToAdd.transform.SetParent(transform); 
-    }*/
-
-    [SerializeField]private GameObject burnWoundPrefab;
-    // List of all burns
-    private List<IA_Area> burnWounds = new List<IA_Area>();
+    // References
+    public List<IA_Area> burnWounds = new List<IA_Area>();
+    public ConfigureResultsToDisplay crd;
 
     public void PlaceBurn(Vector3 pos)
     {
@@ -34,9 +26,6 @@ public class Patient : MonoBehaviour
         GameObject newBurn = Instantiate(burnWoundPrefab, pos, Quaternion.identity) as GameObject;
         burnWounds.Add(newBurn.GetComponent<IA_Area>());
         burnWounds[burnWounds.Count - 1].id = burnWounds.Count - 1;
-
-        //Debug.Log("Placed burn wound with id " + burnWounds[burnWounds.Count - 1].GetComponent<IA_Area>().id);
-        // combine mesh?
     }
 
     public bool CheckOrder(List<IA_Tags> placeOrder)
@@ -56,15 +45,32 @@ public class Patient : MonoBehaviour
         return correct;
         // sc.something
     }
+    List<BurnWoundStatus> bwsList;
+    
 
     public void EvaluatePatient()
     {
+        Debug.Log("Evaluating patient...");
+        bwsList = new List<BurnWoundStatus>();
+        if (burnWounds.Count == 0)
+            Debug.LogWarning("There are no burn wounds to evaluate, make sure you have referenced manually placed wounds!");
         foreach (IA_Area burn in burnWounds)
         {
             // Update color of the burn area
-            burn.FinishStatus(CheckOrder(burn.PlaceOrder));
-            // Write to JSON report on the specific burn?
+            bool newStatus = CheckOrder(burn.PlaceOrder);
 
+            bwsList.Add(burn.FinishStatus(newStatus));
+            // Write to JSON report on the specific burn?
+        }
+        if(crd != null)
+            crd.ConfigureResultDisplay(bwsList, didReceiveCorrectPainMed, true);
+    }
+
+    public void ResetPatient()
+    {
+        foreach (IA_Area burn in burnWounds)
+        {
+            burn.ResetPlaceOrder();
         }
     }
 }

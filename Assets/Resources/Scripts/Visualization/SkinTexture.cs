@@ -1,19 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class SkinTexture : MonoBehaviour {
 
     [SerializeField] private Texture2D unburned;
     [SerializeField] private Texture2D burnedFirst;
-    [SerializeField] private Texture2D burnedSecond;
-    [SerializeField] private Texture2D burnedThird;
 
     [SerializeField] private int radius;
     [SerializeField] private float updateTime;
     [SerializeField] private PerlinValues pv;
 
-    private Renderer rend;
+    [SerializeField]private Renderer rend;
+    [SerializeField] private Renderer sharedRenderer;
+
     private Texture2D mix;
     private Texture2D savedMix;
     private Patient pt;
@@ -22,27 +23,39 @@ public class SkinTexture : MonoBehaviour {
     // Counter for the amount of pixels that are changed
     private int pixelCounter;
     private Vector2 currentTC;
+    private TBSA_Controller tbsa;
 
     private float[,] noiseMap;
 
     // Use this for initialization
-    void Start ()
+    private void Start()
     {
-        rend = GetComponent<Renderer>();
+        BootSequence();
+    }
+    public void BootSequence ()
+    {
+        tbsa = GameObject.FindWithTag("TBSA").GetComponent<TBSA_Controller>();
+
+        if (rend == null)
+            rend = GetComponent<Renderer>();
         pt = GetComponent<Patient>();
 
-        // Make a copy of the given unburned texture and use it
-        savedMix = mix = Instantiate(unburned) as Texture2D;
-        rend.material.mainTexture = mix;
+        ResetTexture();
 
         CalcNoiseMap();
+
+        if (sharedRenderer != null)
+        {
+            sharedRenderer.material = rend.material;
+        }
+            
     }
 
     public void Highlight(Vector2 textureCoord)
     {
         if (Time.time < nextUpdate || textureCoord == currentTC)
             return;
-
+        
         currentTC = textureCoord;
         nextUpdate = Time.time + updateTime;
 
@@ -52,11 +65,14 @@ public class SkinTexture : MonoBehaviour {
         SetPixels(textureCoord, false);
     }
 
-    public void SetPixels(Vector2 textureCoord, bool save, Vector3 worldPoint = new Vector3())
+    public void SetPixels(Vector2 textureCoord, bool save, bool amplify = true, Vector3 worldPoint = new Vector3())
     {
         Vector2 pixelUV = textureCoord;
-        pixelUV.x *= unburned.width;
-        pixelUV.y *= unburned.height;
+        if(amplify)
+        {
+            pixelUV.x *= unburned.width;
+            pixelUV.y *= unburned.height;
+        }
 
         int xPos = (int)pixelUV.x;
         int yPos = (int)pixelUV.y;
@@ -65,6 +81,8 @@ public class SkinTexture : MonoBehaviour {
         {
             for (int y = yPos - radius; y < yPos + radius; y++)
             {
+                if (x < 0 || x > pixelUV.x || y < 0 || y > pixelUV.y)
+                    continue;
                 if (noiseMap[x,y] > pv.burnHeight)
                     continue;
 
@@ -84,24 +102,27 @@ public class SkinTexture : MonoBehaviour {
         if (save)
         {
             savedMix.Apply(true);
-            pt.PlaceBurn(worldPoint);
+            if(worldPoint != new Vector3())
+                pt.PlaceBurn(worldPoint);
         } 
         else mix.Apply(true);
-
+        Debug.Log("TBSA is now: " + GetTBSA());
         // actually apply all SetPixels, don't recalculate mip levels
         
     }
 
+    public void ResetTexture()
+    {
+        // Make a copy of the given unburned texture and use it
+        savedMix = mix = Instantiate(unburned) as Texture2D;
+        rend.material.mainTexture = mix;
+    }
     private void CalcNoiseMap()
     {
         noiseMap = new float[unburned.width, unburned.height];
         for (int x = 0; x < unburned.width; x++)
-        {
             for (int y = 0; y < unburned.height; y++)
-            {
                 noiseMap[x, y] = GetPerlinHeight(x,y);
-            }
-        }
     }
     private float GetPerlinHeight(int x, int y)
     {
@@ -128,9 +149,19 @@ public class SkinTexture : MonoBehaviour {
     {
         float totalPixels = mix.width * mix.height;
         float tbsa = (pixelCounter / totalPixels) * 100;
-        Debug.Log(tbsa+ "%");
-        
         return tbsa;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F12))
+            SaveToPNG();
+    }
+    void SaveToPNG()
+    {
+        Debug.Log("Saving to PNG...");
+        byte[] bytes = savedMix.EncodeToPNG();
+        File.WriteAllBytes(Application.dataPath + "SavedMix.png", bytes);
     }
 }
 

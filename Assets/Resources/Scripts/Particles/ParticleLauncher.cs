@@ -5,7 +5,6 @@ using UnityEngine;
 public class ParticleLauncher : MonoBehaviour {
 
     public ParticleSystem particleLauncher;
-    public ParticleSystem splatterParticles;
     public Gradient particleColorGradient;
     public ParticleDecalPool splatDecalPool;
 
@@ -33,12 +32,8 @@ public class ParticleLauncher : MonoBehaviour {
 
     void EmitAtLocation(ParticleCollisionEvent pce)
     {
-        splatterParticles.transform.position = pce.intersection;
-        splatterParticles.transform.rotation = Quaternion.LookRotation(pce.normal);
         ParticleSystem.MainModule psMain = particleLauncher.main;
         psMain.startColor = particleColorGradient.Evaluate(Random.Range(0f, 1f));
-
-        splatterParticles.Emit(1);
     }
 
     private void OnParticleCollision(GameObject other)
@@ -48,9 +43,7 @@ public class ParticleLauncher : MonoBehaviour {
         for (int i = 0; i < collisionEvents.Count; i++)
         {
             splatDecalPool.ParticleHit(collisionEvents[i], particleColorGradient);
-            EmitAtLocation(collisionEvents[i]);
-
+            //EmitAtLocation(collisionEvents[i]);
         }
-        
     }
 }

@@ -267,7 +267,7 @@ public class ViveController : MonoBehaviour, IManager
         hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
 
         if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
-            hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, hit.point);
+            hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, true, hit.point);
     }
 
     private void ThrowVelocity(Rigidbody rb)
