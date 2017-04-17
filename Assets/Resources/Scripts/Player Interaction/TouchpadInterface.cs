@@ -24,6 +24,9 @@ public class TouchpadInterface : MonoBehaviour {
     [SerializeField] private int amountOfOptions = 4;
     [SerializeField] private float uiRadius = 1;
     [SerializeField] private GameObject uiPrefab;
+
+    public Color defaultColor;
+    public Color selectedColor;
     // Reference
     public GameObject mainPanel;
     public List<GameObject> panels;
@@ -42,6 +45,11 @@ public class TouchpadInterface : MonoBehaviour {
         currentSelection = TIButtonMask.Option1;
 
         ConfigureMenu(TouchpadState.Default);
+
+        foreach (GameObject item in panels)
+        {
+            item.GetComponent<Renderer>().material.color = defaultColor;
+        }
     }
 
     public void ToggleTI()
@@ -69,7 +77,7 @@ public class TouchpadInterface : MonoBehaviour {
 
     public void SetSelectedOption(Vector2 touchpadCoord )
     {
-        panels[(int)currentSelection].GetComponent<Renderer>().material.color = Color.white;
+        panels[(int)currentSelection].GetComponent<Renderer>().material.color = defaultColor;
         if (touchpadCoord.x < 0 && touchpadCoord.y > 0)
             currentSelection = TIButtonMask.Option1;
         else if (touchpadCoord.x > 0 && touchpadCoord.y > 0)
@@ -78,7 +86,7 @@ public class TouchpadInterface : MonoBehaviour {
             currentSelection = TIButtonMask.Option3;
         else if (touchpadCoord.x > 0 && touchpadCoord.y < 0)
             currentSelection = TIButtonMask.Option4;
-        panels[(int)currentSelection].GetComponent<Renderer>().material.color = Color.black;
+        panels[(int)currentSelection].GetComponent<Renderer>().material.color = selectedColor;
     }
 
     // Handles touchpad press
@@ -143,8 +151,10 @@ public class TouchpadInterface : MonoBehaviour {
         displayText.text = numpadValue + "%";
     }
 
+    private int selectionIndex;
     public void UpdateText(Response[] responses)
     {
+        selectionIndex = responses.Length;
         for (int i = 0; i < amountOfOptions; i++)
         {
             string newText;

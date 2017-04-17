@@ -68,7 +68,6 @@ public class DialogueController : MonoBehaviour {
                 if (nextSelection == lastSelection || nextSelection == -1)
                     break;
             }
-            
         }
         Debug.Log("Conversation ended");
         ti.gameObject.SetActive(false);
