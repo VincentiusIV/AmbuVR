@@ -205,16 +205,17 @@ public class PlayerController : MonoBehaviour {
     {
         Transform obj;
         Debug.Log(string.Format("hit {0}, performing PAINT Check", hit.collider.tag));
-        if (hit.transform.parent != null)
-            obj = GetHighestParent(hit.transform);
-        else obj = hit.transform;
+        /* if (hit.transform.parent != null)
+             obj = GetHighestParent(hit.transform);
+         else obj = hit.transform;*/
+        SkinTexture hitST = hit.transform.GetComponent<SkinTexture>();
+        if (hitST == null)
+            return;
 
-        if (obj.GetComponent<SkinTexture>() != null)
-            obj.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
-        else return;
+        hit.transform.GetComponent<SkinTexture>().Highlight(hit.textureCoord);
 
         if (Input.GetButton("Fire1"))
-            obj.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, true, hit.point);
+            hit.transform.GetComponent<SkinTexture>().SetPixels(hit.textureCoord, true, true, hit.point);
     }
 
     Transform GetHighestParent(Transform child)

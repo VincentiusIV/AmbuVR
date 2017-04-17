@@ -30,7 +30,6 @@ public class IA_Area : MonoBehaviour
     public BurnWoundStatus bws;
     // Tracks place order
     public List<IA_Tags> PlaceOrder { get; private set; }
-
     
     private Renderer rend;
 
@@ -63,13 +62,7 @@ public class IA_Area : MonoBehaviour
 
         }
     }
-    private void OnParticleTrigger(ParticleCollisionEvent pce)
-    {
-        if (pce.colliderComponent.CompareTag("Pick Up"))
-        {
-            pce.colliderComponent.GetComponent<IA_Area>().ApplyMed(IA_Tags.Water);
-        }
-    }
+    
     public void ApplyMed(IA_Tags item)
     {
         Debug.Log(string.Format("{0} {1} being applied with {2}", status, thisArea, item));

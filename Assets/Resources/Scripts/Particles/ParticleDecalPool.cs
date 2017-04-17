@@ -23,13 +23,7 @@ public class ParticleDecalPool : MonoBehaviour {
             particleData[i] = new ParticleDecalData();
         }
     }
-    private void OnParticleTrigger(ParticleCollisionEvent pce)
-    {
-        if (pce.colliderComponent.CompareTag("Burn"))
-        {
-            pce.colliderComponent.GetComponent<IA_Area>().ApplyMed(IA_Tags.Water);
-        }
-    }
+
     public void ParticleHit(ParticleCollisionEvent pce, Gradient colorGradient)
     {
         

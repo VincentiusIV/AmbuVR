@@ -19,6 +19,8 @@ public class SkinTexture : MonoBehaviour {
     private Texture2D savedMix;
     private Patient pt;
 
+    public bool drawCubes = true;
+
     private float nextUpdate;
     // Counter for the amount of pixels that are changed
     private int pixelCounter;
@@ -32,6 +34,7 @@ public class SkinTexture : MonoBehaviour {
     {
         BootSequence();
     }
+
     public void BootSequence ()
     {
         tbsa = GameObject.FindWithTag("TBSA").GetComponent<TBSA_Controller>();
@@ -102,13 +105,11 @@ public class SkinTexture : MonoBehaviour {
         if (save)
         {
             savedMix.Apply(true);
-            if(worldPoint != new Vector3())
+            if(worldPoint != new Vector3() && drawCubes)
                 pt.PlaceBurn(worldPoint);
         } 
         else mix.Apply(true);
         Debug.Log("TBSA is now: " + GetTBSA());
-        // actually apply all SetPixels, don't recalculate mip levels
-        
     }
 
     public void ResetTexture()
@@ -117,6 +118,7 @@ public class SkinTexture : MonoBehaviour {
         savedMix = mix = Instantiate(unburned) as Texture2D;
         rend.material.mainTexture = mix;
     }
+
     private void CalcNoiseMap()
     {
         noiseMap = new float[unburned.width, unburned.height];
@@ -124,6 +126,7 @@ public class SkinTexture : MonoBehaviour {
             for (int y = 0; y < unburned.height; y++)
                 noiseMap[x, y] = GetPerlinHeight(x,y);
     }
+
     private float GetPerlinHeight(int x, int y)
     {
         float xFrequency = 1;
@@ -140,13 +143,13 @@ public class SkinTexture : MonoBehaviour {
             xFrequency *= pv.xFrePerLayer;
             yFrequency *= pv.yFrePerLayer;
         }
-
         return height;
     }
 
-
     public float GetTBSA()
     {
+        if (mix == null)
+            return 0f;
         float totalPixels = mix.width * mix.height;
         float tbsa = (pixelCounter / totalPixels) * 100;
         return tbsa;
@@ -157,11 +160,13 @@ public class SkinTexture : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.F12))
             SaveToPNG();
     }
+
     void SaveToPNG()
     {
         Debug.Log("Saving to PNG...");
         byte[] bytes = savedMix.EncodeToPNG();
         File.WriteAllBytes(Application.dataPath + "SavedMix.png", bytes);
+        Debug.Log("TBSA: " + GetTBSA());
     }
 }
 

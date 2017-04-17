@@ -13,6 +13,7 @@ public class AI_Movement : MonoBehaviour
 
     // Serialized
     [SerializeField] private Transform[] spots;
+    public float waitTimeAtSpot;
 
     NavMeshAgent agent;
     DialogueController dc;
@@ -38,6 +39,7 @@ public class AI_Movement : MonoBehaviour
             {
                 agent.SetDestination(spots[i].position);
                 yield return new WaitUntil(() => transform.position == agent.destination);
+                yield return new WaitForSeconds(waitTimeAtSpot);
             }
             StartCoroutine(Patrol());
         }

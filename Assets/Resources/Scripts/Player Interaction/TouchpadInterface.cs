@@ -12,7 +12,7 @@ public enum TIButtonMask { Option1 = 0, Option2 = 1, Option3 = 2, Option4 = 3 }
 [System.Serializable]
 public enum TIButtonFunction {  Say = 0, TBSA = 1, PlaceHolder = 2, Placeholder = 3,
                                 Plus = 4, Minus = 5, Enter = 6, Back = 7,
-                                Hi = 8, Bye = 9, Yolo = 10, ImGay = 11,
+                                Hi = 8, Bye = 9, Greetings = 10, Hello = 11,
                              }
 
 public class TouchpadInterface : MonoBehaviour {
@@ -155,30 +155,25 @@ public class TouchpadInterface : MonoBehaviour {
             panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = newText;
         }
     }
-    /*
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-            SetSelectedOption(false);
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-            SetSelectedOption(true);
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            currentSelection = TIButtonMask.Option1;
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            currentSelection = TIButtonMask.Option2;
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            currentSelection = TIButtonMask.Option3;
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+            currentSelection = TIButtonMask.Option4;
 
-        if (Input.GetKeyDown(KeyCode.F2))
-            DrawMenu(amountOfOptions++);
-        else if (Input.GetKeyDown(KeyCode.F3))
-            DrawMenu(amountOfOptions--);
-
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha4))
             TouchpadPress();
-        else if (Input.GetKeyDown(KeyCode.LeftAlt))
-            SwitchToNumpad();
-        else if (Input.GetKeyDown(KeyCode.LeftShift))
-            ToggleTI();
-        else if (Input.GetKeyDown(KeyCode.Escape))
-            ConfigureMenu(TouchpadState.Default);
-    }*/
+    }
 
-
+    // Depracated way of drawing the menu
+    // Places options in a circle, can add nearly unlimited amount of buttons to the circle
+    // Actually worked but unnecessary in the end
     /*private void DrawMenu()
     {
         newAmount = Mathf.Clamp(newAmount, 0, 4);
