@@ -92,7 +92,7 @@ public class ViveController : MonoBehaviour, IManager
             }
         }
 
-        if (curConState == ControllerState.Holding && currentHeldObject.name == "WaterBottle" && device.GetTouch(SteamVR_Controller.ButtonMask.Grip))
+        if (curConState == ControllerState.Holding && currentHeldObject.name == "WaterBottle")
             currentHeldObject.GetComponent<WaterBottle>().SprinkleWater();
 
 
@@ -137,8 +137,6 @@ public class ViveController : MonoBehaviour, IManager
                 {
                     case "Button":
                         UI_Check(hit); break;
-                    case "TP_Spot":
-                        TP_Check(hit); break;
                     /*case "Patient":
                         Paint_Check(hit); break;*/
                     case "Burn":
@@ -167,11 +165,8 @@ public class ViveController : MonoBehaviour, IManager
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
             hit.collider.GetComponent<ButtonScript>().Click();
     }
-    /// <summary>
-    /// Checks if player can teleport, and teleports
-    /// </summary>
-    /// <param name="hit"></param>
-    private void TP_Check(RaycastHit hit)
+    // Depracated way of teleporting, no longer needed
+    /*private void TP_Check(RaycastHit hit)
     {
         Debug.Log(string.Format("hit {0}, performing TP Check", hit.collider.tag));
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Grip))
@@ -183,7 +178,7 @@ public class ViveController : MonoBehaviour, IManager
         // TODO
         // upgrade functionality with fade to black animation,
 
-    }
+    }*/
     /// <summary>
     /// Checks if player can grab something
     /// </summary>

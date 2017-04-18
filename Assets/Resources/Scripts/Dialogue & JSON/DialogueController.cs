@@ -6,6 +6,8 @@ using JSONFactory;
 public class DialogueController : MonoBehaviour {
 
     public TouchpadInterface ti;
+    public Transform hmd;
+
     private int lastPressedOption;
     private bool isPressed = false;
     public bool isActive { get; private set; }
@@ -36,12 +38,13 @@ public class DialogueController : MonoBehaviour {
             PressSelectedOption(currentSelection);
         }
     }
+    int dialogueIndex = 0;
 
     IEnumerator DialogueSession()
     {
         Debug.Log("Conversation started");
         isActive = true;
-        DialogueEvent[] de = JSONAssembly.RunJSONFactoryForScene(1);
+        DialogueEvent[] de = JSONAssembly.RunJSONFactoryForScene(dialogueIndex);
 
         int nextSelection = 0;
 
@@ -51,7 +54,9 @@ public class DialogueController : MonoBehaviour {
             {
                 AudioClip ac = Resources.Load<AudioClip>("Dialogue/Audio/" + de[i].AudioFile);
                 npcs[de[i].NPC_ID].GetComponent<AI_Movement>().PlayVoice(ac);
-                yield return new WaitForSeconds(ac.length);
+                if (ac != null)
+                    yield return new WaitForSeconds(ac.length);
+                else throw new System.Exception("Could not retrieve audio file: "+de[i].AudioFile);
             }
             ti.ConfigureMenu(TouchpadState.DialogueSelect);
             ti.UpdateText(de[i].Responses);
@@ -70,7 +75,8 @@ public class DialogueController : MonoBehaviour {
             }
         }
         Debug.Log("Conversation ended");
-        ti.gameObject.SetActive(false);
+        dialogueIndex++;
+       // ti.gameObject.SetActive(false);
         isActive = false;
     }
 

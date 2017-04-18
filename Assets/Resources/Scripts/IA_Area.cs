@@ -60,6 +60,16 @@ public class IA_Area : MonoBehaviour
                     pt.didReceiveCorrectPainMed = true;
             }
 
+            if (activeItem.thisItem == IA_Tags.BurnS || activeItem.thisItem == IA_Tags.PlasticWrap)
+            {
+                other.transform.position = this.transform.position;
+                other.transform.SetParent(this.transform);
+            }
+
+            if (activeItem.thisItem == IA_Tags.PM_Opiaten || activeItem.thisItem == IA_Tags.PM_Paracetamol)
+                if (thisArea == IA_Areas.Mouth)
+                    Destroy(other.gameObject);
+
         }
     }
     
@@ -74,11 +84,14 @@ public class IA_Area : MonoBehaviour
             rend.material.color = Color.blue;
         PlaceOrder.Add(item);
 
+        
         // Updates status of the wound
         if (bws.coolType == item)
             bws.isCooled = true;
         else if (item == IA_Tags.PlasticWrap)
             bws.isWrapped = true;
+
+        pt.EvaluatePatient();
     }
 
     public BurnWoundStatus FinishStatus(bool fin)

@@ -1,0 +1,25 @@
+[{
+		"NPC_ID": 0,
+		"TextID": 0,
+		"TextLine": "Moet je niet verder opereren",
+		"AudioFile": "Opereren",
+		"Responses": [{
+			"ResponseText": "We brengen hem naar het brandwondencentrum.",
+			"Fx_stress": 1,
+			"NextTextID": 1
+
+		}]
+	},
+
+	{
+		"NPC_ID": 0,
+		"TextID": 1,
+		"TextLine": "Juist",
+		"AudioFile": "Confirmation_3",
+		"Responses": [{
+			"ResponseText": "Continue..",
+			"Fx_stress": 1,
+			"NextTextID": -1
+		}]
+	}
+]

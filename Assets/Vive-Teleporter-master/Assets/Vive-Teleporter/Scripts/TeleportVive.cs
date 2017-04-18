@@ -56,8 +56,11 @@ public class TeleportVive : MonoBehaviour {
 
     private Mesh PlaneMesh;
 
+    public bool MayAimToTeleport;
+
     void Start()
     {
+        MayAimToTeleport = false;
         // Disable the pointer graphic (until the user holds down on the touchpad)
         Pointer.enabled = false;
 
@@ -158,6 +161,7 @@ public class TeleportVive : MonoBehaviour {
 
 	void Update ()
     {
+        
         // If we are currently teleporting (ie handling the fade in/out transition)...
         if(CurrentTeleportState == TeleportState.Teleporting)
         {
@@ -184,15 +188,16 @@ public class TeleportVive : MonoBehaviour {
         // At this point, we are NOT actively teleporting.  So now we care about controller input.
         else if(CurrentTeleportState == TeleportState.Selecting)
         {
+
             Debug.Assert(ActiveController != null);
 
             // Here, there is an active controller - that is, the user is holding down on the trackpad.
             // Poll controller for pertinent button data
             int index = (int)ActiveController.index;
             var device = SteamVR_Controller.Input(index);
-            bool shouldTeleport = device.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad);
-            bool shouldCancel = device.GetPressUp(SteamVR_Controller.ButtonMask.Grip);
-            if (shouldTeleport || shouldCancel)
+            bool shouldTeleport = device.GetPressUp(SteamVR_Controller.ButtonMask.Grip);
+            //bool shouldCancel = device.GetPressUp(SteamVR_Controller.ButtonMask.Grip);
+            if (shouldTeleport /*|| shouldCancel*/)
             {
                 // If the user has decided to teleport (ie lets go of touchpad) then remove all visual indicators
                 // related to selecting things and actually teleport
@@ -264,7 +269,7 @@ public class TeleportVive : MonoBehaviour {
                     continue;
 
                 var device = SteamVR_Controller.Input(index);
-                if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
+                if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
                 {
                     // Set active controller to this controller, and enable the parabolic pointer and visual indicators
                     // that the user can use to determine where they are able to teleport.
@@ -276,6 +281,7 @@ public class TeleportVive : MonoBehaviour {
                     Pointer.transform.localScale = Vector3.one;
                     Pointer.enabled = true;
 
+                    
                     CurrentTeleportState = TeleportState.Selecting;
                     
                     if(NavmeshAnimator != null)
