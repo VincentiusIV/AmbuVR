@@ -25,7 +25,7 @@ public class SkinTexture : MonoBehaviour {
     // Counter for the amount of pixels that are changed
     private int pixelCounter;
     private Vector2 currentTC;
-    private TBSA_Controller tbsa;
+    //private TBSA_Controller tbsa;
 
     private float[,] noiseMap;
 
@@ -37,7 +37,7 @@ public class SkinTexture : MonoBehaviour {
 
     public void BootSequence ()
     {
-        tbsa = GameObject.FindWithTag("TBSA").GetComponent<TBSA_Controller>();
+        //tbsa = GameObject.FindWithTag("TBSA").GetComponent<TBSA_Controller>();
 
         if (rend == null)
             rend = GetComponent<Renderer>();

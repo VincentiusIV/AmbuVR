@@ -16,7 +16,7 @@ public class AI_Movement : MonoBehaviour
     public float waitTimeAtSpot;
 
     NavMeshAgent agent;
-    DialogueController dc;
+    //DialogueController dc;
     AudioSource voice;
 
     
@@ -24,7 +24,7 @@ public class AI_Movement : MonoBehaviour
 
 	void Start () {
         agent = GetComponent<NavMeshAgent>();
-        dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
+        //dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         voice = GetComponent<AudioSource>();
         
         if(spots.Length > 0)

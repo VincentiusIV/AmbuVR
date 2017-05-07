@@ -15,7 +15,7 @@ public class ControllerManager : MonoBehaviour
     [SerializeField] ViveController RIGHT;
 
     private ViveController[] controllers;
-    private DialogueController dc;
+    //private DialogueController dc;
 
     private void Awake()
     {
@@ -28,7 +28,7 @@ public class ControllerManager : MonoBehaviour
             controllers[i].BootSequence(this);
         }
 
-        dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
+        //dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         //Debug.Log(string.Format("{0} is {1}, {2} is {3}", LEFT, LEFT.curManState, RIGHT, RIGHT.curManState));
     }
     /// <summary>

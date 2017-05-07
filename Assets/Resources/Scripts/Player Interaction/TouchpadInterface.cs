@@ -22,7 +22,7 @@ public class TouchpadInterface : MonoBehaviour {
     private TIButtonMask currentSelection { get; set; }
     // Serialized
     [SerializeField] private int amountOfOptions = 4;
-    [SerializeField] private float uiRadius = 1;
+    //[SerializeField] private float uiRadius = 1;
     [SerializeField] private GameObject uiPrefab;
 
     public Color defaultColor;
@@ -32,7 +32,7 @@ public class TouchpadInterface : MonoBehaviour {
     public List<GameObject> panels;
     private TextMesh displayText;
     public DialogueController dc;
-    private MeshRenderer mr;
+    //private MeshRenderer mr;
     private GameController gc;
 
     public void Awake()
@@ -40,7 +40,7 @@ public class TouchpadInterface : MonoBehaviour {
         //obj = transform.GetChild(0).gameObject;
         //dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         displayText = transform.GetChild(0).GetComponent<TextMesh>();
-        mr = GetComponent<MeshRenderer>();
+        //mr = GetComponent<MeshRenderer>();
         gc = GameObject.FindWithTag("VariousController").GetComponent<GameController>();
         currentSelection = TIButtonMask.Option1;
 
@@ -151,10 +151,10 @@ public class TouchpadInterface : MonoBehaviour {
         displayText.text = numpadValue + "%";
     }
 
-    private int selectionIndex;
+    //private int selectionIndex;
     public void UpdateText(Response[] responses)
     {
-        selectionIndex = responses.Length;
+        //selectionIndex = responses.Length;
         for (int i = 0; i < amountOfOptions; i++)
         {
             string newText;

@@ -12,13 +12,13 @@ public class TBSA_Controller : MonoBehaviour {
 
     public int exampleTBSA;
 
-    private SkinTexture skinTexture;
+    //private SkinTexture skinTexture;
 
     private int inputField;
 
     private void Start()
     {
-        skinTexture = currentPatient.GetComponent<SkinTexture>();
+        //skinTexture = currentPatient.GetComponent<SkinTexture>();
     }
 
     public void UpdateInputField(int change)

@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class WaterBottle : MonoBehaviour {
 
-    [SerializeField] private float tiltCap = 90.0f;
+    //[SerializeField] private float tiltCap = 90.0f;
 
-    private Transform tf;
+    //private Transform tf;
     private ParticleLauncher pl;
 
     private void Start()
     {
-        tf = GetComponent<Transform>();
+        //tf = GetComponent<Transform>();
         pl = transform.GetChild(0).GetChild(0).GetComponent<ParticleLauncher>();
     }
 
