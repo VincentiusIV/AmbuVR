@@ -1,0 +1,28 @@
+[
+
+	{
+		"NPC_ID": 0,
+		"TextID": 0,
+		"TextLine": "Weet je wel wat je doet",
+		"AudioFile": "N_3_2",
+		"Responses": [{
+				"ResponseText": "",
+				"Fx_stress": -1,
+				"NextTextID": -1
+			}
+
+		]
+	},
+
+	{
+		"NPC_ID": 0,
+		"TextID": 1,
+		"TextLine": "Wat ben je wel niet aan het doen",
+		"AudioFile": "N_3_3",
+		"Responses": [{
+			"ResponseText": "",
+			"Fx_stress": -1,
+			"NextTextID": -1
+		}]
+	}
+]

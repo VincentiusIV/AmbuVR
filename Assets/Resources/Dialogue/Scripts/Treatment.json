@@ -1,0 +1,72 @@
+[
+  {
+    "NPC_ID": 0,
+    "TextID": 0,
+    "TextLine": "Ga je alleen met water koelen?",
+    "AudioFile": "Waterkoelen",
+    "Responses": [
+      {
+        "ResponseText": "Ik kan ook een burnshield gebruiken.",
+        "Fx_stress": 1,
+        "NextTextID": 1 
+      },
+      {
+        "ResponseText": "Alleen water is voldoende.",
+        "Fx_stress": -1,
+        "NextTextID":2
+      },
+      {
+        "ResponseText": "Na water koelen geen burnshield gebruiken.   ",
+        "Fx_stress": 1,
+        "NextTextID":3
+      }
+    ]
+  },
+
+{
+    "NPC_ID": 0,
+    "TextID": 1,
+    "TextLine": "Dat klinkt goed.",
+    "AudioFile": "2.0",
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "Fx_stress": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+
+{
+    "NPC_ID": 0,
+    "TextID": 2,
+    "TextLine": "Moet je niet verder behandelen ",
+    "AudioFile": "Opereren_1",
+    "Responses": [
+            {
+        "ResponseText": "Ik kan ook een burnshield gebruiken.",
+        "Fx_stress": -1,
+        "NextTextID": 1 
+      },
+      {
+        "ResponseText": " Na water koelen geen burnshield gebruiken.   ",
+        "Fx_stress": 1,
+        "NextTextID":3
+    }
+] 
+ },
+
+{
+    "NPC_ID": 0,
+    "TextID": 3,
+    "TextLine": "Oke",
+    "AudioFile": "Confirmation_2",
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "Fx_stress": 1,
+        "NextTextID": -1
+      }
+    ]
+  }
+]

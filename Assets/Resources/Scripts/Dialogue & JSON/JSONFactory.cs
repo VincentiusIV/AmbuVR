@@ -17,9 +17,12 @@ namespace JSONFactory
     {
         private static Dictionary<int, string> _resourceList = new Dictionary<int, string>
         {
-            {0, "/Resources/Dialogue/Scripts/DefaultInteraction.json" },
-            {1, "/Resources/Dialogue/Scripts/Event1.json" },
-            {2, "/Resources/Dialogue/Scripts/Event2.json" }
+            {0, "/Resources/Dialogue/Scripts/Event1.json" },
+            {1, "/Resources/Dialogue/Scripts/tbsa.json" },
+            {2, "/Resources/Dialogue/Scripts/Negative feedback TBSA.json" },
+            {3, "/Resources/Dialogue/Scripts/Treatment.json" },
+            {4, "/Resources/Dialogue/Scripts/Positive feedback Treatment.json" },
+            {5, "/Resources/Dialogue/Scripts/Negative feedback Treatment.json" },
         };
 
         public static DialogueEvent[] RunJSONFactoryForScene(int sceneNumber)

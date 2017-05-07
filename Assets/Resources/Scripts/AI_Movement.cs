@@ -19,20 +19,25 @@ public class AI_Movement : MonoBehaviour
     //DialogueController dc;
     AudioSource voice;
 
-    
+    public AIState state;
+    Animator anime;
 
-
-	void Start () {
+	void Start ()
+    {
         agent = GetComponent<NavMeshAgent>();
         //dc = GameObject.FindWithTag("DialogueController").GetComponent<DialogueController>();
         voice = GetComponent<AudioSource>();
-        
+        anime = GetComponent<Animator>();
+        patrol = Patrol();
         if(spots.Length > 0)
-            StartCoroutine(Patrol());
+            StartCoroutine(patrol);
     }
-	
-	IEnumerator Patrol()
+
+    private IEnumerator patrol;
+    bool isPatrolRunning;
+	private IEnumerator Patrol()
     {
+        isPatrolRunning = true;
         if(agent.isOnNavMesh)
         {
             for (int i = 0; i < spots.Length; i++)
@@ -41,14 +46,21 @@ public class AI_Movement : MonoBehaviour
                 yield return new WaitUntil(() => transform.position == agent.destination);
                 yield return new WaitForSeconds(waitTimeAtSpot);
             }
-            StartCoroutine(Patrol());
+            StartCoroutine(patrol);
         }
         else throw new Exception(string.Format("NPC {0} is not on a navMesh", ID));
-
+        isPatrolRunning = false;
     }
 
     public void PlayVoice(AudioClip newClip)
     {
+        if (isPatrolRunning)
+        {
+            StopCoroutine(patrol);
+            agent.Stop();
+            transform.LookAt(dc.hmd);
+        }
+            
         voice.clip = newClip;
         voice.Play();
     }
@@ -59,4 +71,10 @@ public class AI_Movement : MonoBehaviour
     {
         stressLevel += change;
     }
+}
+
+public enum AIState
+{
+    Walk,
+    Talk
 }

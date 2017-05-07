@@ -15,6 +15,7 @@ public class Patient : MonoBehaviour
 
     // References
     public List<IA_Area> burnWounds = new List<IA_Area>();
+    public IA_Area mouth;
     public ConfigureResultsToDisplay crd;
 
     public void PlaceBurn(Vector3 pos)

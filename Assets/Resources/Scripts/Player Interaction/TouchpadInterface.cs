@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public enum TouchpadState { Default = 0, DialogueSelect = 8, Numpad = 4}
+public enum TouchpadState { Default = 0, DialogueSelect = 8, Numpad = 4, Teleporting = 12}
 
 [System.Serializable]
 public enum TIButtonMask { Option1 = 0, Option2 = 1, Option3 = 2, Option4 = 3 }
 
 [System.Serializable]
-public enum TIButtonFunction {  Say = 0, TBSA = 1, PlaceHolder = 2, Placeholder = 3,
+public enum TIButtonFunction {  Say = 0, TBSA = 1, Teleport = 2, Placeholder = 3,
                                 Plus = 4, Minus = 5, Enter = 6, Back = 7,
                                 Hi = 8, Bye = 9, Greetings = 10, Hello = 11,
                              }
@@ -35,6 +35,8 @@ public class TouchpadInterface : MonoBehaviour {
     //private MeshRenderer mr;
     private GameController gc;
 
+    public TBSA_Controller tbsa;
+
     public void Awake()
     {
         //obj = transform.GetChild(0).gameObject;
@@ -43,7 +45,7 @@ public class TouchpadInterface : MonoBehaviour {
         //mr = GetComponent<MeshRenderer>();
         gc = GameObject.FindWithTag("VariousController").GetComponent<GameController>();
         currentSelection = TIButtonMask.Option1;
-
+        selectionIndex = 1;
         ConfigureMenu(TouchpadState.Default);
 
         foreach (GameObject item in panels)
@@ -92,14 +94,18 @@ public class TouchpadInterface : MonoBehaviour {
     // Handles touchpad press
     public void TouchpadPress()
     {
+        Debug.Log(string.Format("{0} curselect & selectIndex: {1}", (int)currentSelection, selectionIndex));
         switch (state)
         {
             case TouchpadState.Default:
                 DefaultPress(); break;
             case TouchpadState.DialogueSelect:
-                dc.Interact_Dialogue((int)currentSelection); break;
+                if ((int)currentSelection + 1 <= selectionIndex)
+                    dc.Interact_Dialogue((int)currentSelection); break;
             case TouchpadState.Numpad:
                 NumpadPress(); break;
+            case TouchpadState.Teleporting:
+                break;
             default:
                 break;
         }
@@ -116,7 +122,7 @@ public class TouchpadInterface : MonoBehaviour {
             case TIButtonMask.Option3:
                 break;
             case TIButtonMask.Option4:
-                break;
+                ConfigureMenu(TouchpadState.Default); break;
             default:
                 break;
         }
@@ -133,7 +139,7 @@ public class TouchpadInterface : MonoBehaviour {
             case TIButtonFunction.Minus:
                 UpdateNumpad(-1); break;
             case TIButtonFunction.Enter:
-                gc.SendTBSAEstimation(numpadValue); break;
+                tbsa.FinishAttempt(); break;
             case TIButtonFunction.Back:
                 ConfigureMenu(TouchpadState.Default); break;
             default:
@@ -149,6 +155,8 @@ public class TouchpadInterface : MonoBehaviour {
             numpadValue = change;
         numpadValue = Mathf.Clamp(numpadValue, 0, 100);
         displayText.text = numpadValue + "%";
+
+        tbsa.UpdateInputField(change);
     }
 
     //private int selectionIndex;
@@ -165,7 +173,7 @@ public class TouchpadInterface : MonoBehaviour {
             panels[i].transform.GetChild(0).GetComponent<TextMesh>().text = newText;
         }
     }
-
+    /*
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -179,7 +187,7 @@ public class TouchpadInterface : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha4))
             TouchpadPress();
-    }
+    }*/
 
     // Depracated way of drawing the menu
     // Places options in a circle, can add nearly unlimited amount of buttons to the circle

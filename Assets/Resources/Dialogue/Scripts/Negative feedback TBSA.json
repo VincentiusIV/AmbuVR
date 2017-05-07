@@ -1,0 +1,28 @@
+[
+
+	{
+		"NPC_ID": 0,
+		"TextID": 0,
+		"TextLine": "Waarom duurt dit zo lang",
+		"AudioFile": "N_1",
+		"Responses": [{
+				"ResponseText": "",
+				"Fx_stress": -1,
+				"NextTextID": -1
+			}
+
+		]
+	},
+
+	{
+		"NPC_ID": 0,
+		"TextID": 1,
+		"TextLine": "Moet dit echt zo lang duren",
+		"AudioFile": "N_1_1",
+		"Responses": [{
+			"ResponseText": "",
+			"Fx_stress": -1,
+			"NextTextID": -1
+		}]
+	}
+]
