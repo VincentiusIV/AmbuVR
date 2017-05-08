@@ -2,76 +2,65 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct PatientState
+{
+    public int totalAmountOfBurns;      // the total amount of burns
+    public int amountOfBurnsTreated;    // amount of burns that were treated correctly
+    public bool receivedCorrectPainMed; // did this patient receive the correct pain medication?
+}
+
 public class Patient : MonoBehaviour
-{    
-    // Serialize fields
-    [SerializeField] private List<IA_Tags> correctOrder = new List<IA_Tags>();
-    [SerializeField] private GameObject burnWoundPrefab;
+{
+    public PatientState patientState;                               // The state of this patient
+    private List<MedicalItem> correctOrder = new List<MedicalItem>();// The correct order in which objects should be placed on this patient
 
-    [HideInInspector] public IA_Tags correctPainMed;
-    [HideInInspector] public bool didReceiveCorrectPainMed;
-    // Public Get
-    public List<IA_Tags> GetCorrectOrder { get { return correctOrder; } }
+    public GameObject burnWoundPrefab;                              // Prefab of a burn wound      
+    public List<PatientArea> burnWounds = new List<PatientArea>();  // List of burn wounds attached to this patient
+    public PatientArea mouth;                                       // the mouth object of this patient
 
-    // References
-    public List<IA_Area> burnWounds = new List<IA_Area>();
-    public IA_Area mouth;
-    public ConfigureResultsToDisplay crd;
+    public ConfigureResultsToDisplay crd;                           // Reference to config to display manager
 
-    public void PlaceBurn(Vector3 pos)
+    public int tbsa;
+
+    private void Start()
     {
-        // set burn degree
-        if (burnWounds.Count > 50)
-            return;
+        patientState.totalAmountOfBurns = burnWounds.Count;
 
-        GameObject newBurn = Instantiate(burnWoundPrefab, pos, Quaternion.identity) as GameObject;
-        burnWounds.Add(newBurn.GetComponent<IA_Area>());
-        burnWounds[burnWounds.Count - 1].id = burnWounds.Count - 1;
+        PatientSettings patientSettings = GameObject.FindWithTag("VariousController").GetComponent<PatientSettings>();
+
+        
     }
 
-    public bool CheckOrder(List<IA_Tags> placeOrder)
-    {
-        bool correct = false;
-
-        if (placeOrder.Count != correctOrder.Count)
-            for (int i = 0; i < correctOrder.Count - placeOrder.Count; i++)
-                placeOrder.Add(IA_Tags.None);
-
-        for (int i = 0; i < placeOrder.Count; i++)
-        {
-            if (placeOrder[i] == correctOrder[i])
-            { correct = true; }// correct
-            else { return correct = false; }// false
-        }
-        return correct;
-        // sc.something
-    }
-    List<BurnWoundStatus> bwsList;
-    
-
-    public void EvaluatePatient()
+    public void EvaluatePatient()       //Evaluates the patient, checking the current status
     {
         Debug.Log("Evaluating patient...");
-        bwsList = new List<BurnWoundStatus>();
+        List<AreaStatus> bwsList = new List<AreaStatus>();
+
         if (burnWounds.Count == 0)
             Debug.LogWarning("There are no burn wounds to evaluate, make sure you have referenced manually placed wounds!");
-        foreach (IA_Area burn in burnWounds)
-        {
-            // Update color of the burn area
-            bool newStatus = CheckOrder(burn.PlaceOrder);
 
-            bwsList.Add(burn.FinishStatus(newStatus));
-            // Write to JSON report on the specific burn?
-        }
+        foreach (PatientArea burn in burnWounds)
+            bwsList.Add(burn.FinishStatus());
+
         if(crd != null)
-            crd.ConfigureResultDisplay(bwsList, didReceiveCorrectPainMed, true);
+            crd.ConfigureResultDisplay(bwsList, patientState.receivedCorrectPainMed, true);
     }
 
     public void ResetPatient()
     {
-        foreach (IA_Area burn in burnWounds)
+        foreach (PatientArea burn in burnWounds)
         {
             burn.ResetPlaceOrder();
         }
+    }   // Resets the patient
+
+    public void PlaceBurn(Vector3 pos)  // Used to place burn wounds depending on where the player is pointing the controller
+    {
+        if (burnWounds.Count > 50)
+            return;
+
+        GameObject newBurn = Instantiate(burnWoundPrefab, pos, Quaternion.identity) as GameObject;
+        burnWounds.Add(newBurn.GetComponent<PatientArea>());
     }
 }

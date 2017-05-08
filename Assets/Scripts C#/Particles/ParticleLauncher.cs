@@ -41,7 +41,7 @@ public class ParticleLauncher : MonoBehaviour {
         ParticlePhysicsExtensions.GetCollisionEvents(particleLauncher, other, collisionEvents);
 
         if (other.CompareTag("Burn"))
-            other.GetComponent<IA_Area>().ApplyMed(IA_Tags.Water);
+            other.GetComponent<PatientArea>().ApplyMed(MedicalItem.Water);
         for (int i = 0; i < collisionEvents.Count; i++)
         {
             splatDecalPool.ParticleHit(collisionEvents[i], particleColorGradient);

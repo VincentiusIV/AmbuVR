@@ -8,11 +8,11 @@ public class ConfigureResultsToDisplay : MonoBehaviour {
     public TextMesh receiveMedText;
     public TextMesh plasticWrapText;
 
-    public void ConfigureResultDisplay(List<BurnWoundStatus> _bwsList, bool didReceivePainMed, bool didNeedWrap)
+    public void ConfigureResultDisplay(List<AreaStatus> _bwsList, bool didReceivePainMed, bool didNeedWrap)
     {
         int amountOfCooledWounds = 0;
         int amountOfWrappedWounds = 0;
-        foreach (BurnWoundStatus bws in _bwsList)
+        foreach (AreaStatus bws in _bwsList)
         {
             if (bws.isCooled)
                 amountOfCooledWounds++;
