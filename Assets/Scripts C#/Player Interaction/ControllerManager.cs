@@ -53,4 +53,16 @@ public class ControllerManager : MonoBehaviour
         }
         else return false;
     }
+
+    // returns the gameobjects that are currently being held by the player
+    public bool CanUseObject(GameObject objToCheck)
+    {
+        GameObject[] heldObjs = new GameObject[2];
+
+        for (int i = 0; i < 2; i++)
+            if (controllers[i].currentHeldObject == objToCheck)
+                return false;
+
+        return true;
+    }
 }

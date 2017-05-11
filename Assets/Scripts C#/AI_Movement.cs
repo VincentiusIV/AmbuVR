@@ -10,17 +10,18 @@ public class AI_Movement : MonoBehaviour
 {
     // Public getters
     public int ID { get; private set; }
+    public AIState state;
 
-    // Serialized
-    [SerializeField] private Transform[] patrolSpots;
+    public Transform[] patrolSpots;
     public float waitTimeAtSpot;
 
+    // References
     NavMeshAgent agent;
-    DialogueController dc;
+    public DialogueController dc;
     AudioSource voice;
-
-    public AIState state;
     Animator anime;
+
+    
 
 	void Start ()
     {
@@ -29,6 +30,7 @@ public class AI_Movement : MonoBehaviour
         voice = GetComponent<AudioSource>();
         anime = GetComponent<Animator>();
         patrol = Patrol();
+
         if(patrolSpots.Length > 0)
             StartCoroutine(patrol);
     }
@@ -65,6 +67,8 @@ public class AI_Movement : MonoBehaviour
         voice.Play();
     }
 
+
+
     public int stressLevel { get; private set; }
 
     public void UpdateStressLevel(int change)
@@ -76,5 +80,8 @@ public class AI_Movement : MonoBehaviour
 public enum AIState
 {
     Walk,
-    Talk
+    Talk,
+    Jump,
+    Fall,
+
 }

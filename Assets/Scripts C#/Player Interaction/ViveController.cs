@@ -68,7 +68,6 @@ public class ViveController : MonoBehaviour, IManager
     {
         if (curManState != ManagerState.Completed)
             return;
-
         
         device = SteamVR_Controller.Input((int)motionCon.index);
 
