@@ -8,6 +8,7 @@ public class InteractableObject : MonoBehaviour {
     [Header("Mandatory References")]
     public Animator objectToAnimate;
     public Rigidbody rigidBody;
+    public ParticleSystem psToActivate;
 
     private bool isObjectActive = false;
 

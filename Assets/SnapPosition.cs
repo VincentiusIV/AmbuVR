@@ -8,6 +8,7 @@ public class SnapPosition : MonoBehaviour {
     private MeshRenderer mr;
 
     private GameObject currentSnappedObj;
+    private bool isFull = false;
 
     private void Start()
     {
@@ -18,12 +19,16 @@ public class SnapPosition : MonoBehaviour {
 
 	private void OnTriggerStay(Collider other)
     {
+        if (isFull)
+            return;
+
         mr.enabled = true;
 
         if(other.CompareTag("Pick Up"))
         {
             if(cm.CanUseObject(other.gameObject))
             {
+                isFull = true;
                 currentSnappedObj = other.gameObject;
                 other.transform.position = transform.position;
                 other.transform.SetParent(transform);
@@ -36,6 +41,9 @@ public class SnapPosition : MonoBehaviour {
         mr.enabled = false;
 
         if (other.gameObject == currentSnappedObj)
+        {
             currentSnappedObj = new GameObject();
+            isFull = false;
+        }    
     }
 }
