@@ -7,7 +7,7 @@ public enum MedicalItem { None, BurnS, Water, PM_Paracetamol, PM_Opiaten, Plasti
 
 public class ItemData : MonoBehaviour
 {
-    [SerializeField]public MedicalItem thisItem;
+    [SerializeField] public MedicalItem thisItem;
     [SerializeField] public PatientAreaType correctArea;
 }
 

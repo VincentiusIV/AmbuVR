@@ -9,15 +9,13 @@ public enum PatientAreaType { Mouth, Burn}
 public enum App_Status { UNFINISHED, FIN_INCORRECT, FIN_CORRECT }
 
 [System.Serializable]
-public enum BurnDegree { None = 0, First = 1, Second = 2, Third =3 }
-
-[System.Serializable]
 public struct AreaStatus
 {
     public MedicalItem coolType;
     public bool isCooled;
     public bool isWrapped;
 }
+
 public class PatientArea : MonoBehaviour
 {
     [Header("Mandatory References")]
@@ -26,7 +24,7 @@ public class PatientArea : MonoBehaviour
 
     public PatientAreaType areaType;            // Defines what this area is
     public App_Status status;                   // The status of the wound
-    public BurnDegree burnDegree;               // The degree of the burn
+    //public BurnDegree burnDegree;               // The degree of the burn
 
     public List<MedicalItem> placeOrder;        // The order in which med items were used on this area
     public List<MedicalItem> correctOrder;      // The correct order of med items
@@ -41,9 +39,9 @@ public class PatientArea : MonoBehaviour
             areaStatus.isCooled = false;
             areaStatus.isWrapped = false;
 
-            if (burnDegree == BurnDegree.Third) 
+            /*if (burnDegree == BurnDegree.Third) 
                 areaStatus.coolType = MedicalItem.BurnS;
-            else areaStatus.coolType = MedicalItem.Water;
+            else areaStatus.coolType = MedicalItem.Water;*/
         }
 
         status = App_Status.UNFINISHED;
@@ -85,7 +83,6 @@ public class PatientArea : MonoBehaviour
         if (item == MedicalItem.PlasticWrap)
             areaStatus.isWrapped = true;
 
-        patient.EvaluatePatient();
     }
 
     public AreaStatus FinishStatus() // Returns the status of this area & changes color

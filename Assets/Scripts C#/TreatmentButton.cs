@@ -18,10 +18,6 @@ public class TreatmentButton : MonoBehaviour {
             {
                 pt.EvaluatePatient();
             }
-            else if(reset)
-            {
-                pt.ResetPatient();
-            }
         }
     }
 }

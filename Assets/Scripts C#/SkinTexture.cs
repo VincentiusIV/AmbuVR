@@ -105,8 +105,6 @@ public class SkinTexture : MonoBehaviour {
         if (save)
         {
             savedMix.Apply(true);
-            if(worldPoint != new Vector3() && drawCubes)
-                pt.PlaceBurn(worldPoint);
         } 
         else mix.Apply(true);
         Debug.Log("TBSA is now: " + GetTBSA());

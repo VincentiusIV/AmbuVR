@@ -19,8 +19,8 @@ public class PatientSettings : MonoBehaviour {
     [Range(0, 100)] public int minTbsaParaceta;       // Min TBSA required for use of paracetamol
     [Range(0, 100)] public int minTbsaOpiaten;        // Min TBSA required for use of Opiaten (needle) 
 
-    [Header("Plastic Wrap")]
-    public BurnDegree minDegree; // The min burn degree required when a plastic wrap should be used
+    //[Header("Plastic Wrap")]
+    //public BurnDegree minDegree; // The min burn degree required when a plastic wrap should be used
 
     [Header("Total Application")]
     public List<TreatmentSteps> treatmentOrder;
@@ -43,7 +43,7 @@ public class PatientSettings : MonoBehaviour {
         return painMedication;
     }
 
-    public bool ShouldUsePlasticWrap(BurnDegree degree)
+    /*public bool ShouldUsePlasticWrap(BurnDegree degree)
     {
         int burnDegree = (int)degree;
         int minDegree = (int)this.minDegree;
@@ -51,5 +51,5 @@ public class PatientSettings : MonoBehaviour {
         if (burnDegree > minDegree)
             return true;
         else return false;
-    }
+    }*/
 }

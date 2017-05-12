@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +13,15 @@ public class SnapPosition : MonoBehaviour {
 
     private void Start()
     {
-        cm = GameObject.Find("[CameraRig]").GetComponent<ControllerManager>();
+        try
+        {
+            cm = GameObject.Find("[CameraRig]").GetComponent<ControllerManager>();
+        }
+        catch(NullReferenceException)
+        {
+            throw new Exception("There is no CameraRig in the scene");
+        }
+        
         mr = GetComponent<MeshRenderer>();
         mr.enabled = false;
     }
