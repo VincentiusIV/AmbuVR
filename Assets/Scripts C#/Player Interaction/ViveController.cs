@@ -43,7 +43,7 @@ public class ViveController : MonoBehaviour, IManager
         Debug.Log(string.Format("{0} {1} is booting up", GetType().Name, id));
 
         cm = _cm;   
-        holdPosition = transform.FindChild("HoldPosition");
+        holdPosition = transform.Find("HoldPosition");
         // SteamVR ref
         motionCon = GetComponent<SteamVR_TrackedObject>();
         // references
@@ -51,9 +51,9 @@ public class ViveController : MonoBehaviour, IManager
         pointer.enabled = false;
 
         if(id == ControllerID.RIGHT)
-            ti = transform.FindChild("HG_Interface").GetComponent<TouchpadInterface>();
+            ti = transform.Find("HG_Interface").GetComponent<TouchpadInterface>();
 
-        model = transform.FindChild("Model").gameObject;
+        model = transform.Find("Model").gameObject;
 
         UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
 
