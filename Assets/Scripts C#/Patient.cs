@@ -36,10 +36,7 @@ public class Patient : MonoBehaviour
         PatientSettings patientSettings = GameObject.FindWithTag("VariousController").GetComponent<PatientSettings>();
         ps.coolingToUse = patientSettings.CoolingToUse(ps.tbsa);
         ps.painMedToUse = patientSettings.PainMedicationToUse(ps.tbsa);
-
     }
-
-
 
     public void ReceivePainMed(MedicalItem med)
     {
