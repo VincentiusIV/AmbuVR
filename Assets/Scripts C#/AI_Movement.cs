@@ -75,8 +75,7 @@ public class AI_Movement : MonoBehaviour
                     i = 0;
             }
         }
-        else throw new Exception(string.Format("NPC {0} is not on a navMesh", id));
-        isPatrolRunning = false;
+        throw new Exception(string.Format("NPC {0} is not on a navMesh", id));
     }
 
     private void OnMouseEnter()
