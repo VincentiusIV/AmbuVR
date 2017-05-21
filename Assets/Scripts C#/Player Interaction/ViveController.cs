@@ -37,6 +37,7 @@ public class ViveController : MonoBehaviour, IManager
     // Private 
     int oldLayer;
     Transform oldParent;
+    bool touchEnabled;
 
     public void BootSequence(ControllerManager _cm)
     {
@@ -50,8 +51,17 @@ public class ViveController : MonoBehaviour, IManager
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
 
-        if(id == ControllerID.RIGHT)
-            ti = transform.Find("HG_Interface").GetComponent<TouchpadInterface>();
+        try
+        {
+            if (id == ControllerID.RIGHT)
+                ti = transform.Find("HG_Interface").GetComponent<TouchpadInterface>();
+            touchEnabled = true;
+        }
+        catch(NullReferenceException)
+        {
+            touchEnabled = false;
+            Debug.Log("Touch is disabled");
+        }
 
         model = transform.Find("Model").gameObject;
 
@@ -71,7 +81,7 @@ public class ViveController : MonoBehaviour, IManager
         
         device = SteamVR_Controller.Input((int)motionCon.index);
 
-        if (id == ControllerID.RIGHT )
+        if (id == ControllerID.RIGHT && touchEnabled )
         {
             if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
                 ti.ToggleTI();

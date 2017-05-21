@@ -39,8 +39,6 @@ public class Patient : MonoBehaviour
 
     }
 
-
-
     public void ReceivePainMed(MedicalItem med)
     {
         if (!patientState.receivedPainMed)

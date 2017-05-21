@@ -64,15 +64,16 @@ public class AI_Movement : MonoBehaviour
     private IEnumerator Patrol()
     {
         isPatrolRunning = true;
-        if(agent.isOnNavMesh)
+        while(agent.isOnNavMesh)
         {
             for (int i = 0; i < patrolSpots.Length; i++)
             {
                 agent.SetDestination(patrolSpots[i].position);
                 yield return new WaitUntil(() => transform.position == agent.destination);
                 yield return new WaitForSeconds(waitTimeAtSpot);
+                if (i == patrolSpots.Length - 1)
+                    i = 0;
             }
-            StartCoroutine(patrol);
         }
         else throw new Exception(string.Format("NPC {0} is not on a navMesh", id));
         isPatrolRunning = false;
