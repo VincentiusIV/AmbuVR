@@ -19,7 +19,7 @@ public struct PatientState
 
 public class Patient : MonoBehaviour
 {
-    public PatientState ps;                 // The state of this patient
+    public PatientState patientState;                 // The state of this patient
     private List<MedicalItem> correctOrder; // The correct order in which objects should be placed on this patient
     public List<PatientArea> burnWounds;    // List of burn wounds attached to this patient
 
@@ -32,10 +32,10 @@ public class Patient : MonoBehaviour
         burnWounds = new List<PatientArea>();
 
         // Configuring patient depending on settings
-        ps.totalAmountOfBurns = burnWounds.Count;
+        patientState.totalAmountOfBurns = burnWounds.Count;
         PatientSettings patientSettings = GameObject.FindWithTag("VariousController").GetComponent<PatientSettings>();
-        ps.coolingToUse = patientSettings.CoolingToUse(ps.tbsa);
-        ps.painMedToUse = patientSettings.PainMedicationToUse(ps.tbsa);
+        patientState.coolingToUse = patientSettings.CoolingToUse(patientState.tbsa);
+        patientState.painMedToUse = patientSettings.PainMedicationToUse(patientState.tbsa);
 
     }
 
@@ -43,12 +43,12 @@ public class Patient : MonoBehaviour
 
     public void ReceivePainMed(MedicalItem med)
     {
-        if (!ps.receivedPainMed)
+        if (!patientState.receivedPainMed)
         {
-            ps.receivedPainMed = true;
-            ps.receivedCorrectPainMed = ps.painMedToUse == med;
+            patientState.receivedPainMed = true;
+            patientState.receivedCorrectPainMed = patientState.painMedToUse == med;
         }
-        else Debug.Log("This patient already received the " + ps.receivedCorrectPainMed + " pain med");
+        else Debug.Log("This patient already received the " + patientState.receivedCorrectPainMed + " pain med");
     }
 
     public void EvaluatePatient()       //Evaluates the patient, checking the current status
@@ -63,7 +63,7 @@ public class Patient : MonoBehaviour
             areaStatusList.Add(burn.FinishStatus());
 
         if (crd != null)
-            crd.ConfigureResultDisplay(areaStatusList, ps.receivedCorrectPainMed, true);
+            crd.ConfigureResultDisplay(areaStatusList, patientState.receivedCorrectPainMed, true);
         else Debug.LogError("Patient has no reference to result display");
     }
 
