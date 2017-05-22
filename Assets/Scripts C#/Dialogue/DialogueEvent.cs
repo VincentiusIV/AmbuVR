@@ -17,6 +17,5 @@ public class DialogueEvent
 public class Response
 {
     public string ResponseText;
-    public int Fx_stress;
     public int NextTextID;
 }

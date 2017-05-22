@@ -101,8 +101,8 @@ public class ViveController : MonoBehaviour, IManager
             }
         }
 
-        if (curConState == ControllerState.Holding && currentHeldObject.name == "WaterBottle")
-            currentHeldObject.GetComponent<WaterBottle>().SprinkleWater();
+        //if (curConState == ControllerState.Holding && currentHeldObject.name == "WaterBottle")        // UPDATE WATER BOTTLE BEHAVIOUR FROM BOTTLE
+        //    currentHeldObject.GetComponent<WaterBottle>().SprinkleWater();
 
 
         AimChecking(device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled);

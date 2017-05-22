@@ -53,7 +53,7 @@ public class DialogueController : MonoBehaviour {
             if(de[i].AudioFile != "")
             {
                 AudioClip ac = Resources.Load<AudioClip>("Dialogue/Audio/" + de[i].AudioFile);
-                npcs[de[i].NPC_ID].GetComponent<AI_Movement>().PlayVoice(ac);
+                npcs[de[i].NPC_ID].GetComponent<ParentBehaviour>().PlayVoice(ac);
                 if (ac != null)
                     yield return new WaitForSeconds(ac.length);
                 else throw new System.Exception("Could not retrieve audio file: "+de[i].AudioFile);
@@ -62,8 +62,6 @@ public class DialogueController : MonoBehaviour {
             ti.UpdateText(de[i].Responses);
             yield return new WaitUntil(() => isPressed == true);
             isPressed = false;
-
-            npcs[de[i].NPC_ID].GetComponent<AI_Movement>().UpdateStressLevel(de[i].Responses[lastPressedOption].Fx_stress);
 
             if (i != de.Length - 1)
             {

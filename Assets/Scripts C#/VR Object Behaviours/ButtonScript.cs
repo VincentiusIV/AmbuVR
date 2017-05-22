@@ -15,12 +15,9 @@ public class ButtonScript : MonoBehaviour {
     [SerializeField] bool finishScene;
 
     SceneCreator sc;
-    GameController gc;
-
     private void Start()
     {
         sc = GameObject.FindWithTag("VariousController").GetComponent<SceneCreator>();
-        gc = GameObject.FindWithTag("VariousController").GetComponent<GameController>();
         highlight.SetActive(false);
 
         if(environment != EnviroID.None)
@@ -69,7 +66,7 @@ public class ButtonScript : MonoBehaviour {
         if (difficulty != Difficulty.None)
             sc.SetDifficulty = (int)difficulty;
 
-        if (finishScene)
-            gc.FinishGame();
+        //if (finishScene)
+        //    gc.FinishGame();
     }
 }

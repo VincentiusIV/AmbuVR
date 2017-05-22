@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioSource))]
-public class AI_Movement : MonoBehaviour
+public class ParentBehaviour : MonoBehaviour
 {
     [Header("State")]
     public int id;
@@ -86,12 +86,12 @@ public class AI_Movement : MonoBehaviour
     {
         outline.enabled = false;
     }
-
     private void OnMouseDown()
     { 
         isSelectedToMove = true;
     }
 
+    // Plays a voice from this AI, 
     public void PlayVoice(AudioClip newClip)
     {
         if (isPatrolRunning)
@@ -104,15 +104,8 @@ public class AI_Movement : MonoBehaviour
         voice.clip = newClip;
         voice.Play();
     }
-
-    public void UpdateStressLevel(int change)
-    {
-        stressLevel += change;
-
-        // Set new state of the patient
-    }
 }
-
+// Enum for animations
 public enum AIState
 {
     Walk,
