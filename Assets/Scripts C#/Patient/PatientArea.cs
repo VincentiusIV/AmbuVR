@@ -88,8 +88,15 @@ public class PatientArea : MonoBehaviour
             areaStatus.isWrapped = true;
 
         if (placeOrder.Count == correctOrder.Count && CheckOrder())
+        {
             status = App_Status.FIN_CORRECT;
-
+            Debug.Log("You succesfully treated this burn!");
+        }
+        else if(placeOrder.Count == correctOrder.Count)
+        {
+            status = App_Status.FIN_INCORRECT;
+            Debug.Log("You suck");
+        }
     }
 
     public AreaStatus FinishStatus() // Returns the status of this area & changes color
