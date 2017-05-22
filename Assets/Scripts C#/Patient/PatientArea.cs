@@ -68,7 +68,11 @@ public class PatientArea : MonoBehaviour
     public void ApplyMed(MedicalItem item)      // Applies a medical item to this area
     {
         if (status == App_Status.FIN_CORRECT)
+        {
+            Debug.Log("This wound is finished!");
             return;
+        }
+            
 
         Debug.Log(string.Format("{0} {1} being applied with {2}", status, areaType, item));
 
@@ -82,6 +86,9 @@ public class PatientArea : MonoBehaviour
         
         if (item == MedicalItem.PlasticWrap)
             areaStatus.isWrapped = true;
+
+        if (placeOrder.Count == correctOrder.Count && CheckOrder())
+            status = App_Status.FIN_CORRECT;
 
     }
 
@@ -114,6 +121,28 @@ public class PatientArea : MonoBehaviour
     public void ResetPlaceOrder()
     {
         placeOrder = new List<MedicalItem>();
+    }
+
+    //////// DESKTOP TESTING /////////
+    private void OnMouseOver()
+    {
+        if(Input.GetButton("Fire1"))
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                ApplyMed(MedicalItem.Water);
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+                ApplyMed(MedicalItem.BurnS);
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+                ApplyMed(MedicalItem.PM_Paracetamol);
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+                ApplyMed(MedicalItem.PM_Opiaten);
+            if (Input.GetKeyDown(KeyCode.Alpha5))
+                ApplyMed(MedicalItem.PlasticWrap);
+        }
+        else if(Input.GetButtonDown("Fire2"))
+        {
+            placeOrder = new List<MedicalItem>();
+        }
     }
 }
 

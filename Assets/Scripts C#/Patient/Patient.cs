@@ -28,14 +28,26 @@ public class Patient : MonoBehaviour
 
     private void Start()
     {
-        correctOrder = new List<MedicalItem>();
-        burnWounds = new List<PatientArea>();
-
         // Configuring patient depending on settings
         patientState.totalAmountOfBurns = burnWounds.Count;
         PatientSettings patientSettings = GameObject.FindWithTag("VariousController").GetComponent<PatientSettings>();
         patientState.coolingToUse = patientSettings.CoolingToUse(patientState.tbsa);
         patientState.painMedToUse = patientSettings.PainMedicationToUse(patientState.tbsa);
+
+        correctOrder = new List<MedicalItem>();
+        // Create correct treatment order
+        for (int i = 0; i < patientSettings.treatmentOrder.Count; i++)
+        {
+            if (patientSettings.treatmentOrder[i] == TreatmentSteps.Cooling)
+                correctOrder.Add(patientState.coolingToUse);
+            else if (patientSettings.treatmentOrder[i] == TreatmentSteps.Wrapping)
+                correctOrder.Add(MedicalItem.PlasticWrap);
+        }
+        // Set correct orders for each burn wound
+        foreach (PatientArea item in burnWounds)
+        {
+            item.correctOrder = correctOrder;
+        }
     }
 
     public void ReceivePainMed(MedicalItem med)
@@ -48,7 +60,8 @@ public class Patient : MonoBehaviour
         else Debug.Log("This patient already received the " + patientState.receivedCorrectPainMed + " pain med");
     }
 
-    public void EvaluatePatient()       //Evaluates the patient, checking the current status
+    //Evaluates the patient, checking the current status
+    public void EvaluatePatient()       
     {
         Debug.Log("Evaluating patient...");
         List<AreaStatus> areaStatusList = new List<AreaStatus>();
@@ -64,6 +77,8 @@ public class Patient : MonoBehaviour
         else Debug.LogError("Patient has no reference to result display");
     }
 
+    // TO-DO:
+    // Method to lock/unlock the patient ragdoll
     public void LockPatientRagdoll(bool lockState)
     {
         Rigidbody[] rigidBodies = GetComponentsInChildren<Rigidbody>();

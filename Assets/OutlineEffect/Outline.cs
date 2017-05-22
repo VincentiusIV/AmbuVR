@@ -73,5 +73,15 @@ namespace cakeslice
             }
 
         }
+
+        private void OnMouseOver()
+        {
+            enabled = true;
+        }
+
+        private void OnMouseExit()
+        {
+            enabled = false;
+        }
     }
 }
