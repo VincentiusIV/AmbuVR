@@ -41,7 +41,8 @@ public class ParentBehaviour : MonoBehaviour
         if(patrolSpots.Length > 0)
             StartCoroutine(patrol);
 
-        outline.enabled = false;
+        if(outline == null)
+            outline.enabled = false;
     }
     private void Update()
     {

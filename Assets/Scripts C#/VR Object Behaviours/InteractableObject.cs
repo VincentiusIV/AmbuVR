@@ -20,27 +20,41 @@ public class InteractableObject : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("VR_Controller") || other.CompareTag("Pick Up"))
+        if(other.CompareTag("VR_Controller"))
+            ActivateObject();
+    }
+
+    private void ActivateObject()
+    {
+        Debug.Log("Activating object: " + gameObject.name);
+        if (objectToAnimate == null)
         {
-            Debug.Log("Activating object: " + gameObject.name);
-            if(objectToAnimate == null)
-            {
-                throw new Exception("There is no animator connected to: "+ gameObject.name);
-            }
-            
-            // Activate / Decativate
-            isObjectActive = !isObjectActive;
+            throw new Exception("There is no animator connected to: " + gameObject.name);
+        }
 
-            if (rigidBody != null)
-                rigidBody.isKinematic = isObjectActive;
-            if (psToActivate != null)
-            {
-                if (isObjectActive)
-                    psToActivate.Play();
-                else psToActivate.Stop();
-            }
+        // Activate / Decativate
+        isObjectActive = !isObjectActive;
 
-            objectToAnimate.SetBool("Open", isObjectActive);
+        if (rigidBody != null)
+            rigidBody.isKinematic = isObjectActive;
+        if (psToActivate != null)
+        {
+            if (isObjectActive)
+                psToActivate.Play();
+            else psToActivate.Stop();
+        }
+
+        objectToAnimate.SetBool("Open", isObjectActive);
+
+        if (isObjectActive)
+            GetComponent<GamePlayEvent>().EventFinished();
+    }
+    //////// DESKTOP TESTING /////////
+    private void OnMouseOver()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            ActivateObject();
         }
     }
 }
