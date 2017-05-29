@@ -20,6 +20,7 @@ public class MovingObject : MonoBehaviour
     [Header("Command Behaviour")]
     public cakeslice.Outline outline;
     public Transform player;
+    public bool reachedPlayer;
 
     NavMeshAgent agent;   
     AudioSource voice;
@@ -28,6 +29,7 @@ public class MovingObject : MonoBehaviour
 
     private Transform[] points;
     bool isWaitingForNext = false;
+    
     IEnumerator waiting;
 
     void Start ()
@@ -52,7 +54,7 @@ public class MovingObject : MonoBehaviour
         GotoNextPoint();
     }
 
-    void ChangeBehaviour(AIState newBehaviour)
+    public void ChangeBehaviour(AIState newBehaviour)
     {
         state = newBehaviour;
         Debug.Log(string.Format("At {0} new behaviour of {1} is {2}", Time.time, gameObject.name, state.ToString()));
@@ -110,6 +112,7 @@ public class MovingObject : MonoBehaviour
     void UpdateAnimator(bool isMoving)
     {
         anime.SetBool("isWalking", isMoving);
+        // add more animations
     }
 
     private void Update()
@@ -119,6 +122,17 @@ public class MovingObject : MonoBehaviour
             case AIState.Idle:
                 break;
             case AIState.Follow:
+                if (reachedPlayer)
+                    break;
+                agent.SetDestination(player.position);
+                reachedPlayer = agent.remainingDistance < 1f;
+                if(reachedPlayer)
+                {
+                    UpdateAnimator(false);
+                    agent.isStopped = true;
+                    // DISABLE MOVEMENT FOR PLAYER (teleporting)
+                }
+                break;
             case AIState.Patrol:
                 // Choose the next destination point when the agent gets
                 // close to the current one.
