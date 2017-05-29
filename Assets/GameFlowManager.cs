@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameFlowManager : MonoBehaviour {
+public class GameFlowManager : MonoBehaviour
+{
 
     public static GameFlowManager instance;
 

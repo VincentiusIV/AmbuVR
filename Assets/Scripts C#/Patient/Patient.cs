@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public struct PatientState
 
 public class Patient : MonoBehaviour
 {
-    public PatientState patientState;                 // The state of this patient
+    public PatientState patientState;       // The state of this patient
     private List<MedicalItem> correctOrder; // The correct order in which objects should be placed on this patient
     public List<PatientArea> burnWounds;    // List of burn wounds attached to this patient
 
@@ -75,6 +76,11 @@ public class Patient : MonoBehaviour
         if (crd != null)
             crd.ConfigureResultDisplay(areaStatusList, patientState.receivedCorrectPainMed, true);
         else Debug.LogError("Patient has no reference to result display");
+    }
+
+    internal void AddBurn(Vector3 worldPoint)
+    {
+        throw new NotImplementedException();
     }
 
     // TO-DO:

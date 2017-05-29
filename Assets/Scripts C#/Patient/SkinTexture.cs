@@ -53,7 +53,7 @@ public class SkinTexture : MonoBehaviour {
         }
             
     }
-
+    Patient patient;
     public void Highlight(Vector2 textureCoord)
     {
         if (Time.time < nextUpdate || textureCoord == currentTC)
@@ -101,10 +101,10 @@ public class SkinTexture : MonoBehaviour {
                     mix.SetPixel(x, y, col); 
             }
         }
-        //float newTbsa = GetTBSA();
         if (save)
         {
             savedMix.Apply(true);
+            patient.AddBurn(worldPoint);
         } 
         else mix.Apply(true);
         Debug.Log("TBSA is now: " + GetTBSA());
