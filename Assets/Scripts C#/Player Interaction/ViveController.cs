@@ -34,6 +34,8 @@ public class ViveController : MonoBehaviour, IManager
     [SerializeField] Transform holdPosition;
     [SerializeField] float lerpIntensity;
 
+    public LayerMask vruiLayer;
+
     // Private 
     int oldLayer;
     Transform oldParent;
@@ -141,6 +143,10 @@ public class ViveController : MonoBehaviour, IManager
                 Release_Check(hit);
                 return;
             }
+            if (hit.collider.gameObject.layer == vruiLayer)
+            {
+                UI_Check(hit);
+            }
             for (int i = 0; i < (int)curConState; i++)
                 switch (hit.collider.tag)
                 {
@@ -150,8 +156,10 @@ public class ViveController : MonoBehaviour, IManager
                         Paint_Check(hit); break;*/
                     case "Burn":
                     default:
-                        return;
+                        break;
                 }
+
+            
         }
         else pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * pointerLength));
     }
@@ -173,21 +181,13 @@ public class ViveController : MonoBehaviour, IManager
 
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
             hit.collider.GetComponent<ButtonScript>().Click();
+
+        // New buttons
+        hit.collider.GetComponent<DialogueButton>().OnPointerOver();
+
+        if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
+            hit.collider.GetComponent<DialogueButton>().UseButton();
     }
-    // Depracated way of teleporting, no longer needed
-    /*private void TP_Check(RaycastHit hit)
-    {
-        Debug.Log(string.Format("hit {0}, performing TP Check", hit.collider.tag));
-        if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Grip))
-        {
-            transform.parent.position = hit.point;
-        }
-            
-
-        // TODO
-        // upgrade functionality with fade to black animation,
-
-    }*/
     /// <summary>
     /// Checks if player can grab something
     /// </summary>

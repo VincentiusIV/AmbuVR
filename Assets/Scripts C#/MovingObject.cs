@@ -22,6 +22,9 @@ public class MovingObject : MonoBehaviour
     public Transform player;
     public bool reachedPlayer;
 
+    [Header("Testing References")]
+    public TextMesh stateMesh;
+
     NavMeshAgent agent;   
     AudioSource voice;
 
@@ -60,6 +63,9 @@ public class MovingObject : MonoBehaviour
         Debug.Log(string.Format("At {0} new behaviour of {1} is {2}", Time.time, gameObject.name, state.ToString()));
         if (isWaitingForNext)
             StopCoroutine(waiting);
+
+        if (stateMesh != null)
+            stateMesh.text = state.ToString();
 
         UpdateAnimator(false);
 
