@@ -131,7 +131,7 @@ public class MovingObject : MonoBehaviour
                 if (reachedPlayer)
                     break;
                 agent.SetDestination(player.position);
-                reachedPlayer = agent.remainingDistance < 1f;
+                reachedPlayer = agent.remainingDistance < 2f;
                 if(reachedPlayer)
                 {
                     UpdateAnimator(false);

@@ -25,7 +25,6 @@ public class Patient : MonoBehaviour
     public List<PatientArea> burnWounds;    // List of burn wounds attached to this patient
 
     public PatientArea mouth;               // the mouth object of this patient
-    public ConfigureResultsToDisplay crd;   // Reference to config to display manager
 
     private void Start()
     {
@@ -72,10 +71,6 @@ public class Patient : MonoBehaviour
 
         foreach (PatientArea burn in burnWounds)
             areaStatusList.Add(burn.FinishStatus());
-
-        if (crd != null)
-            crd.ConfigureResultDisplay(areaStatusList, patientState.receivedCorrectPainMed, true);
-        else Debug.LogError("Patient has no reference to result display");
     }
 
     internal void AddBurn(Vector3 worldPoint)
