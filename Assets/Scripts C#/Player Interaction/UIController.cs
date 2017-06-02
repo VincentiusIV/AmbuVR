@@ -2,39 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// UI controller for going back to menu, pausing game, settings
+/// </summary>
 public class UIController : MonoBehaviour
 {
-    [SerializeField]Transform mainCamera;
-    [SerializeField]GameObject UI;
-
-    private bool enableState = false;
+    public static UIController instance;
 
     private void Start()
     {
-        UI.SetActive(false);
+        if (instance == null)
+            instance = this;
+
     }
 
-    public bool ToggleUI()
+    public void ToggleUI()
     {
-        // switch on
-        if(!enableState)
-        {
-            enableState = true;
-            UI.SetActive(true);
-            // set rotation for ui to face camera
-            return enableState;
-        }
-        // switch off
-        else
-        {
-            enableState = false;
-            UI.SetActive(false);
-            return enableState;
-        }
-    }
 
-    public bool IsUIEnabled
-    {
-        get { return enableState; }
     }
 }

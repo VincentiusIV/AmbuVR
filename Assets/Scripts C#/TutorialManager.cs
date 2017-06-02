@@ -18,6 +18,7 @@ public class TutorialManager : MonoBehaviour {
         if (instance == null)
             instance = this;
 
+        sound = GetComponent<AudioSource>();
         sound.loop = false;
         sound.playOnAwake = false;
     }

@@ -36,6 +36,7 @@ public class ViveController : MonoBehaviour, IManager
 
     public LayerMask vruiLayer;
 
+
     // Private 
     int oldLayer;
     Transform oldParent;
@@ -52,6 +53,7 @@ public class ViveController : MonoBehaviour, IManager
         // references
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
+        
 
         try
         {
@@ -107,11 +109,8 @@ public class ViveController : MonoBehaviour, IManager
         //    currentHeldObject.GetComponent<WaterBottle>().SprinkleWater();
 
 
-        AimChecking(device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) || UI.IsUIEnabled);
+        AimChecking(true);
 
-        if (device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
-            if (!UI.ToggleUI())
-                pointer.enabled = false;
     }
     /// <summary>
     /// Checks what and how can be interacted based on the first 2 raycast hits & controller state 
