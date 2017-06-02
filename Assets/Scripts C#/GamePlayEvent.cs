@@ -21,6 +21,8 @@ public class GamePlayEvent : MonoBehaviour {
         if (state != EventState.CurrentObjective)
             return;
 
+        state = EventState.Finished;
+
         if (gameFlow)
             GameFlowManager.instance.moveToNext = true;
         else TutorialManager.instance.moveToNext = true;

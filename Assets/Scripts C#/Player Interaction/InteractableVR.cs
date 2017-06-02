@@ -54,12 +54,12 @@ public class InteractableVR : MonoBehaviour
         OnRelease();
     }
 
-    public void OnGrab()
+    public virtual void OnGrab()
     {
 
     }
 
-    public void OnRelease()
+    public virtual void OnRelease()
     {
 
     }

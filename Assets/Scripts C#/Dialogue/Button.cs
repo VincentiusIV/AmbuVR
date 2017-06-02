@@ -6,7 +6,6 @@ namespace AmbuVR
 {
     public class Button : MonoBehaviour
     {
-
         public cakeslice.Outline outline;
         public TextMesh textMesh;
 

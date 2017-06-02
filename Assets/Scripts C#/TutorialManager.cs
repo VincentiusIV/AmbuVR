@@ -8,8 +8,10 @@ public class TutorialManager : MonoBehaviour {
 
     [Header("Stage Order")]
     public List<TutorialStageData> eventList;
-
     public bool moveToNext;
+
+    public string introTxt;
+    public AudioClip introClip;
 
     AudioSource sound;
 
@@ -21,28 +23,34 @@ public class TutorialManager : MonoBehaviour {
         sound = GetComponent<AudioSource>();
         sound.loop = false;
         sound.playOnAwake = false;
+
+        StartCoroutine(Tutorial());
     }
 
     private IEnumerator Tutorial()
     {
         Debug.Log("Tutorial has started");
 
+        // Introduction
+
+
         for (int i = 0; i < eventList.Count; i++)
         {
             Debug.Log(eventList[i].text);
+
             if(eventList[i].clip != null)
             {
                 sound.clip = eventList[i].clip;
                 sound.Play();
-                yield return new WaitUntil(() => sound.isPlaying == false);
             }
+
             eventList[i].tutEvent.state = EventState.CurrentObjective;
             Debug.Log("Current objective is "+ eventList[i].tutEvent.gameObject.name);
             yield return new WaitUntil(() => moveToNext);
             moveToNext = false;
         }
-        
-        
+
+        Debug.Log("Tutorial Finished");
         // Pick up object
         
     }
