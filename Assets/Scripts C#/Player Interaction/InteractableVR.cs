@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using cakeslice;
 
 [RequireComponent(typeof(Rigidbody))]
 public class InteractableVR : MonoBehaviour
@@ -9,27 +10,28 @@ public class InteractableVR : MonoBehaviour
     public bool isBeingHeld;
 
     //--- Private ---//
-
-    Transform hand;
     Rigidbody rb;
+    Outline outline;
+
+    bool isSwitchOffActive;
+    IEnumerator switchOff;
+
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        outline = transform.FindChild("Model").GetComponent<Outline>();
     }
-
     private void Update()
     {
-        if(isBeingHeld)
-        {
-            transform.position = hand.position;
-        }
+
     }
 
-    public void HoldObject(Transform _hand)
+    public void HoldObject(Transform holdPosition)
     {
-        hand = _hand;
-
+        transform.position = holdPosition.position;
+        transform.rotation = holdPosition.rotation;
+        transform.SetParent(holdPosition);
         rb.isKinematic = true;
 
         OnGrab();
@@ -37,6 +39,7 @@ public class InteractableVR : MonoBehaviour
 	
     public void ReleaseObject(SteamVR_TrackedObject motionCon, SteamVR_Controller.Device device)
     {
+        transform.SetParent(null);
         rb.isKinematic = false;
 
         Transform origin = motionCon.origin ? motionCon.origin : motionCon.transform.parent;
@@ -58,9 +61,28 @@ public class InteractableVR : MonoBehaviour
     {
 
     }
-
     public virtual void OnRelease()
     {
 
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.CompareTag("NearPlayerTrigger"))
+        {
+            outline.enabled = true;
+
+            if (isSwitchOffActive)
+                StopCoroutine(switchOff);
+
+            switchOff = SwitchOff();
+            StartCoroutine(switchOff);
+        }
+    }
+    IEnumerator SwitchOff()
+    {
+        isSwitchOffActive = true;
+        yield return new WaitForSeconds(.1f);
+        outline.enabled = isSwitchOffActive = false;
     }
 }
