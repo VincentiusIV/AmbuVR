@@ -9,6 +9,8 @@ public class UIController : MonoBehaviour
 {
     public static UIController instance;
 
+    public List<AmbuVR.Button> buttons;
+
     private void Start()
     {
         if (instance == null)
@@ -16,8 +18,11 @@ public class UIController : MonoBehaviour
 
     }
 
-    public void ToggleUI()
+    public void ToggleUI(bool visible)
     {
-
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            buttons[i].gameObject.SetActive(visible);
+        }
     }
 }

@@ -30,6 +30,10 @@ public class TutorialManager : MonoBehaviour {
         sound.loop = false;
         sound.playOnAwake = false;
 
+    }
+
+    public void StartTutorial()
+    {
         StartCoroutine(Tutorial());
     }
 
@@ -83,7 +87,7 @@ public class TutorialManager : MonoBehaviour {
 
         Debug.Log("Tutorial Finished");
         // Pick up object
-        
+        UIController.instance.ToggleUI(true);
     }
 }
 [System.Serializable]

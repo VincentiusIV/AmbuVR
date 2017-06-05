@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace AmbuVR
 {
+    [RequireComponent(typeof(cakeslice.Outline))]
     public class Button : MonoBehaviour
     {
         public cakeslice.Outline outline;
@@ -23,7 +24,7 @@ namespace AmbuVR
 
         public virtual void UseButton()
         {
-
+            
         }
 
         private void OnMouseDown()
