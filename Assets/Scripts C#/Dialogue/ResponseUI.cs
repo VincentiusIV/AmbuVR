@@ -23,17 +23,16 @@ public class ResponseUI : MonoBehaviour
 
     public void UpdateResponses(Response[] responses)
     {
-        
         for (int i = 0; i < responses.Length; i++)
         {
             responseButtons[i].textMesh.text = responses[i].ResponseText;
         }
-        ToggleVisible(true);
+        ToggleVisible(true, responses.Length);
     }
 
-    public void ToggleVisible(bool state)
+    public void ToggleVisible(bool state, int amount = 4)
     {
-        for (int i = 0; i < responseButtons.Length; i++)
+        for (int i = 0; i < amount; i++)
         {
             responseButtons[i].GetComponent<MeshRenderer>().enabled = state;
             responseButtons[i].transform.GetChild(0).gameObject.SetActive(state);

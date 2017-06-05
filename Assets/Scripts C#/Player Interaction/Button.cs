@@ -24,7 +24,7 @@ namespace AmbuVR
 
         public virtual void UseButton()
         {
-            
+            Debug.Log("You pressed button " + gameObject.name);
         }
 
         private void OnMouseDown()

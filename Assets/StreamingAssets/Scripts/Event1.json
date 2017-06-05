@@ -26,6 +26,11 @@
         "ResponseText": "Leg uit wat je gaat doen",
         "Fx_stress": 1,
         "NextTextID": 3
+      },
+      {
+        "ResponseText": "Negeer",
+        "Fx_stress": 1,
+        "NextTextID": -1
       }
     ]
   },

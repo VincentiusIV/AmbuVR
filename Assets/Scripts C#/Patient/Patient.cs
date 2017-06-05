@@ -63,14 +63,7 @@ public class Patient : MonoBehaviour
     //Evaluates the patient, checking the current status
     public void EvaluatePatient()       
     {
-        Debug.Log("Evaluating patient...");
-        List<AreaStatus> areaStatusList = new List<AreaStatus>();
-
-        if (burnWounds.Count == 0)
-            Debug.LogWarning("There are no burn wounds to evaluate, make sure you have referenced manually placed wounds!");
-
-        foreach (PatientArea burn in burnWounds)
-            areaStatusList.Add(burn.FinishStatus());
+        GetComponent<GamePlayEvent>().EventFinished();
     }
 
     internal void AddBurn(Vector3 worldPoint)

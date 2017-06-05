@@ -91,11 +91,13 @@ public class PatientArea : MonoBehaviour
         {
             status = App_Status.FIN_CORRECT;
             Debug.Log("You succesfully treated this burn!");
+            patient.EvaluatePatient();
         }
         else if(placeOrder.Count == correctOrder.Count)
         {
             status = App_Status.FIN_INCORRECT;
-            Debug.Log("You suck");
+            Debug.Log("You failed");
+            patient.EvaluatePatient();
         }
     }
 
