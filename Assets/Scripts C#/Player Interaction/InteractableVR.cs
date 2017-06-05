@@ -8,10 +8,11 @@ public class InteractableVR : MonoBehaviour
 {
     //--- Public ---//
     public bool isBeingHeld;
+    public Outline outline;
 
     //--- Private ---//
     Rigidbody rb;
-    Outline outline;
+    
 
     bool isSwitchOffActive;
     IEnumerator switchOff;
@@ -20,7 +21,7 @@ public class InteractableVR : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        outline = transform.FindChild("Model").GetComponent<Outline>();
+        outline.enabled = false;
     }
     private void Update()
     {
@@ -33,7 +34,7 @@ public class InteractableVR : MonoBehaviour
         transform.rotation = holdPosition.rotation;
         transform.SetParent(holdPosition);
         rb.isKinematic = true;
-
+        isBeingHeld = true;
         OnGrab();
     }
 	
@@ -41,6 +42,7 @@ public class InteractableVR : MonoBehaviour
     {
         transform.SetParent(null);
         rb.isKinematic = false;
+        isBeingHeld = false;
 
         Transform origin = motionCon.origin ? motionCon.origin : motionCon.transform.parent;
         if (origin != null)

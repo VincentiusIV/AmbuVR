@@ -56,11 +56,11 @@ public class TeleportVive : MonoBehaviour {
 
     private Mesh PlaneMesh;
 
-    public bool MayAimToTeleport;
+    public bool CanTeleport;
 
     void Start()
     {
-        MayAimToTeleport = false;
+        CanTeleport = false;
         // Disable the pointer graphic (until the user holds down on the touchpad)
         Pointer.enabled = false;
 
@@ -161,7 +161,8 @@ public class TeleportVive : MonoBehaviour {
 
 	void Update ()
     {
-        
+        if (!CanTeleport)
+            return;
         // If we are currently teleporting (ie handling the fade in/out transition)...
         if(CurrentTeleportState == TeleportState.Teleporting)
         {
@@ -173,6 +174,7 @@ public class TeleportVive : MonoBehaviour {
                 {
                     // We have finished fading in
                     CurrentTeleportState = TeleportState.None;
+                    
                 } else
                 {
                     // We have finished fading out - time to teleport!
