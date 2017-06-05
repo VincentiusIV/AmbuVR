@@ -22,7 +22,6 @@ public class ViveController : MonoBehaviour, IManager
 
     // Private ref fields
     LineRenderer pointer;
-    UIController UI;
     ControllerManager cm;
     TouchpadInterface ti;
     GameObject model;
@@ -68,9 +67,6 @@ public class ViveController : MonoBehaviour, IManager
         }
 
         model = transform.Find("Model").gameObject;
-
-        UI = GameObject.FindWithTag("VariousController").GetComponent<UIController>();
-
         isTouching = false;
 
         curManState = ManagerState.Completed;

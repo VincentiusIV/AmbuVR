@@ -136,12 +136,10 @@ public class MovingObject : MonoBehaviour
                 {
                     UpdateAnimator(false);
                     agent.isStopped = true;
-                    // DISABLE MOVEMENT FOR PLAYER (teleporting)
+                    AmbuVR.Player.instance.SetCanTeleport(false);
                 }
                 break;
             case AIState.Patrol:
-                // Choose the next destination point when the agent gets
-                // close to the current one.
                 if (!agent.pathPending && agent.remainingDistance < 0.5f || agent.isStopped)
                     GotoNextPoint();
                 break;

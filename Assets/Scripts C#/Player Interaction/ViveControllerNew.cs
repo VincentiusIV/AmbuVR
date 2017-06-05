@@ -26,6 +26,8 @@ public class ViveControllerNew : MonoBehaviour
 
     private void Start()
     {
+        motionCon = GetComponent<SteamVR_TrackedObject>();
+
         triggerCollider = GetComponent<SphereCollider>();
         triggerCollider.enabled = true;
 
@@ -59,12 +61,16 @@ public class ViveControllerNew : MonoBehaviour
         if(pointer.enabled)
         {
             RaycastHit hit;
+            pointer.SetPosition(0, pointerOrigin.position);
 
-            if(Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit, 100, uiLayer))
+            if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit, 100, uiLayer))
             {
+                pointer.SetPosition(1, hit.point);
+
                 if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
                     hit.collider.GetComponent<AmbuVR.Button>().UseButton();
             }
+            else pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * 100));
         }
     }
 
