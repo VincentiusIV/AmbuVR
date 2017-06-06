@@ -23,6 +23,7 @@ public class ViveControllerNew : MonoBehaviour
 
     //--- Booleans ---//
     bool isHolding = false;
+    bool canGrabAgain = true;
 
     private void Start()
     {
@@ -45,13 +46,32 @@ public class ViveControllerNew : MonoBehaviour
         {
             if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
             {
-                currentHeldObject.ReleaseObject(motionCon, device);
+                Transform origin = motionCon.origin ? motionCon.origin : motionCon.transform.parent;
+                Vector3 velocity;
+                Vector3 angularVelocity;
+
+                if (origin != null)
+                {
+                    velocity = origin.TransformVector(device.velocity);
+                    angularVelocity = origin.TransformVector(device.angularVelocity);
+                }
+                else
+                {
+                    velocity = device.velocity;
+                    angularVelocity = device.angularVelocity;
+                }
+
+                currentHeldObject.ReleaseObject(velocity, angularVelocity);
+
                 isHolding = false;
                 triggerCollider.enabled = true;
 
                 model.SetActive(true);
             }
         }
+
+        if (canGrabAgain == false && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
+            canGrabAgain = true;
 
         if(device.GetTouchDown(SteamVR_Controller.ButtonMask.Touchpad) && !isHolding)
         {
@@ -78,7 +98,7 @@ public class ViveControllerNew : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.GetComponent<InteractableVR>() && device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
+        if(other.GetComponent<InteractableVR>() && device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger) && canGrabAgain)
         {
             if (other.GetComponent<InteractableVR>().isBeingHeld)
                 return;
@@ -90,6 +110,7 @@ public class ViveControllerNew : MonoBehaviour
             isHolding = true;
 
             model.SetActive(false);
+            canGrabAgain = false;
 
             if (pointer.enabled)
                 pointer.enabled = false;

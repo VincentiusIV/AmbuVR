@@ -38,23 +38,14 @@ public class InteractableVR : MonoBehaviour
         OnGrab();
     }
 	
-    public void ReleaseObject(SteamVR_TrackedObject motionCon, SteamVR_Controller.Device device)
+    public void ReleaseObject(Vector3 _velocity, Vector3 _angularVelocity)
     {
         transform.SetParent(null);
-        rb.isKinematic = false;
         isBeingHeld = false;
 
-        Transform origin = motionCon.origin ? motionCon.origin : motionCon.transform.parent;
-        if (origin != null)
-        {
-            rb.velocity = origin.TransformVector(device.velocity);
-            rb.angularVelocity = origin.TransformVector(device.angularVelocity);
-        }
-        else
-        {
-            rb.velocity = device.velocity;
-            rb.angularVelocity = device.angularVelocity;
-        }
+        rb.isKinematic = false;
+        rb.velocity = _velocity;
+        rb.angularVelocity = _velocity;
 
         OnRelease();
     }
