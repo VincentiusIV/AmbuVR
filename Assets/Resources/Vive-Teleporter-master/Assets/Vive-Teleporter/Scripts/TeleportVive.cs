@@ -56,11 +56,10 @@ public class TeleportVive : MonoBehaviour {
 
     private Mesh PlaneMesh;
 
-    public bool CanTeleport;
+    public bool CanTeleport = true;
 
     void Start()
     {
-        CanTeleport = false;
         // Disable the pointer graphic (until the user holds down on the touchpad)
         Pointer.enabled = false;
 

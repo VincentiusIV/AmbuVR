@@ -5,14 +5,21 @@ using UnityEngine;
 namespace AmbuVR
 {
     [RequireComponent(typeof(cakeslice.Outline))]
+    [RequireComponent(typeof(AudioSource))]
     public class Button : MonoBehaviour
     {
+        //--- Public ---//
         public cakeslice.Outline outline;
         public TextMesh textMesh;
 
-        public bool selected;
-        bool isSwitchOffActive;
+        //--- Private ---//
         IEnumerator switchOff;
+        AudioSource sound;
+
+        //--- Booleans ---//
+        bool selected;
+        bool isSwitchOffActive;
+        
 
         private void Start()
         {
@@ -20,6 +27,8 @@ namespace AmbuVR
             outline = GetComponent<cakeslice.Outline>();
             outline.enabled = false;
             switchOff = SwitchOff();
+
+            sound = GetComponent<AudioSource>();
         }
 
         public virtual void UseButton()
@@ -34,10 +43,16 @@ namespace AmbuVR
 
         public void OnPointerOver()
         {
-            outline.enabled = true;
+            if(selected == false)
+            {
+                selected = true;
+                sound.Play();
+            }
 
             if (isSwitchOffActive)
                 StopCoroutine(switchOff);
+            else
+                outline.enabled = true;
 
             switchOff = SwitchOff();
             StartCoroutine(switchOff);
@@ -46,6 +61,7 @@ namespace AmbuVR
         public void OnPointerExit()
         {
             outline.enabled = false;
+            selected = false;
         }
 
 

@@ -67,6 +67,8 @@ public class ViveControllerNew : MonoBehaviour
             {
                 pointer.SetPosition(1, hit.point);
 
+                hit.collider.GetComponent<AmbuVR.Button>().OnPointerOver();
+
                 if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
                     hit.collider.GetComponent<AmbuVR.Button>().UseButton();
             }
