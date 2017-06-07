@@ -7,8 +7,17 @@ using cakeslice;
 public class InteractableVR : MonoBehaviour
 {
     //--- Public ---//
-    public bool isBeingHeld;
+    [Header("Picking Up")]
+    public bool pickUp = true;
+
+    [Header("Rotating")]
+    public bool rotate = false;
+    public float minRotation;
+    public float maxRotation;
+    
+    [Header("References")]
     public Outline outline;
+    public bool isBeingHeld;
 
     //--- Private ---//
     Rigidbody rb;
@@ -28,32 +37,64 @@ public class InteractableVR : MonoBehaviour
 
     }
 
-    public void HoldObject(Transform holdPosition)
+    public void ConnectToObject(Transform holdPosition)
+    {
+        if (pickUp)
+            HoldObject(holdPosition);
+        else if (rotate)
+            RotateObject();
+    }
+
+    public void DisconnectFromObject(Vector3 _velo, Vector3 _anguVelo)
+    {
+        if (pickUp)
+            ReleaseObject(_velo, _anguVelo);
+        else if (rotate)
+            StopRotating();
+    }
+
+    private void HoldObject(Transform holdPosition)
     {
         transform.position = holdPosition.position;
         transform.rotation = holdPosition.rotation;
-        transform.SetParent(holdPosition);
+
+        rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
+
+        transform.SetParent(holdPosition);
         isBeingHeld = true;
+
         OnGrab();
     }
 	
-    public void ReleaseObject(Vector3 _velocity, Vector3 _angularVelocity)
+    private void ReleaseObject(Vector3 _velocity, Vector3 _angularVelocity)
     {
         transform.SetParent(null);
-        isBeingHeld = false;
 
         rb.isKinematic = false;
         rb.velocity = _velocity;
         rb.angularVelocity = _velocity;
 
+        isBeingHeld = false;
+
         OnRelease();
+    }
+
+    private void RotateObject()
+    {
+
+    }
+
+    private void StopRotating()
+    {
+
     }
 
     public virtual void OnGrab()
     {
 
     }
+
     public virtual void OnRelease()
     {
 

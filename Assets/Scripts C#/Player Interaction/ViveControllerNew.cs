@@ -61,7 +61,7 @@ public class ViveControllerNew : MonoBehaviour
                     angularVelocity = device.angularVelocity;
                 }
 
-                currentHeldObject.ReleaseObject(velocity, angularVelocity);
+                currentHeldObject.DisconnectFromObject(velocity, angularVelocity);
 
                 isHolding = false;
                 triggerCollider.enabled = true;
@@ -103,7 +103,7 @@ public class ViveControllerNew : MonoBehaviour
             if (other.GetComponent<InteractableVR>().isBeingHeld)
                 return;
 
-            other.GetComponent<InteractableVR>().HoldObject(holdPosition);
+            other.GetComponent<InteractableVR>().ConnectToObject(holdPosition);
 
             currentHeldObject = other.GetComponent<InteractableVR>();
             triggerCollider.enabled = false;

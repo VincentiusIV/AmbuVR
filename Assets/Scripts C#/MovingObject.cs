@@ -40,7 +40,8 @@ public class MovingObject : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         voice = GetComponent<AudioSource>();
 
-        player = Camera.main.transform;//GameObject.FindWithTag("Player").transform;
+        player = AmbuVR.Player.instance.transform;
+
         waiting = WaitBeforeNextPoint();
 
         points = new Transform[0];

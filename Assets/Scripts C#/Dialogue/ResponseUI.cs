@@ -39,7 +39,7 @@ public class ResponseUI : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            responseButtons[i].GetComponent<MeshRenderer>().enabled = state;
+            responseButtons[i].gameObject.SetActive(state);
             responseButtons[i].transform.GetChild(0).gameObject.SetActive(state);
         }
     }
