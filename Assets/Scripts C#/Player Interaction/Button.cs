@@ -21,7 +21,7 @@ namespace AmbuVR
         bool isSwitchOffActive;
         
 
-        private void Start()
+        private void Awake()
         {
             textMesh = transform.GetChild(0).GetComponent<TextMesh>();
             outline = GetComponent<cakeslice.Outline>();

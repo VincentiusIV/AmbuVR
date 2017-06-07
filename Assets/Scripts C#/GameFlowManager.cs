@@ -34,7 +34,7 @@ public class GameFlowManager : MonoBehaviour
                 yield return new WaitUntil(() => NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].reachedPlayer);           
                 // Do dialogue and wait for it to finish
                 yield return DialogueController.instance.StartCoroutine(DialogueController.instance.DialogueSession(eventList[i].dialogueEventID));
-
+                AmbuVR.Player.instance.SetCanTeleport(true);
             }
             Debug.Log("Current objective is: " + eventList[i].gameEvent.name);
             eventList[i].gameEvent.state = EventState.CurrentObjective;
