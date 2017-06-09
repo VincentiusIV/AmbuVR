@@ -35,7 +35,7 @@ public class ViveControllerNew : MonoBehaviour
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
 
-        model = transform.FindChild("Model").gameObject;
+        model = transform.Find("Model").gameObject;
     }
 
     private void Update()

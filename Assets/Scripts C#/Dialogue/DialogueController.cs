@@ -51,7 +51,7 @@ public class DialogueController : MonoBehaviour
         {
             if(de[i].AudioFile != "")   // Only load audio when a link is specified
             {
-                AudioClip ac = Resources.Load<AudioClip>("Dialogue/Audio/" + de[i].AudioFile);
+                AudioClip ac = Resources.Load<AudioClip>("Sounds/Dialogue/Audio/" + de[i].AudioFile);
 
                 if(ac != null)          // If an audio clip was found
                 {
