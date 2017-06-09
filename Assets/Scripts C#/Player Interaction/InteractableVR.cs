@@ -12,16 +12,21 @@ public class InteractableVR : MonoBehaviour
 
     [Header("Rotating")]
     public bool rotate = false;
-    public float minRotation;
-    public float maxRotation;
-    
+    public Vector3 minRotation;
+    public Vector3 maxRotation;
+
     [Header("References")]
     public Outline outline;
     public bool isBeingHeld;
 
     //--- Private ---//
     Rigidbody rb;
-    
+
+    private Vector3 newRotationEuler;
+    private Vector3 oldRotationEuler;
+    private Transform handRotation;
+
+    public Vector3 rotationValues;
 
     bool isSwitchOffActive;
     IEnumerator switchOff;
@@ -31,26 +36,54 @@ public class InteractableVR : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         outline.enabled = false;
+
+        minRotation += transform.rotation.eulerAngles;
+        maxRotation += transform.rotation.eulerAngles;
     }
+
     private void Update()
     {
+        if(isBeingHeld && rotate)
+        {
+            newRotationEuler = handRotation.rotation.eulerAngles;
+            Vector3 rotationDiff = oldRotationEuler - newRotationEuler;
+            Vector3 newRotation = transform.rotation.eulerAngles - rotationDiff;
 
+            // Clamp new rotation between min and max rotation
+            float xRotation = Mathf.Clamp(newRotation.x, minRotation.x, maxRotation.x);
+            float yRotation = Mathf.Clamp(newRotation.y, minRotation.y, maxRotation.y);
+            float zRotation = Mathf.Clamp(newRotation.z, minRotation.z, maxRotation.z);
+
+            newRotation = new Vector3(xRotation, yRotation, zRotation);
+            rotationValues = newRotation - minRotation;
+            Debug.Log(rotationValues);
+            transform.rotation = Quaternion.Euler(newRotation);
+            oldRotationEuler = newRotationEuler;
+        }
     }
 
     public void ConnectToObject(Transform holdPosition)
     {
+        isBeingHeld = true;
+
         if (pickUp)
             HoldObject(holdPosition);
         else if (rotate)
-            RotateObject();
+            RotateObject(holdPosition);
+
+        OnGrab();
     }
 
     public void DisconnectFromObject(Vector3 _velo, Vector3 _anguVelo)
     {
+        isBeingHeld = false;
+
         if (pickUp)
             ReleaseObject(_velo, _anguVelo);
         else if (rotate)
             StopRotating();
+
+        OnRelease();
     }
 
     private void HoldObject(Transform holdPosition)
@@ -62,9 +95,7 @@ public class InteractableVR : MonoBehaviour
         rb.isKinematic = true;
 
         transform.SetParent(holdPosition);
-        isBeingHeld = true;
 
-        OnGrab();
     }
 	
     private void ReleaseObject(Vector3 _velocity, Vector3 _angularVelocity)
@@ -75,19 +106,20 @@ public class InteractableVR : MonoBehaviour
         rb.velocity = _velocity;
         rb.angularVelocity = _velocity;
 
-        isBeingHeld = false;
-
-        OnRelease();
     }
 
-    private void RotateObject()
-    {
 
+    private void RotateObject(Transform holdPosition)
+    {
+        handRotation = holdPosition;
+        Debug.Log("Rotating object " + gameObject.name);
+        newRotationEuler = holdPosition.rotation.eulerAngles;
+        oldRotationEuler = holdPosition.rotation.eulerAngles;
     }
 
     private void StopRotating()
     {
-
+        newRotationEuler = Vector3.zero;
     }
 
     public virtual void OnGrab()

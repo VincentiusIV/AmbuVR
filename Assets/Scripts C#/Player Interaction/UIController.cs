@@ -28,6 +28,8 @@ public class UIController : MonoBehaviour
     {
         for (int i = 0; i < buttons.Count; i++)
         {
+            if (buttons[i] == null)
+                buttons[i] = transform.GetChild(i).GetComponent<AmbuVR.Button>();
             buttons[i].gameObject.SetActive(visible);
         }
     }
