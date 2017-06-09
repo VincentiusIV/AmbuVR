@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-using cakeslice;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Collider))]
 public class InteractableVR : MonoBehaviour
 {
     //--- Public ---//
@@ -16,9 +18,9 @@ public class InteractableVR : MonoBehaviour
     public Vector3 maxRotation;
 
     [Header("References")]
-    public Outline outline;
+    public cakeslice.Outline outline;
     public bool isBeingHeld;
-
+    public Text valueOutput;
     //--- Private ---//
     Rigidbody rb;
 
@@ -35,7 +37,9 @@ public class InteractableVR : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        outline.enabled = false;
+
+        if(outline != null)
+            outline.enabled = false;
 
         minRotation += transform.rotation.eulerAngles;
         maxRotation += transform.rotation.eulerAngles;
@@ -54,9 +58,10 @@ public class InteractableVR : MonoBehaviour
             float yRotation = Mathf.Clamp(newRotation.y, minRotation.y, maxRotation.y);
             float zRotation = Mathf.Clamp(newRotation.z, minRotation.z, maxRotation.z);
 
-            newRotation = new Vector3(xRotation, yRotation, zRotation);
+            newRotation = new Vector3(Mathf.RoundToInt(xRotation), Mathf.RoundToInt(yRotation), Mathf.RoundToInt(zRotation));
             rotationValues = newRotation - minRotation;
-            Debug.Log(rotationValues);
+            valueOutput.text = Mathf.RoundToInt(rotationValues.z).ToString();
+
             transform.rotation = Quaternion.Euler(newRotation);
             oldRotationEuler = newRotationEuler;
         }
@@ -134,7 +139,7 @@ public class InteractableVR : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.CompareTag("NearPlayerTrigger"))
+        if(other.CompareTag("NearPlayerTrigger") && outline != null)
         {
             outline.enabled = true;
 
