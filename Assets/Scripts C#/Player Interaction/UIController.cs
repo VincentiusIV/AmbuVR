@@ -20,7 +20,8 @@ public class UIController : MonoBehaviour
         if (instance == null)
             instance = this;
 
-        bool isVisible = onAwakeTutorial && SceneManager.GetActiveScene().name == "" || onAwakeLevel && SceneManager.GetActiveScene().name == "";
+        bool isVisible = onAwakeTutorial && SceneManager.GetActiveScene().name == "Tutorial" || onAwakeLevel && SceneManager.GetActiveScene().name == "GameFlowTesting";
+        ToggleUI(isVisible);
     }
 
     public void ToggleUI(bool visible)
