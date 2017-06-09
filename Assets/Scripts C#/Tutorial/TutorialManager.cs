@@ -85,6 +85,10 @@ public class TutorialManager : MonoBehaviour {
             moveToNext = false;
         }
 
+        GameObject.FindWithTag("Player").transform.position = Vector3.zero;
+        platform.SetBool("Expand", false);
+        AmbuVR.Player.instance.SetCanTeleport(false);
+        teleportingStage.GetComponent<FadeObjects>().FadeOut();
         Debug.Log("Tutorial Finished");
         // Pick up object
         UIController.instance.ToggleUI(true);
