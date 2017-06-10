@@ -5,7 +5,7 @@ using UnityEngine;
 using Valve.VR;
 
 [Serializable]
-public enum ControllerID { LEFT = 0 , RIGHT = 1}
+public enum ControllerID { LEFT = 0 , RIGHT = 1}/*
 // Contains functionality for the motion controllers
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class ViveController : MonoBehaviour, IManager
@@ -23,7 +23,7 @@ public class ViveController : MonoBehaviour, IManager
     // Private ref fields
     LineRenderer pointer;
     ControllerManager cm;
-    TouchpadInterface ti;
+    //TouchpadInterface ti;
     GameObject model;
 
     // Private & Serialized fields
@@ -148,7 +148,7 @@ public class ViveController : MonoBehaviour, IManager
                     case "Button":
                         UI_Check(hit); break;
                     /*case "Patient":
-                        Paint_Check(hit); break;*/
+                        Paint_Check(hit); break;
                     case "Burn":
                     default:
                         break;
@@ -284,4 +284,4 @@ public class ViveController : MonoBehaviour, IManager
         }
         
     }
-}
+}*/

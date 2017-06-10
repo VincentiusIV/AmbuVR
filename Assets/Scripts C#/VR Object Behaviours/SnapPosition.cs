@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class SnapPosition : MonoBehaviour {
 
     private ControllerManager cm;
@@ -56,3 +56,4 @@ public class SnapPosition : MonoBehaviour {
         }    
     }
 }
+*/

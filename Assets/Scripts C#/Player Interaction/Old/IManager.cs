@@ -7,10 +7,10 @@ public enum ManagerState
     Offline, Initializing, Completed
 }
 
-
+/*
 public interface IManager {
 
 	ManagerState curManState { get; }
 
     void BootSequence(ControllerManager _cm);
-}
+}*/

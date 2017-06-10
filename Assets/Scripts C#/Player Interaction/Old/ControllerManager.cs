@@ -8,7 +8,7 @@ public enum ControllerState
 {
     Aiming = 1, Holding = 2
 }
-
+/*
 public class ControllerManager : MonoBehaviour
 {
     [SerializeField] ViveController LEFT;
@@ -66,3 +66,4 @@ public class ControllerManager : MonoBehaviour
         return true;
     }
 }
+*/
