@@ -19,8 +19,6 @@ public class GamePlayEvent : MonoBehaviour {
     private void Awake()
     {
         state = EventState.Offline;
-        OnSetActive.AddListener(SetActive);
-        OnEventFinished.AddListener(EventFinished);
     }
 
     public void SetActive()
