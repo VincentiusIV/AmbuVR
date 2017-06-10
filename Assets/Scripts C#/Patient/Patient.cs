@@ -12,6 +12,8 @@ public struct PatientState
     public MedicalItem painMedToUse;    // pain med to use
 
     [Header("Statistics")]
+    public bool estimated;              // was the patient estimated?
+    public bool estimatedCorrectly;     // did the player estimate correctly?
     public int totalAmountOfBurns;      // the total amount of burns
     public int amountOfBurnsTreated;    // amount of burns that were treated correctly
     public bool receivedPainMed;
@@ -81,5 +83,13 @@ public class Patient : MonoBehaviour
         {
             item.isKinematic = lockState;
         }
+    }
+
+
+
+    public void ConfirmTBSAEstimation(int estimation)
+    {
+        patientState.estimated = true;
+        patientState.estimatedCorrectly = patientState.tbsa == estimation;
     }
 }

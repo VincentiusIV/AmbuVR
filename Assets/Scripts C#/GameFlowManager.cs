@@ -9,7 +9,7 @@ public class GameFlowManager : MonoBehaviour
     public List<GameStage> eventList = new List<GameStage>();
 
     public bool moveToNext = false;
-    private bool isGameActive = false;
+    public bool isGameActive = false;
 
     private void Start()
     {

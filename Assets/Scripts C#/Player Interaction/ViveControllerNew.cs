@@ -24,6 +24,7 @@ public class ViveControllerNew : MonoBehaviour
     //--- Booleans ---//
     bool isHolding = false;
     bool canGrabAgain = true;
+    bool isUIVisible;
 
     private void Start()
     {
@@ -35,7 +36,7 @@ public class ViveControllerNew : MonoBehaviour
         pointer = GetComponent<LineRenderer>();
         pointer.enabled = false;
 
-        model = transform.FindChild("Model").gameObject;
+        model = transform.Find("Model").gameObject;
     }
 
     private void Update()
@@ -93,6 +94,11 @@ public class ViveControllerNew : MonoBehaviour
                     hit.collider.GetComponent<AmbuVR.Button>().UseButton();
             }
             else pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * 100));
+        }
+
+        if(device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu) && !isHolding)
+        {
+            UIController.instance.ToggleUI(!UIController.instance.isVisible);
         }
     }
 

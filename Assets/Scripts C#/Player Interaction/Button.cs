@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AmbuVR
 {
@@ -10,7 +11,7 @@ namespace AmbuVR
     {
         //--- Public ---//
         public cakeslice.Outline outline;
-        public TextMesh textMesh;
+        public Text textMesh;
 
         //--- Private ---//
         IEnumerator switchOff;
@@ -23,7 +24,6 @@ namespace AmbuVR
 
         private void Awake()
         {
-            textMesh = transform.GetChild(0).GetComponent<TextMesh>();
             outline = GetComponent<cakeslice.Outline>();
             outline.enabled = false;
             switchOff = SwitchOff();

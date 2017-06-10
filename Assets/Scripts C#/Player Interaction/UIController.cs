@@ -15,19 +15,27 @@ public class UIController : MonoBehaviour
 
     public List<AmbuVR.Button> buttons;
 
+    public bool isVisible;
+
     private void Start()
     {
         if (instance == null)
             instance = this;
 
-        bool isVisible = onAwakeTutorial && SceneManager.GetActiveScene().name == "" || onAwakeLevel && SceneManager.GetActiveScene().name == "";
+        bool isVisibleAtStart = onAwakeTutorial && SceneManager.GetActiveScene().name == "Tutorial" || onAwakeLevel && SceneManager.GetActiveScene().name == "GameFlowTesting";
+        ToggleUI(isVisibleAtStart);
     }
 
     public void ToggleUI(bool visible)
     {
+        isVisible = visible;
         for (int i = 0; i < buttons.Count; i++)
         {
+            if (buttons[i] == null)
+                buttons[i] = transform.GetChild(i).GetComponent<AmbuVR.Button>();
             buttons[i].gameObject.SetActive(visible);
         }
     }
+
+
 }
