@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace AmbuVR
 {
-    [RequireComponent(typeof(cakeslice.Outline))]
     [RequireComponent(typeof(AudioSource))]
     public class Button : MonoBehaviour
     {
@@ -24,11 +23,17 @@ namespace AmbuVR
 
         private void Awake()
         {
-            outline = GetComponent<cakeslice.Outline>();
-            outline.enabled = false;
+            if(outline != null)
+                outline.enabled = false;
             switchOff = SwitchOff();
 
             sound = GetComponent<AudioSource>();
+
+            if(GetComponent<Rigidbody>())
+            {
+                GetComponent<Rigidbody>().isKinematic = true;
+                GetComponent<Rigidbody>().useGravity = false;
+            }
         }
 
         public virtual void UseButton()
@@ -36,11 +41,14 @@ namespace AmbuVR
             Debug.Log("You pressed button " + gameObject.name);
         }
 
-        private void OnMouseDown()
+        private void OnMouseOver()
         {
-            UseButton();
-        }
+            Debug.Log("Over: " + gameObject.name);
+            OnPointerOver();
 
+            if (Input.GetButtonDown("Fire1"))
+                UseButton();
+        }
         public void OnPointerOver()
         {
             if(selected == false)
@@ -49,18 +57,22 @@ namespace AmbuVR
                 sound.Play();
             }
 
-            if (isSwitchOffActive)
-                StopCoroutine(switchOff);
-            else
-                outline.enabled = true;
+            if(outline != null)
+            {
+                if (isSwitchOffActive)
+                    StopCoroutine(switchOff);
+                else
+                    outline.enabled = true;
 
-            switchOff = SwitchOff();
-            StartCoroutine(switchOff);
+                switchOff = SwitchOff();
+                StartCoroutine(switchOff);
+            }
         }
 
         public void OnPointerExit()
         {
-            outline.enabled = false;
+            if(outline != null)
+                outline.enabled = false;
             selected = false;
         }
 

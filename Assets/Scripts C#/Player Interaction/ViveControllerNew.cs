@@ -45,6 +45,7 @@ public class ViveControllerNew : MonoBehaviour
 
         if (isHolding)
         {
+            // Release Object
             if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
             {
                 Transform origin = motionCon.origin ? motionCon.origin : motionCon.transform.parent;

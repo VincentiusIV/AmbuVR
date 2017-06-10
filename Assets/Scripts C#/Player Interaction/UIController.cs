@@ -16,6 +16,7 @@ public class UIController : MonoBehaviour
     public List<AmbuVR.Button> buttons;
 
     public bool isVisible;
+    public bool isIntegerBeingRequested;
 
     private void Start()
     {
@@ -37,5 +38,21 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void RequestIntegerFromPlayer(string text)
+    {
+        // Activate knob UI
+    }
+
+    public void ConfirmRequest()
+    {
+        isIntegerBeingRequested = false;
+    }
+
+    public int CollectIntegerFromPlayer()
+    {
+        //Get value from knob
+        // Dactivate 
+        return 0;
+    }
 
 }
