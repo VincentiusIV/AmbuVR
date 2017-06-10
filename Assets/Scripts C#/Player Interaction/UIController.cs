@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -15,8 +16,16 @@ public class UIController : MonoBehaviour
 
     public List<AmbuVR.Button> buttons;
 
+    [Header("Value Input")]
+    public GameObject valueKnob;
+    public Text valueLabel;
+    public InteractableVR knob;
+
     public bool isVisible;
     public bool isIntegerBeingRequested;
+
+    //--- Private ---//
+    public float inputValue;
 
     private void Start()
     {
@@ -25,6 +34,12 @@ public class UIController : MonoBehaviour
 
         bool isVisibleAtStart = onAwakeTutorial && SceneManager.GetActiveScene().name == "Tutorial" || onAwakeLevel && SceneManager.GetActiveScene().name == "GameFlowTesting";
         ToggleUI(isVisibleAtStart);
+
+        if (valueKnob != null)
+        {
+            valueKnob.SetActive(false);
+        }
+        else Debug.LogError("Assing the value knob to the UI controller!");
     }
 
     public void ToggleUI(bool visible)
@@ -40,19 +55,17 @@ public class UIController : MonoBehaviour
 
     public void RequestIntegerFromPlayer(string text)
     {
+        Debug.Log("Integer is requested from player");
         // Activate knob UI
+        isIntegerBeingRequested = true;
+        valueKnob.SetActive(isIntegerBeingRequested);
+        valueLabel.text = text;
     }
 
     public void ConfirmRequest()
     {
         isIntegerBeingRequested = false;
+        inputValue = knob.value;
+        valueKnob.SetActive(isIntegerBeingRequested);
     }
-
-    public int CollectIntegerFromPlayer()
-    {
-        //Get value from knob
-        // Dactivate 
-        return 0;
-    }
-
 }

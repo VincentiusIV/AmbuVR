@@ -37,7 +37,7 @@ public class GameFlowManager : MonoBehaviour
                 AmbuVR.Player.instance.SetCanTeleport(true);
             }
             Debug.Log("Current objective is: " + eventList[i].gameEvent.name);
-            eventList[i].gameEvent.state = EventState.CurrentObjective;
+            eventList[i].gameEvent.SetActive();
             yield return new WaitUntil(() => moveToNext);
             moveToNext = false;
             Debug.Log(eventList[i].gameEvent.name + " was completed!");

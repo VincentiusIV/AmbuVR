@@ -30,7 +30,7 @@ public class InteractableVR : MonoBehaviour
     private Vector3 oldRotationEuler;
     private Transform handRotation;
 
-    public Vector3 rotationValues;
+    public float value;
 
     bool isSwitchOffActive;
     IEnumerator switchOff;
@@ -61,8 +61,8 @@ public class InteractableVR : MonoBehaviour
             float zRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.z, maxRotation.z);
 
             newRotation = new Vector3(Mathf.RoundToInt(xRotation), Mathf.RoundToInt(yRotation), Mathf.RoundToInt(zRotation));
-            rotationValues = newRotation - minRotation;
-            valueOutput.text = Mathf.RoundToInt(rotationValues.z).ToString();
+            value = newRotation.z - minRotation.z;
+            valueOutput.text = Mathf.RoundToInt(value).ToString();
 
             transform.rotation = Quaternion.Euler(newRotation);
             oldRotationEuler = newRotationEuler;
