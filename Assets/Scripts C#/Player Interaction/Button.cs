@@ -11,6 +11,8 @@ namespace AmbuVR
         //--- Public ---//
         public cakeslice.Outline outline;
         public Text textMesh;
+        public AudioClip selectSound;
+        public AudioClip clickSound;
 
         //--- Private ---//
         IEnumerator switchOff;
@@ -39,6 +41,12 @@ namespace AmbuVR
         public virtual void UseButton()
         {
             Debug.Log("You pressed button " + gameObject.name);
+
+            if(clickSound != null)
+            {
+                sound.clip = clickSound;
+                sound.Play();     
+            }
         }
 
         private void OnMouseOver()
@@ -54,6 +62,7 @@ namespace AmbuVR
             if(selected == false)
             {
                 selected = true;
+                sound.clip = selectSound;
                 sound.Play();
             }
 
