@@ -26,13 +26,13 @@ public class GlowObjectCmd : MonoBehaviour
 		GlowController.RegisterObject(this);
 	}
 
-	private void OnMouseEnter()
+	public void Show()
 	{
 		_targetColor = GlowColor;
 		enabled = true;
 	}
 
-	private void OnMouseExit()
+	public void Hide()
 	{
 		_targetColor = Color.black;
 		enabled = true;

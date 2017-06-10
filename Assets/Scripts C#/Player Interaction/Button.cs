@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -11,7 +12,7 @@ namespace AmbuVR
     {
         //--- Public ---//
         [Header("References")]
-        public cakeslice.Outline outline;
+        public GlowObjectCmd outline;
         public Text textMesh;
         public AudioClip selectSound;
         public AudioClip clickSound;
@@ -31,9 +32,8 @@ namespace AmbuVR
 
         private void Awake()
         {
-            if(outline != null)
-                outline.enabled = false;
-            switchOff = SwitchOff();
+            if (outline != null)
+                outline.Hide();
 
             sound = GetComponent<AudioSource>();
 
@@ -42,9 +42,6 @@ namespace AmbuVR
                 GetComponent<Rigidbody>().isKinematic = true;
                 GetComponent<Rigidbody>().useGravity = false;
             }
-
-            OnPointerOver.AddListener(PointerOver);
-            OnUseButton.AddListener(UseButton);
         }
 
         public virtual void UseButton()
@@ -57,16 +54,10 @@ namespace AmbuVR
                 sound.clip = clickSound;
                 sound.Play();     
             }
+
+            OnUseButton.Invoke();
         }
 
-        private void OnMouseOver()
-        {
-            Debug.Log("Over: " + gameObject.name);
-            PointerOver();
-
-            if (Input.GetButtonDown("Fire1"))
-                UseButton();
-        }
 
         public void PointerOver()
         {
@@ -79,30 +70,34 @@ namespace AmbuVR
 
             if(outline != null)
             {
-                if (isSwitchOffActive)
-                    StopCoroutine(switchOff);
-                else
-                    outline.enabled = true;
-
-                switchOff = SwitchOff();
-                StartCoroutine(switchOff);
+                outline.Show();
             }
+
+            OnPointerOver.Invoke();
         }
 
         public void PointerExit()
         {
-            if(outline != null)
-                outline.enabled = false;
+            if (outline != null)
+            {
+                outline.Hide();
+            }
             selected = false;
         }
 
 
-        IEnumerator SwitchOff()
+        private void OnMouseOver()
         {
-            isSwitchOffActive = true;
-            yield return new WaitForSeconds(.1f);
+            Debug.Log("Over: " + gameObject.name);
+            PointerOver();
+
+            if (Input.GetButtonDown("Fire1"))
+                UseButton();
+        }
+
+        private void OnMouseExit()
+        {
             PointerExit();
-            isSwitchOffActive = false;
         }
     }
 }

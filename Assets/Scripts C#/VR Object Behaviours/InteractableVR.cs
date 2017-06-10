@@ -20,7 +20,7 @@ public class InteractableVR : MonoBehaviour
     public Vector3 maxRotation;
 
     [Header("References")]
-    public cakeslice.Outline outline;
+    public GlowObjectCmd outline;
     public bool isBeingHeld;
     public Text valueOutput;
     //--- Private ---//

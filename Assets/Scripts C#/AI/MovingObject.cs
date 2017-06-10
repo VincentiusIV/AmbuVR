@@ -18,7 +18,7 @@ public class MovingObject : MonoBehaviour
     public float waitTimeAtPoint = 2f;
 
     [Header("Command Behaviour")]
-    public cakeslice.Outline outline;
+    public GlowObjectCmd outline;
     public Transform player;
     public bool reachedPlayer;
 
@@ -47,8 +47,8 @@ public class MovingObject : MonoBehaviour
         points = new Transform[0];
         state = AIState.Idle;
 
-        if(outline != null)
-            outline.enabled = false;
+        if (outline != null)
+            outline.Hide();
 
         // Disabling auto-braking allows for continuous movement
         // between points (ie, the agent doesn't slow down as it
@@ -165,11 +165,11 @@ public class MovingObject : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        outline.enabled = true;
+        outline.Show();
     }
     private void OnMouseExit()
     {
-        outline.enabled = false;
+        outline.Hide();
     }
     private void OnMouseOver()
     {
