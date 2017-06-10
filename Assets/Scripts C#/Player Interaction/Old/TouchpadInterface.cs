@@ -14,7 +14,7 @@ public enum TIButtonFunction {  Say = 0, TBSA = 1, Teleport = 2, Placeholder = 3
                                 Plus = 4, Minus = 5, Enter = 6, Back = 7,
                                 Hi = 8, Bye = 9, Greetings = 10, Hello = 11,
                              }
-
+/*
 public class TouchpadInterface : MonoBehaviour {
 
     public bool isActive { get; private set; }
@@ -35,7 +35,7 @@ public class TouchpadInterface : MonoBehaviour {
     //private MeshRenderer mr;
     //private GameController gc;
 
-    public TBSA_Controller tbsa;
+    
 
     public void Awake()
     {
@@ -246,5 +246,6 @@ public class TouchpadInterface : MonoBehaviour {
         }
         else currentSelection = 0;
         panels[currentSelection].GetComponent<Renderer>().material.color = Color.black;
-    }*/
+    }
 }
+*/

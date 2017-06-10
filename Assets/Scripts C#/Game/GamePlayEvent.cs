@@ -25,6 +25,7 @@ public class GamePlayEvent : MonoBehaviour {
     {
         Debug.Log(gameObject.name + " is the current event");
         state = EventState.CurrentObjective;
+
         OnSetActive.Invoke();
     }
 
