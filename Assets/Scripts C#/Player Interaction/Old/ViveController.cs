@@ -178,7 +178,7 @@ public class ViveController : MonoBehaviour, IManager
             hit.collider.GetComponent<ButtonScript>().Click();
 
         // New buttons
-        hit.collider.GetComponent<DialogueButton>().OnPointerOver();
+        hit.collider.GetComponent<DialogueButton>().PointerOver();
 
         if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
             hit.collider.GetComponent<DialogueButton>().UseButton();

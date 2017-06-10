@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using AmbuVR;
+
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class InteractableVR : MonoBehaviour
@@ -54,9 +56,9 @@ public class InteractableVR : MonoBehaviour
             Vector3 newRotation = transform.rotation.eulerAngles - rotationDiff;
 
             // Clamp new rotation between min and max rotation
-            float xRotation = Mathf.Clamp(newRotation.x, minRotation.x, maxRotation.x);
-            float yRotation = Mathf.Clamp(newRotation.y, minRotation.y, maxRotation.y);
-            float zRotation = Mathf.Clamp(newRotation.z, minRotation.z, maxRotation.z);
+            float xRotation = CustomMathf.ClampAngle(newRotation.x, minRotation.x, maxRotation.x);
+            float yRotation = CustomMathf.ClampAngle(newRotation.y, minRotation.y, maxRotation.y);
+            float zRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.z, maxRotation.z);
 
             newRotation = new Vector3(Mathf.RoundToInt(xRotation), Mathf.RoundToInt(yRotation), Mathf.RoundToInt(zRotation));
             rotationValues = newRotation - minRotation;

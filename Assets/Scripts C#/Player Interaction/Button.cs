@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace AmbuVR
 {
@@ -9,10 +10,15 @@ namespace AmbuVR
     public class Button : MonoBehaviour
     {
         //--- Public ---//
+        [Header("References")]
         public cakeslice.Outline outline;
         public Text textMesh;
         public AudioClip selectSound;
         public AudioClip clickSound;
+
+        [Header("Events")]
+        public UnityEvent OnPointerOver;
+        public UnityEvent OnUseButton;
 
         //--- Private ---//
         IEnumerator switchOff;
@@ -36,6 +42,9 @@ namespace AmbuVR
                 GetComponent<Rigidbody>().isKinematic = true;
                 GetComponent<Rigidbody>().useGravity = false;
             }
+
+            OnPointerOver.AddListener(PointerOver);
+            OnUseButton.AddListener(UseButton);
         }
 
         public virtual void UseButton()
@@ -44,6 +53,7 @@ namespace AmbuVR
 
             if(clickSound != null)
             {
+                sound.Stop();
                 sound.clip = clickSound;
                 sound.Play();     
             }
@@ -52,12 +62,13 @@ namespace AmbuVR
         private void OnMouseOver()
         {
             Debug.Log("Over: " + gameObject.name);
-            OnPointerOver();
+            PointerOver();
 
             if (Input.GetButtonDown("Fire1"))
                 UseButton();
         }
-        public void OnPointerOver()
+
+        public void PointerOver()
         {
             if(selected == false)
             {
@@ -78,7 +89,7 @@ namespace AmbuVR
             }
         }
 
-        public void OnPointerExit()
+        public void PointerExit()
         {
             if(outline != null)
                 outline.enabled = false;
@@ -90,7 +101,7 @@ namespace AmbuVR
         {
             isSwitchOffActive = true;
             yield return new WaitForSeconds(.1f);
-            OnPointerExit();
+            PointerExit();
             isSwitchOffActive = false;
         }
     }
