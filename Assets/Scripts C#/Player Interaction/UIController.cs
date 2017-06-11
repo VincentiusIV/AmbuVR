@@ -24,6 +24,11 @@ public class UIController : MonoBehaviour
     public bool isVisible;
     public bool isIntegerBeingRequested;
 
+    [Header("Scene Options")]
+    public string gSceneName = "GameFlowTesting";
+
+    public string tSceneName = "Tutorial";
+
     //--- Private ---//
     public float inputValue;
 
@@ -67,5 +72,19 @@ public class UIController : MonoBehaviour
         isIntegerBeingRequested = false;
         inputValue = knob.value;
         valueKnob.SetActive(isIntegerBeingRequested);
+    }
+
+    public void PlayGame()
+    {
+        SceneManager.LoadScene(gSceneName);
+
+        UIController.instance.ToggleUI(false);
+    }
+
+    public void PlayTutorial()
+    {
+        if (SceneManager.GetActiveScene().name == gSceneName)
+            SceneManager.LoadScene(tSceneName);
+        else TutorialManager.instance.StartTutorial();
     }
 }
