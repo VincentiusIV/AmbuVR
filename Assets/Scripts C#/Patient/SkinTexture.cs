@@ -17,7 +17,7 @@ public class SkinTexture : MonoBehaviour {
 
     private Texture2D mix;
     private Texture2D savedMix;
-    private Patient pt;
+    //private Patient pt;
 
     public bool drawCubes = true;
 
@@ -41,7 +41,7 @@ public class SkinTexture : MonoBehaviour {
 
         if (rend == null)
             rend = GetComponent<Renderer>();
-        pt = GetComponent<Patient>();
+       // pt = GetComponent<Patient>();
 
         ResetTexture();
 

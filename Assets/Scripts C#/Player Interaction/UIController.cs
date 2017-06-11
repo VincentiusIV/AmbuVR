@@ -36,6 +36,7 @@ public class UIController : MonoBehaviour
     {
         if (instance == null)
             instance = this;
+        else Destroy(gameObject);
 
         bool isVisibleAtStart = onAwakeTutorial && SceneManager.GetActiveScene().name == "Tutorial" || onAwakeLevel && SceneManager.GetActiveScene().name == "GameFlowTesting";
         ToggleUI(isVisibleAtStart);
@@ -76,15 +77,16 @@ public class UIController : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene(gSceneName);
-
+        //SceneManager.LoadScene(gSceneName);
+        SteamVR_LoadLevel.Begin(gSceneName);
         UIController.instance.ToggleUI(false);
     }
 
     public void PlayTutorial()
     {
         if (SceneManager.GetActiveScene().name == gSceneName)
-            SceneManager.LoadScene(tSceneName);
+            //SceneManager.LoadScene(tSceneName);
+            SteamVR_LoadLevel.Begin(tSceneName);
         else TutorialManager.instance.StartTutorial();
     }
 }
