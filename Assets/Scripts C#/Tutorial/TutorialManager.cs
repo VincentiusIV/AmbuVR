@@ -6,10 +6,6 @@ public class TutorialManager : MonoBehaviour {
 
     public static TutorialManager instance;
 
-    [Header("Intro")]
-    public string introTxt;
-    public AudioClip introClip;
-
     [Header("Stage Order")]
     public List<TutorialStageData> eventList;
     [HideInInspector]public bool moveToNext;
@@ -40,17 +36,6 @@ public class TutorialManager : MonoBehaviour {
     private IEnumerator Tutorial()
     {
         Debug.Log("Tutorial has started");
-
-        // Introduction
-        Debug.Log(introTxt);
-        if (introClip != null)
-        {
-            sound.clip = introClip;
-            sound.Play();
-            yield return new WaitForSeconds(introClip.length);
-        }
-            
-
         for (int i = 0; i < eventList.Count; i++)
         {
             Debug.Log(eventList[i].text);
@@ -58,14 +43,13 @@ public class TutorialManager : MonoBehaviour {
 
             if (canTp)
             {
-                AmbuVR.Player.instance.SetCanTeleport(canTp);
-                platform.SetBool("Expand", canTp);
+                AmbuVR.Player.instance.SetCanTeleport(canTp);   
                 yield return new WaitForSeconds(1f);
                 teleportingStage.GetComponent<FadeObjects>().FadeIn();
             }
-            
+            platform.SetBool("Expand", canTp);
 
-            if(eventList[i].clip != null)
+            if (eventList[i].clip != null)
             {
                 sound.clip = eventList[i].clip;
                 sound.Play();

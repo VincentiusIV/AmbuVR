@@ -11,14 +11,40 @@ public class GamePlayEvent : MonoBehaviour {
     public EventState state;
 
     public bool gameFlow = true;
-    public bool finishOnTrigger = false;
+    public bool finishOnNear = false;
+    public float distanceToAct = 2f;
 
     public UnityEvent OnSetActive;
     public UnityEvent OnEventFinished;
 
+    //--- Private ---//
+    Transform player;
+    bool alreadyNear;
+
     private void Awake()
     {
         state = EventState.Offline;
+        player = GameObject.FindWithTag("Player").transform;
+    }
+
+    private void Update()
+    {
+        if(finishOnNear)
+        {
+            float distance = Vector3.Distance(transform.position, player.position);
+            if(distance <= distanceToAct)
+            {
+                if(!alreadyNear)
+                {
+                    alreadyNear = true;
+                    EventFinished();
+                }
+            }
+            else
+            {
+                alreadyNear = false;
+            }
+        }
     }
 
     public void SetActive()
@@ -43,11 +69,4 @@ public class GamePlayEvent : MonoBehaviour {
         OnEventFinished.Invoke();
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if(state == EventState.CurrentObjective && finishOnTrigger && other.CompareTag("Player"))
-        {
-            EventFinished();
-        }
-    }
 }
