@@ -40,7 +40,7 @@ public class MovingObject : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         voice = GetComponent<AudioSource>();
 
-        player = AmbuVR.Player.instance.transform;
+        player = AmbuVR.Player.instance.hmdPosition;
 
         waiting = WaitBeforeNextPoint();
 
@@ -92,6 +92,8 @@ public class MovingObject : MonoBehaviour
 
     void GotoNextPoint()
     {
+        if (agent == null)
+            agent = GetComponent<NavMeshAgent>();
         // Returns if no points have been set up
         if (points.Length == 0 || state == AIState.Idle)
         {
@@ -99,6 +101,9 @@ public class MovingObject : MonoBehaviour
             return;
         }
         agent.isStopped = false;
+
+        if (state == AIState.Follow && player == null)
+            player = AmbuVR.Player.instance.hmdPosition;
         // Set the agent to go to the currently selected destination.
         agent.destination = points[destPoint].position;
         // Set animation

@@ -9,11 +9,14 @@ namespace AmbuVR
         public static Player instance;
 
         public TeleportVive teleporter;
+        public Transform hmdPosition;
 
-        private void Start()
+        private void Awake()
         {
+            // Singleton
             if (instance == null)
-                instance = this;  
+                instance = this;
+            else Destroy(gameObject);
         }
 
         public void SetCanTeleport(bool value)

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameFlowManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class GameFlowManager : MonoBehaviour
 
     public bool moveToNext = false;
     public bool isGameActive = false;
+
+    public Text objectiveTxt;
 
     private void Start()
     {
@@ -37,6 +40,7 @@ public class GameFlowManager : MonoBehaviour
                 AmbuVR.Player.instance.SetCanTeleport(true);
             }
             Debug.Log("Current objective is: " + eventList[i].gameEvent.name);
+            objectiveTxt.text = eventList[i].gameEvent.name;
             eventList[i].gameEvent.SetActive();
             yield return new WaitUntil(() => moveToNext);
             moveToNext = false;
