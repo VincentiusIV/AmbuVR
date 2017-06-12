@@ -19,6 +19,10 @@ public class InteractableVR : MonoBehaviour
     public Vector3 minRotation;
     public Vector3 maxRotation;
 
+    [Header("Special onGripDown")]
+    public ParticleSystem psToEmit;
+    public Animator anime;
+
     [Header("References")]
     public GlowObjectCmd outline;
     public bool isBeingHeld;
@@ -93,6 +97,12 @@ public class InteractableVR : MonoBehaviour
         OnRelease();
     }
 
+    public void PerformSpecial()
+    {
+        if (psToEmit != null)
+            psToEmit.Play();
+    }
+
     private void HoldObject(Transform holdPosition)
     {
         transform.position = holdPosition.position;
@@ -113,6 +123,8 @@ public class InteractableVR : MonoBehaviour
         rb.velocity = _velocity;
         rb.angularVelocity = _velocity;
 
+        if (psToEmit != null && psToEmit.isPlaying)
+            psToEmit.Stop();
     }
 
 

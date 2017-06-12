@@ -22,6 +22,8 @@ public class GameFlowManager : MonoBehaviour
         StartCoroutine(GameFlow());
     }
 
+    public GamePlayEvent currentEvent;
+
     IEnumerator GameFlow()
     {
         isGameActive = true;
@@ -30,25 +32,30 @@ public class GameFlowManager : MonoBehaviour
         {
             /// START DIALOGUE
             if (eventList[i].dialogueEventID != -1)
-            {
-                // Before anything begins, the ai that is supposed to speak has to walk to the player
-                NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].ChangeBehaviour(AIState.Follow);
-                // Wait untill npc has reached player
-                yield return new WaitUntil(() => NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].reachedPlayer);           
+            {   
                 // Do dialogue and wait for it to finish
                 yield return DialogueController.instance.StartCoroutine(DialogueController.instance.DialogueSession(eventList[i].dialogueEventID));
                 AmbuVR.Player.instance.SetCanTeleport(true);
+                NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].ChangeBehaviour(AIState.Patrol);
             }
-            Debug.Log("Current objective is: " + eventList[i].gameEvent.name);
-            objectiveTxt.text = eventList[i].gameEvent.name;
-            eventList[i].gameEvent.SetActive();
-            yield return new WaitUntil(() => moveToNext);
-            moveToNext = false;
-            Debug.Log(eventList[i].gameEvent.name + " was completed!");
-            eventList[i].gameEvent.state = EventState.Finished;
+            else Debug.Log(i + " Skipping dialogue cause event id is -1");
+
+            if(eventList[i].gameEvent != null)
+            {
+                Debug.Log("Current objective is: " + eventList[i].gameEvent.name);
+                objectiveTxt.text = eventList[i].gameEvent.name;
+                // Turn the new event on
+                currentEvent = eventList[i].gameEvent;
+                eventList[i].gameEvent.EnableEvent();
+                eventList[i].gameEvent.state = EventState.CurrentObjective;
+                yield return new WaitUntil(() => moveToNext);
+                moveToNext = false;
+                
+            }  
         }
 
         Debug.Log("You finished the game! Congrats!");
+        objectiveTxt.text = "Thanks for playing!";
         isGameActive = false;
     }
 }

@@ -21,10 +21,9 @@ public class GamePlayEvent : MonoBehaviour {
     Transform player;
     bool alreadyNear;
 
-    private void Awake()
+    private void Start()
     {
-        state = EventState.Offline;
-        player = GameObject.FindWithTag("Player").transform;
+        player = AmbuVR.Player.instance.hmdPosition;
     }
 
     private void Update()
@@ -47,7 +46,7 @@ public class GamePlayEvent : MonoBehaviour {
         }
     }
 
-    public void SetActive()
+    public void EnableEvent()
     {
         Debug.Log(gameObject.name + " is the current event");
         state = EventState.CurrentObjective;
@@ -61,7 +60,7 @@ public class GamePlayEvent : MonoBehaviour {
             return;
 
         state = EventState.Finished;
-
+        Debug.Log(gameObject.name + " objective is finished!");
         if (gameFlow)
             GameFlowManager.instance.moveToNext = true;
         else TutorialManager.instance.moveToNext = true;

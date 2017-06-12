@@ -101,6 +101,6 @@ public class GlowController : MonoBehaviour
 	/// </summary>
 	private void Update()
 	{
-		RebuildCommandBuffer();
+		//RebuildCommandBuffer();
 	}
 }

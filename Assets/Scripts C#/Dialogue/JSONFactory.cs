@@ -23,6 +23,7 @@ namespace JSONFactory
             {3, "/StreamingAssets/Scripts/Treatment.json" },
             {4, "/StreamingAssets/Scripts/Positive feedback Treatment.json" },
             {5, "/StreamingAssets/Scripts/Negative feedback Treatment.json" },
+            {6, "/StreamingAssets/Scripts/Command Event.json" },
         };
 
         public static DialogueEvent[] RunJSONFactoryForScene(int sceneNumber)

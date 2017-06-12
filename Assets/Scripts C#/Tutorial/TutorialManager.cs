@@ -57,7 +57,7 @@ public class TutorialManager : MonoBehaviour {
 
             if (eventList[i].tutEvent != null)
             {
-                eventList[i].tutEvent.SetActive();
+                eventList[i].tutEvent.EnableEvent();
                 Debug.Log("Current objective is " + eventList[i].tutEvent.gameObject.name);
                 yield return new WaitUntil(() => moveToNext);
                 Debug.Log(" Finished " + eventList[i].tutEvent.gameObject.name);

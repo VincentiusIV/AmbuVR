@@ -23,7 +23,9 @@ public class MovingObject : MonoBehaviour
     public bool reachedPlayer;
 
     [Header("Testing References")]
+    public AIState startState = AIState.Idle;
     public TextMesh stateMesh;
+    public bool raycastingEnabled = false;
 
     NavMeshAgent agent;   
     AudioSource voice;
@@ -35,6 +37,8 @@ public class MovingObject : MonoBehaviour
     
     IEnumerator waiting;
 
+    Vector3 customPoint;
+
     void Start ()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -45,7 +49,6 @@ public class MovingObject : MonoBehaviour
         waiting = WaitBeforeNextPoint();
 
         points = new Transform[0];
-        state = AIState.Idle;
 
         if (outline != null)
             outline.Hide();
@@ -55,13 +58,15 @@ public class MovingObject : MonoBehaviour
         // approaches a destination point).
         agent.autoBraking = false;
 
-        GotoNextPoint();
+        ChangeBehaviour(startState);
     }
 
-    public void ChangeBehaviour(AIState newBehaviour)
+    public void ChangeBehaviour(AIState newBehaviour, Vector3 custom = new Vector3(), bool forceChange = false)
     {
+        if (state == AIState.Command && agent.isStopped != true || forceChange)
+            return;
         state = newBehaviour;
-        Debug.Log(string.Format("At {0} new behaviour of {1} is {2}", Time.time, gameObject.name, state.ToString()));
+        Debug.Log(string.Format("new behaviour of {0} is {1}", gameObject.name, state.ToString()));
         if (isWaitingForNext)
             StopCoroutine(waiting);
 
@@ -82,7 +87,10 @@ public class MovingObject : MonoBehaviour
                 points = patrolPoints;
                 break;
             case AIState.Command:
-                points = new Transform[0];
+                points = new Transform[1];
+                Transform testCommand = GameObject.Find("TestCommandTransform").transform;
+                testCommand.position = custom;
+                points[0] = testCommand;
                 break;
             default:
                 break;
@@ -102,8 +110,8 @@ public class MovingObject : MonoBehaviour
         }
         agent.isStopped = false;
 
-        if (state == AIState.Follow && player == null)
-            player = AmbuVR.Player.instance.hmdPosition;
+        if (destPoint > points.Length - 1)
+            destPoint = 0;
         // Set the agent to go to the currently selected destination.
         agent.destination = points[destPoint].position;
         // Set animation
@@ -129,6 +137,8 @@ public class MovingObject : MonoBehaviour
 
     private void Update()
     {
+        Debug.DrawLine(transform.position, AmbuVR.Player.instance.hmdPosition.position);
+
         switch (state)
         {
             case AIState.Idle:
@@ -136,10 +146,12 @@ public class MovingObject : MonoBehaviour
             case AIState.Follow:
                 if (reachedPlayer)
                     break;
-                agent.SetDestination(player.position);
-                reachedPlayer = agent.remainingDistance < 2f;
+                agent.SetDestination(AmbuVR.Player.instance.hmdPosition.position);
+                reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.hmdPosition.position) < 3f;
+                
                 if(reachedPlayer)
                 {
+                    Debug.Log("Distance between AI and player: " + Vector3.Distance(transform.position, AmbuVR.Player.instance.hmdPosition.position) + ", Path remaining: "+agent.remainingDistance);
                     UpdateAnimator(false);
                     agent.isStopped = true;
                     AmbuVR.Player.instance.SetCanTeleport(false);
@@ -150,7 +162,7 @@ public class MovingObject : MonoBehaviour
                     GotoNextPoint();
                 break;
             case AIState.Command:
-                if (Input.GetButtonDown("Fire1"))
+                if (raycastingEnabled && Input.GetButtonDown("Fire1"))
                 {
                     RaycastHit hit;
                     if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))

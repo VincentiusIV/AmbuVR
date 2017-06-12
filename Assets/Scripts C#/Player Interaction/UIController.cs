@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 /// <summary>
 /// UI controller for going back to menu, pausing game, settings
@@ -73,6 +74,8 @@ public class UIController : MonoBehaviour
         isIntegerBeingRequested = false;
         inputValue = knob.value;
         valueKnob.SetActive(isIntegerBeingRequested);
+
+        GameFlowManager.instance.currentEvent.EventFinished();
     }
 
     public void PlayGame()

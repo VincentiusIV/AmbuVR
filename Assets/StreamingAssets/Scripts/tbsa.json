@@ -5,11 +5,11 @@
 		"AudioFile": "Behandel",
 		"Responses": [{
 			"ResponseText": "Ik ga het TVLO vaststellen",
-			"Fx_stress": -1,
+			"MoveNPCToLocation": -1,
 			"NextTextID": 1
 		}, {
 			"ResponseText": "Ik zal hem wel gaan waterkoelen",
-			"Fx_stress": 1,
+			"MoveNPCToLocation": 1,
 			"NextTextID": 2
 		}]
 	},
@@ -21,7 +21,7 @@
 		"AudioFile": "2.0",
 		"Responses": [{
 			"ResponseText": "Continue..",
-			"Fx_stress": -1,
+			"MoveNPCToLocation": -1,
 			"NextTextID": -1
 		}]
 	},
@@ -33,7 +33,7 @@
 		"AudioFile": "5.1",
 		"Responses": [{
 			"ResponseText": "Continue..",
-			"Fx_stress": 1,
+			"MoveNPCToLocation": -1,
 			"NextTextID": -1
 		}]
 	}

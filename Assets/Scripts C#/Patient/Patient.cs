@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [System.Serializable]
 public struct PatientState
@@ -22,12 +23,24 @@ public struct PatientState
 
 public class Patient : MonoBehaviour
 {
+    public static Patient instance;
+
     public PatientState patientState;       // The state of this patient
     private List<MedicalItem> correctOrder; // The correct order in which objects should be placed on this patient
     public List<PatientArea> burnWounds;    // List of burn wounds attached to this patient
 
     public PatientArea mouth;               // the mouth object of this patient
 
+    public UnityEvent onFinishTBSA;
+    public UnityEvent onFinishCooling;
+    public UnityEvent onFinishPainMed;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else Destroy(gameObject);
+    }
     private void Start()
     {
         // Configuring patient depending on settings
@@ -58,8 +71,20 @@ public class Patient : MonoBehaviour
         {
             patientState.receivedPainMed = true;
             patientState.receivedCorrectPainMed = patientState.painMedToUse == med;
+            onFinishPainMed.Invoke();
         }
         else Debug.Log("This patient already received the " + patientState.receivedCorrectPainMed + " pain med");
+    }
+
+    public void FinishCooling(MedicalItem cooling)
+    {
+        foreach (PatientArea item in burnWounds)
+        {
+            item.ApplyMed(cooling);
+            patientState.amountOfBurnsTreated++;
+        }
+
+        onFinishCooling.Invoke();
     }
 
     //Evaluates the patient, checking the current status
@@ -91,5 +116,6 @@ public class Patient : MonoBehaviour
     {
         patientState.estimated = true;
         patientState.estimatedCorrectly = patientState.tbsa == estimation;
+        onFinishTBSA.Invoke();
     }
 }

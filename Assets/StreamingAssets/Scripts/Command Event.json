@@ -1,0 +1,27 @@
+/* Explanation on each variable:
+
+  - NPC_ID = ID for the NPC that should be talking
+  - TextID = ID for the text block (0, 1, 2, etc.)
+  - TextLine = text line that the NPC says
+  - AudioFile = name of the audio file that should be played
+  - Responses = list of responses that the player can choose
+  - ResponseText = the line that the player can choose to say
+  - Fx_Stress = the affect this choice has on the stress lvl of the NPC
+  - NextTextID = the response of the NPC to the chosen response of the player
+ */
+
+[
+  {
+    "NPC_ID": 1,
+    "TextID": 0,
+    "TextLine": "Waar moet ik heen?",
+    "AudioFile": "",
+    "Responses": [
+      {
+        "ResponseText": "Ga naar de douche",
+        "MoveNPCToLocation": 0,
+        "NextTextID": -1
+      }
+    ]
+  }
+]

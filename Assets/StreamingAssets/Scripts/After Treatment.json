@@ -5,7 +5,7 @@
 		"AudioFile": "Opereren",
 		"Responses": [{
 			"ResponseText": "We brengen hem naar het brandwondencentrum.",
-			"Fx_stress": 1,
+			"MoveNPCToLocation": -1,
 			"NextTextID": 1
 
 		}]
@@ -18,7 +18,7 @@
 		"AudioFile": "Confirmation_3",
 		"Responses": [{
 			"ResponseText": "Continue..",
-			"Fx_stress": 1,
+			"MoveNPCToLocation": -1,
 			"NextTextID": -1
 		}]
 	}

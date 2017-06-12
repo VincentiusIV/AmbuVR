@@ -59,9 +59,7 @@ public class PatientArea : MonoBehaviour
             ItemData med = other.GetComponent<ItemData>();
             ApplyMed(med.thisItem);
 
-            // Snap object onto the wound
-            med.transform.position = transform.position;
-            med.transform.SetParent(transform);
+            Destroy(other.gameObject);
         }
     }
 
@@ -75,7 +73,7 @@ public class PatientArea : MonoBehaviour
             
 
         Debug.Log(string.Format("{0} {1} being applied with {2}", status, areaType, item));
-
+        
         placeOrder.Add(item);
 
         if (item == MedicalItem.Water)

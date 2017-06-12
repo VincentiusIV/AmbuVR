@@ -19,17 +19,17 @@
     "Responses": [
       {
         "ResponseText": "Kan ik meer details krijgen?",
-        "Fx_stress": -1,
+        "MoveNPCToLocation": -1,
         "NextTextID": 1
       },
       {
         "ResponseText": "Leg uit wat je gaat doen",
-        "Fx_stress": 1,
+        "MoveNPCToLocation": -1,
         "NextTextID": 3
       },
       {
         "ResponseText": "Negeer",
-        "Fx_stress": 1,
+        "MoveNPCToLocation": -1,
         "NextTextID": -1
       }
     ]
@@ -42,7 +42,7 @@
     "Responses": [
       {
         "ResponseText": "Continue..",
-        "Fx_stress": 1,
+        "MoveNPCToLocation": -1,
         "NextTextID": 2
       }
     ]
@@ -55,7 +55,7 @@
     "Responses": [
       {
         "ResponseText": "Continue..",
-        "Fx_stress": 1,
+        "MoveNPCToLocation": -1,
         "NextTextID": 3
       }
     ]
@@ -68,12 +68,12 @@
     "Responses": [
       {
         "ResponseText": "Continue..",
-        "Fx_stress": 1,
+        "MoveNPCToLocation": -1,
         "NextTextID": 4
       },
       {
         "ResponseText": "[no response, get to work]",
-        "Fx_stress": 1,
+        "MoveNPCToLocation": -1,
         "NextTextID": -1
       }
     ]
@@ -86,7 +86,7 @@
     "Responses": [
       {
         "ResponseText": "Continue..",
-        "Fx_stress": 1,
+        "MoveNPCToLocation": -1,
         "NextTextID": -1
       }
     ]

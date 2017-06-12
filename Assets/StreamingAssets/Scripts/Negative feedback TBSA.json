@@ -7,7 +7,7 @@
 		"AudioFile": "N_1",
 		"Responses": [{
 				"ResponseText": "",
-				"Fx_stress": -1,
+				"MoveNPCToLocation": -1,
 				"NextTextID": -1
 			}
 
@@ -21,7 +21,7 @@
 		"AudioFile": "N_1_1",
 		"Responses": [{
 			"ResponseText": "",
-			"Fx_stress": -1,
+			"MoveNPCToLocation": -1,
 			"NextTextID": -1
 		}]
 	}

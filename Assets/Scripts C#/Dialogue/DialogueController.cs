@@ -15,6 +15,8 @@ public class DialogueController : MonoBehaviour
     private bool goToNext = false;
     private int currentStep;
 
+    public List<Transform> customLocations = new List<Transform>();
+
     private void Start()
     {
         if (instance == null)
@@ -40,15 +42,21 @@ public class DialogueController : MonoBehaviour
 
     public IEnumerator DialogueSession(int index)
     {
+        Debug.Log("Starting dialogue index " + index);
         isActive = true;
         int nextSelection = 0;
         // Get DialogueEvent array from the JSONAssembly class
         DialogueEvent[] de = JSONAssembly.RunJSONFactoryForScene(index);
         // Store which npc will start talking (for pathfinding)
         talkingNPCID = de[0].NPC_ID;
+        // Before anything begins, the ai that is supposed to speak has to walk to the player
+        NPCManager.instance.npcs[instance.talkingNPCID].ChangeBehaviour(AIState.Follow);
+        // Wait untill npc has reached player
+        yield return new WaitUntil(() => NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].reachedPlayer);
         // Loop through all the dialogue events
         for (int i = 0; i < de.Length; i = nextSelection)
         {
+            Debug.Log("Reading next line...");
             if(de[i].AudioFile != "")   // Only load audio when a link is specified
             {
                 AudioClip ac = Resources.Load<AudioClip>("Sounds/Dialogue/Audio/" + de[i].AudioFile);
@@ -76,6 +84,14 @@ public class DialogueController : MonoBehaviour
                 if (nextSelection == lastSelection || nextSelection == -1)
                     break;
             }
+            else if (de[i].Responses[lastPressedOption].MoveNPCToLocation > -1)
+            {
+                Debug.Log("Moving NPC");
+                int locIndex = de[i].Responses[lastPressedOption].MoveNPCToLocation;
+                NPCManager.instance.npcs[de[i].NPC_ID].ChangeBehaviour(AIState.Command, customLocations[locIndex].position);
+                break;
+            }
+            else break;
         }
         Debug.Log("Conversation ended");
         isActive = false;
