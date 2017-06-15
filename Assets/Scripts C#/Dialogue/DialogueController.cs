@@ -71,7 +71,7 @@ public class DialogueController : MonoBehaviour
                 else throw new System.Exception("Could not retrieve audio file: "+de[i].AudioFile);
             }
             // Print responses on the response buttons
-            ResponseUI.instance.UpdateResponses(de[i].Responses, NPCManager.instance.npcs[de[i].NPC_ID].transform);
+            UIController.instance.UpdateResponses(de[i].Responses, NPCManager.instance.npcs[de[i].NPC_ID].transform);
             // Wait untill a dialogue option is pressed
             yield return new WaitUntil(() => goToNext == true);
             goToNext = false;

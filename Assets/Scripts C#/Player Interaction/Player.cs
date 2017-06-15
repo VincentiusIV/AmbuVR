@@ -18,7 +18,8 @@ namespace AmbuVR
                 instance = this;
             else Destroy(gameObject);
         }
-
+        
+        // Forces teleporter if it can teleport or not      
         public void SetCanTeleport(bool value)
         {
             teleporter.CanTeleport = value;

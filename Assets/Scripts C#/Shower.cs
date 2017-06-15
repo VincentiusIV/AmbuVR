@@ -9,25 +9,32 @@ public class Shower : MonoBehaviour {
     public Transform showerPosition;
     public Transform resetPoint;
 
+    public AudioSource showerOpen;
+
+
     float showerTimer = 0f;
     bool isPatientInShower;
+    bool didShower = false;
 
     private void Start()
     {
         showerPS = GetComponentInChildren<ParticleSystem>();
+        showerOpen = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("AI"))
+        if(other.CompareTag("AI") && didShower == false)
         {
             showerPS.Play();
             isPatientInShower = true;
-            other.transform.position = showerPosition.position;
+            NPCManager.instance.npcs[1].transform.position = showerPosition.position;
             //other.GetComponent<CapsuleCollider>().enabled = false;
             //other.GetComponent<NavMeshAgent>().enabled = false;
-            other.GetComponent<NavMeshAgent>().isStopped = true;
+            NPCManager.instance.npcs[1].StopMoving();
             NPCManager.instance.npcs[1].ChangeBehaviour(AIState.Idle, Vector3.zero, true);
+            
+            showerOpen.Play();
         }
     }
 
@@ -37,23 +44,31 @@ public class Shower : MonoBehaviour {
         {
             showerTimer += Time.deltaTime;
 
-            if(showerTimer > 10f)
-            {
-                Patient.instance.FinishCooling(MedicalItem.Water);
-                Patient.instance.transform.position = resetPoint.position;
-                NPCManager.instance.npcs[1].GetComponent<CapsuleCollider>().enabled = true;
-                NPCManager.instance.npcs[1].GetComponent<NavMeshAgent>().enabled = true;
-                this.enabled = false;
-            }
+            
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (showerTimer > 10f && didShower == false)
+        {
+            didShower = true;
+            isPatientInShower = false;
+            Patient.instance.FinishCooling(MedicalItem.Water);
+            NPCManager.instance.npcs[1].transform.position = resetPoint.position;
+            NPCManager.instance.npcs[1].ChangeBehaviour(AIState.Follow, Vector3.zero, true);
+            showerOpen.Stop();
+            GetComponent<BoxCollider>().enabled = false;
+            this.enabled = false;
+            
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("AI"))
+        if(other.CompareTag("AI") && didShower == true)
         {
-            showerPS.Stop();
-            isPatientInShower = false;
+            
             Debug.Log("Patient stood under shower for: " + Mathf.RoundToInt(showerTimer) + " seconds");
             
         }

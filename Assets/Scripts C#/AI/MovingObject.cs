@@ -27,19 +27,19 @@ public class MovingObject : MonoBehaviour
     public TextMesh stateMesh;
     public bool raycastingEnabled = false;
 
-    NavMeshAgent agent;   
+    NavMeshAgent agent;
     AudioSource voice;
 
     int destPoint = 0;
 
     private Transform[] points;
     bool isWaitingForNext = false;
-    
+
     IEnumerator waiting;
 
     Vector3 customPoint;
 
-    void Start ()
+    void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         voice = GetComponent<AudioSource>();
@@ -63,8 +63,9 @@ public class MovingObject : MonoBehaviour
 
     public void ChangeBehaviour(AIState newBehaviour, Vector3 custom = new Vector3(), bool forceChange = false)
     {
-        if (state == AIState.Command && agent.isStopped != true || forceChange)
+        if (state == AIState.Command && agent.isStopped != true)
             return;
+
         state = newBehaviour;
         Debug.Log(string.Format("new behaviour of {0} is {1}", gameObject.name, state.ToString()));
         if (isWaitingForNext)
@@ -98,6 +99,11 @@ public class MovingObject : MonoBehaviour
         GotoNextPoint();
     }
 
+    public void StopMoving()
+    {
+        agent.isStopped = true;
+    }
+
     void GotoNextPoint()
     {
         if (agent == null)
@@ -126,7 +132,7 @@ public class MovingObject : MonoBehaviour
         yield return new WaitForSeconds(waitTimeAtPoint);
         isWaitingForNext = false;
         GotoNextPoint();
-        
+
     }
 
     void UpdateAnimator(bool isMoving)
@@ -148,13 +154,13 @@ public class MovingObject : MonoBehaviour
                     break;
                 agent.SetDestination(AmbuVR.Player.instance.hmdPosition.position);
                 reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.hmdPosition.position) < 3f;
-                
-                if(reachedPlayer)
+
+                if (reachedPlayer)
                 {
-                    Debug.Log("Distance between AI and player: " + Vector3.Distance(transform.position, AmbuVR.Player.instance.hmdPosition.position) + ", Path remaining: "+agent.remainingDistance);
+                    Debug.Log("Distance between AI and player: " + Vector3.Distance(transform.position, AmbuVR.Player.instance.hmdPosition.position) + ", Path remaining: " + agent.remainingDistance);
                     UpdateAnimator(false);
                     agent.isStopped = true;
-                    AmbuVR.Player.instance.SetCanTeleport(false);
+                    //AmbuVR.Player.instance.SetCanTeleport(false);
                 }
                 break;
             case AIState.Patrol:
@@ -174,6 +180,8 @@ public class MovingObject : MonoBehaviour
                         GotoNextPoint();
                     }
                 }
+
+
                 break;
             default:
                 break;
@@ -196,7 +204,7 @@ public class MovingObject : MonoBehaviour
             ChangeBehaviour(AIState.Follow);
         if (Input.GetKeyDown(KeyCode.Keypad3))
             ChangeBehaviour(AIState.Patrol);
-        if(Input.GetKeyDown(KeyCode.Keypad4))
+        if (Input.GetKeyDown(KeyCode.Keypad4))
             ChangeBehaviour(AIState.Command);
     }
 

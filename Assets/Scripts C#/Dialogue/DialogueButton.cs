@@ -11,6 +11,6 @@ public class DialogueButton : AmbuVR.Button
         base.UseButton();
 
         DialogueController.instance.PressSelectedOption(option);
-        ResponseUI.instance.ToggleVisible(false);
+        UIController.instance.ToggleResponseUI(false);
     }
 }

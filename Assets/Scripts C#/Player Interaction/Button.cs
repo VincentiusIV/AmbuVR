@@ -64,6 +64,9 @@ namespace AmbuVR
             if(selected == false)
             {
                 selected = true;
+
+                outline.gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
+
                 sound.clip = selectSound;
                 sound.Play();
             }
@@ -73,11 +76,20 @@ namespace AmbuVR
                 outline.Show();
             }
 
+            if(isSwitchOffActive)
+            {
+                StopCoroutine(switchOff);
+            }
+            switchOff = SwitchOff();
+            StartCoroutine(switchOff);
+
             OnPointerOver.Invoke();
         }
 
         public void PointerExit()
         {
+            outline.gameObject.GetComponent<MeshRenderer>().material.color = Color.white;
+
             if (outline != null)
             {
                 outline.Hide();
@@ -98,6 +110,14 @@ namespace AmbuVR
         private void OnMouseExit()
         {
             PointerExit();
+        }
+        
+        IEnumerator SwitchOff()
+        {
+            isSwitchOffActive = true;
+            yield return new WaitForSeconds(.1f);
+            PointerExit();
+            isSwitchOffActive = false;
         }
     }
 }

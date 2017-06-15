@@ -35,7 +35,6 @@ public class GameFlowManager : MonoBehaviour
             {   
                 // Do dialogue and wait for it to finish
                 yield return DialogueController.instance.StartCoroutine(DialogueController.instance.DialogueSession(eventList[i].dialogueEventID));
-                AmbuVR.Player.instance.SetCanTeleport(true);
                 NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].ChangeBehaviour(AIState.Patrol);
             }
             else Debug.Log(i + " Skipping dialogue cause event id is -1");

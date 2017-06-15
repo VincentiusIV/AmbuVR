@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Valve.VR;
 
 [AddComponentMenu("Vive Teleporter/Vive Teleporter")]
@@ -162,6 +163,8 @@ public class TeleportVive : MonoBehaviour {
     {
         if (!CanTeleport)
             return;
+        else if (!CanPlayerTeleport())
+            return;
         // If we are currently teleporting (ie handling the fade in/out transition)...
         if(CurrentTeleportState == TeleportState.Teleporting)
         {
@@ -196,7 +199,7 @@ public class TeleportVive : MonoBehaviour {
             // Poll controller for pertinent button data
             int index = (int)ActiveController.index;
             var device = SteamVR_Controller.Input(index);
-            bool shouldTeleport = device.GetPressUp(SteamVR_Controller.ButtonMask.Grip);
+            bool shouldTeleport = device.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad);
             //bool shouldCancel = device.GetPressUp(SteamVR_Controller.ButtonMask.Grip);
             if (shouldTeleport /*|| shouldCancel*/)
             {
@@ -270,7 +273,7 @@ public class TeleportVive : MonoBehaviour {
                     continue;
 
                 var device = SteamVR_Controller.Input(index);
-                if (device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+                if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
                 {
                     // Set active controller to this controller, and enable the parabolic pointer and visual indicators
                     // that the user can use to determine where they are able to teleport.
@@ -295,6 +298,11 @@ public class TeleportVive : MonoBehaviour {
             }
         }
 	}
+
+    private bool CanPlayerTeleport()
+    {
+        return !UIController.instance.isVisible;
+    }
 }
 
 /// \brief Represents the player's current use of the teleport machanic.

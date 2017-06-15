@@ -58,7 +58,7 @@ public class PatientArea : MonoBehaviour
         {
             ItemData med = other.GetComponent<ItemData>();
             ApplyMed(med.thisItem);
-
+            other.GetComponent<InteractableVR>().DisconnectFromObject(Vector3.zero, Vector3.zero);
             Destroy(other.gameObject);
         }
     }

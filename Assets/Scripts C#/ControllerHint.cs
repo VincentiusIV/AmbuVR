@@ -21,6 +21,7 @@ public class ControllerHint : MonoBehaviour
     public GameObject hintWindow;
     public Text hintText;
 
+    public Material selectMaterial;
     public bool showHintsOnLeft;
 
     [Header("Left Controller")]
@@ -33,6 +34,8 @@ public class ControllerHint : MonoBehaviour
     GameObject hintObject;
     LineRenderer line;
     bool isHintActive;
+
+    Material defaultMaterial;
 
     private void Awake()
     {
@@ -68,6 +71,9 @@ public class ControllerHint : MonoBehaviour
         if (showHintsOnLeft)
             partList = leftHintList;
         else partList = rightHintList;
+
+        if (partList.Count == 0)
+            return;
 
         for (int i = 0; i < partList.Count; i++)
         {

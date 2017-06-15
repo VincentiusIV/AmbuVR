@@ -30,13 +30,13 @@ public class ResponseUI : MonoBehaviour
         ToggleVisible(true, responses.Length);
 
         // Aim response ui to the NPC
-        Vector3 direction = npcToLookAt.position - transform.parent.position;
+        /*Vector3 direction = npcToLookAt.position - transform.parent.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         transform.parent.rotation = rotation;
 
         // Position the ui at the player
         Vector3 hmd = AmbuVR.Player.instance.hmdPosition.position;
-        transform.parent.position = new Vector3(hmd.x, transform.parent.parent.position.y, hmd.z);
+        transform.parent.position = new Vector3(hmd.x, transform.parent.parent.position.y, hmd.z);*/
     }
 
     public void ToggleVisible(bool state, int amount = 4)

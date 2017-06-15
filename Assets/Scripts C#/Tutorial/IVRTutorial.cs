@@ -14,9 +14,9 @@ public class IVRTutorial : InteractableVR
         gameEvent = GetComponent<GamePlayEvent>();
     }
 
-    public override void OnGrab()
+    public override void OnGrabVirtual()
     {
-        base.OnGrab();
+        base.OnGrabVirtual();
         if (gameEvent.state != EventState.CurrentObjective)
             return;
 
@@ -27,9 +27,9 @@ public class IVRTutorial : InteractableVR
         gameEvent.EventFinished();
     }
 
-    public override void OnRelease()
+    public override void OnReleaseVirtual()
     {
-        base.OnRelease();
+        base.OnReleaseVirtual();
 
         if (gameEvent.state != EventState.CurrentObjective)
             return;

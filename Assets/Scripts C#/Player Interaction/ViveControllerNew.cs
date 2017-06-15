@@ -65,19 +65,16 @@ public class ViveControllerNew : MonoBehaviour
 
                 currentHeldObject.DisconnectFromObject(velocity, angularVelocity);
 
-                isHolding = false;
-                triggerCollider.enabled = true;
-
-                model.SetActive(true);
+                ResetController();
             }
         }
 
         if (canGrabAgain == false && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
             canGrabAgain = true;
 
-        if(device.GetTouchDown(SteamVR_Controller.ButtonMask.Touchpad) && !isHolding)
+        if(!isHolding)
         {
-            pointer.enabled = !pointer.enabled;
+            pointer.enabled = UIController.instance.isVisible;
         }
 
         if(pointer.enabled)
@@ -122,5 +119,13 @@ public class ViveControllerNew : MonoBehaviour
             if (pointer.enabled)
                 pointer.enabled = false;
         }
+    }
+
+    public void ResetController()
+    {
+        isHolding = false;
+        triggerCollider.enabled = true;
+        currentHeldObject = null;
+        model.SetActive(true);
     }
 }

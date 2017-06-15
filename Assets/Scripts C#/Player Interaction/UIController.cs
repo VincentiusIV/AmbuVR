@@ -10,6 +10,7 @@ using UnityEngine.Events;
 /// </summary>
 public class UIController : MonoBehaviour
 {
+    //--- Public ---//
     public static UIController instance;
 
     public bool onAwakeTutorial = true;
@@ -33,6 +34,9 @@ public class UIController : MonoBehaviour
     //--- Private ---//
     public float inputValue;
 
+    [Header("Dialogue")]
+    public DialogueButton[] responseButtons;
+
     private void Start()
     {
         if (instance == null)
@@ -47,6 +51,12 @@ public class UIController : MonoBehaviour
             valueKnob.SetActive(false);
         }
         else Debug.LogError("Assing the value knob to the UI controller!");
+
+        for (int i = 0; i < responseButtons.Length; i++)
+        {
+            responseButtons[i].option = i;
+        }
+        ToggleResponseUI(false);
     }
 
     public void ToggleUI(bool visible)
@@ -67,6 +77,7 @@ public class UIController : MonoBehaviour
         isIntegerBeingRequested = true;
         valueKnob.SetActive(isIntegerBeingRequested);
         valueLabel.text = text;
+        isVisible = true;
     }
 
     public void ConfirmRequest()
@@ -74,8 +85,36 @@ public class UIController : MonoBehaviour
         isIntegerBeingRequested = false;
         inputValue = knob.value;
         valueKnob.SetActive(isIntegerBeingRequested);
-
+        isVisible = false;
         GameFlowManager.instance.currentEvent.EventFinished();
+    }
+
+    public void UpdateResponses(Response[] responses, Transform npcToLookAt)
+    {
+        for (int i = 0; i < responses.Length; i++)
+        {
+            responseButtons[i].textMesh.text = responses[i].ResponseText;
+        }
+        ToggleResponseUI(true, responses.Length);
+
+        // Aim response ui to the NPC
+        /*Vector3 direction = npcToLookAt.position - transform.parent.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.parent.rotation = rotation;
+
+        // Position the ui at the player
+        Vector3 hmd = AmbuVR.Player.instance.hmdPosition.position;
+        transform.parent.position = new Vector3(hmd.x, transform.parent.parent.position.y, hmd.z);*/
+    }
+
+    public void ToggleResponseUI(bool state, int amount = 4)
+    {
+        isVisible = state;
+        for (int i = 0; i < amount; i++)
+        {
+            responseButtons[i].gameObject.SetActive(state);
+            responseButtons[i].transform.GetChild(0).gameObject.SetActive(state);
+        }
     }
 
     public void PlayGame()

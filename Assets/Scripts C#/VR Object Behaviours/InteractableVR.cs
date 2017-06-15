@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 using AmbuVR;
 
@@ -22,6 +23,10 @@ public class InteractableVR : MonoBehaviour
     [Header("Special onGripDown")]
     public ParticleSystem psToEmit;
     public Animator anime;
+
+    [Header("Events")]
+    public UnityEvent OnGrab;
+    public UnityEvent OnRelease;
 
     [Header("References")]
     public GlowObjectCmd outline;
@@ -82,7 +87,8 @@ public class InteractableVR : MonoBehaviour
         else if (rotate)
             RotateObject(holdPosition);
 
-        OnGrab();
+        OnGrabVirtual();
+        OnGrab.Invoke();
     }
 
     public void DisconnectFromObject(Vector3 _velo, Vector3 _anguVelo)
@@ -94,7 +100,8 @@ public class InteractableVR : MonoBehaviour
         else if (rotate)
             StopRotating();
 
-        OnRelease();
+        OnReleaseVirtual();
+        OnRelease.Invoke();
     }
 
     public void PerformSpecial()
@@ -141,12 +148,12 @@ public class InteractableVR : MonoBehaviour
         newRotationEuler = Vector3.zero;
     }
 
-    public virtual void OnGrab()
+    public virtual void OnGrabVirtual()
     {
 
     }
 
-    public virtual void OnRelease()
+    public virtual void OnReleaseVirtual()
     {
 
     }
