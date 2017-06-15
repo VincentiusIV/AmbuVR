@@ -20,6 +20,8 @@ public class InteractableVR : MonoBehaviour
     public Vector3 minRotation;
     public Vector3 maxRotation;
 
+    public float activationThreshold = 0f;
+
     [Header("Special onGripDown")]
     public ParticleSystem psToEmit;
     public Animator anime;
@@ -107,7 +109,12 @@ public class InteractableVR : MonoBehaviour
     public void PerformSpecial()
     {
         if (psToEmit != null)
-            psToEmit.Play();
+        {
+            if (psToEmit.isPlaying)
+                psToEmit.Stop();
+            else psToEmit.Play();
+        }
+            
     }
 
     private void HoldObject(Transform holdPosition)
