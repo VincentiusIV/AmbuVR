@@ -67,6 +67,9 @@ public class ViveControllerNew : MonoBehaviour
 
                 ResetController();
             }
+
+            if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Grip))
+                currentHeldObject.PerformSpecial();
         }
 
         if (canGrabAgain == false && device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))

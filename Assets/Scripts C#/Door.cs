@@ -8,7 +8,6 @@ public class Door : MonoBehaviour
 {
 
     //--- Public ---//
-
     public AudioClip knockSound;
     public AudioClip openSound;
 
@@ -18,11 +17,14 @@ public class Door : MonoBehaviour
 
     //--- Private ---//
     AudioSource sound;
-    
+
+    bool open;
 
     private void Start()
     {
         sound = GetComponent<AudioSource>();
+        if (anime == null)
+            anime = GetComponent<Animator>();
     }
 
     private void Update()
@@ -31,6 +33,7 @@ public class Door : MonoBehaviour
             OpenDoor();
         if (Input.GetKeyDown(KeyCode.P))
             CloseDoor();
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -53,11 +56,19 @@ public class Door : MonoBehaviour
 
     public void OpenDoor()
     {
-        anime.SetBool("Open", true);
+        anime.SetBool("Open", open = true);
     }
 
     public void CloseDoor()
     {
-        anime.SetBool("Open", false);
+        anime.SetBool("Open", open = false);
+    }
+
+    public void SwitchDoor()
+    {
+        if (open)
+            CloseDoor();
+        else if (!open)
+            OpenDoor();
     }
 }

@@ -56,7 +56,6 @@ public class DialogueController : MonoBehaviour
         // Loop through all the dialogue events
         for (int i = 0; i < de.Length; i = nextSelection)
         {
-            Debug.Log("Reading next line...");
             if(de[i].AudioFile != "")   // Only load audio when a link is specified
             {
                 AudioClip ac = Resources.Load<AudioClip>("Sounds/Dialogue/Audio/" + de[i].AudioFile);
@@ -86,14 +85,12 @@ public class DialogueController : MonoBehaviour
             }
             else if (de[i].Responses[lastPressedOption].MoveNPCToLocation > -1)
             {
-                Debug.Log("Moving NPC");
                 int locIndex = de[i].Responses[lastPressedOption].MoveNPCToLocation;
                 NPCManager.instance.npcs[de[i].NPC_ID].ChangeBehaviour(AIState.Command, customLocations[locIndex].position);
                 break;
             }
             else break;
         }
-        Debug.Log("Conversation ended");
         isActive = false;
     }
     // Called whenever an option is pressed

@@ -24,11 +24,13 @@ public class InteractableVR : MonoBehaviour
 
     [Header("Special onGripDown")]
     public ParticleSystem psToEmit;
-    public Animator anime;
+    //public Animator anime;
+    //public string animKeyword;
 
     [Header("Events")]
     public UnityEvent OnGrab;
     public UnityEvent OnRelease;
+    public UnityEvent OnSpecial;
 
     [Header("References")]
     public GlowObjectCmd outline;
@@ -46,6 +48,7 @@ public class InteractableVR : MonoBehaviour
     bool isSwitchOffActive;
     IEnumerator switchOff;
 
+    bool animState = false;
 
     private void Start()
     {
@@ -114,7 +117,13 @@ public class InteractableVR : MonoBehaviour
                 psToEmit.Stop();
             else psToEmit.Play();
         }
-            
+
+        OnSpecial.Invoke();
+        /*
+        if(anime != null)
+        {
+            anime.SetBool(animKeyword, animState = !animState);
+        }*/
     }
 
     private void HoldObject(Transform holdPosition)
@@ -185,3 +194,4 @@ public class InteractableVR : MonoBehaviour
         outline.enabled = isSwitchOffActive = false;
     }
 }
+
