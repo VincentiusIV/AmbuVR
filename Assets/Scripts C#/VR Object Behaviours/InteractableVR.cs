@@ -74,7 +74,7 @@ public class InteractableVR : MonoBehaviour
             float yRotation = CustomMathf.ClampAngle(newRotation.y, minRotation.y, maxRotation.y);
             float zRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.z, maxRotation.z);
 
-            newRotation = new Vector3(Mathf.RoundToInt(xRotation), Mathf.RoundToInt(yRotation), Mathf.RoundToInt(zRotation));
+            newRotation = new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, Mathf.RoundToInt(zRotation));
             value = newRotation.z - minRotation.z;
             valueOutput.text = Mathf.RoundToInt(value).ToString();
 
