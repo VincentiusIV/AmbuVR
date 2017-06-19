@@ -24,7 +24,6 @@ public class ViveControllerNew : MonoBehaviour
     //--- Booleans ---//
     bool isHolding = false;
     bool canGrabAgain = true;
-    bool isUIVisible;
 
     private void Start()
     {

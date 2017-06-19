@@ -23,7 +23,7 @@ public class GamePlayEvent : MonoBehaviour {
 
     private void Start()
     {
-        player = AmbuVR.Player.instance.hmdPosition;
+        player = AmbuVR.Player.instance.hmd;
     }
 
     private void Update()

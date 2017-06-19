@@ -9,6 +9,7 @@ public class DialogueController : MonoBehaviour
     //public TouchpadInterface ti;
     public static DialogueController instance;
     public bool isActive;
+    public int activeID;
     public int talkingNPCID;
 
     private int lastPressedOption;
@@ -44,6 +45,7 @@ public class DialogueController : MonoBehaviour
     {
         Debug.Log("Starting dialogue index " + index);
         isActive = true;
+        activeID = index;
         int nextSelection = 0;
         // Get DialogueEvent array from the JSONAssembly class
         DialogueEvent[] de = JSONAssembly.RunJSONFactoryForScene(index);
@@ -52,7 +54,7 @@ public class DialogueController : MonoBehaviour
         // Before anything begins, the ai that is supposed to speak has to walk to the player
         NPCManager.instance.npcs[instance.talkingNPCID].ChangeBehaviour(AIState.Follow);
         // Wait untill npc has reached player
-        yield return new WaitUntil(() => NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].reachedPlayer);
+        yield return new WaitUntil(() => NPCManager.instance.npcs[talkingNPCID].reachedPlayer);
         // Loop through all the dialogue events
         for (int i = 0; i < de.Length; i = nextSelection)
         {
@@ -98,5 +100,13 @@ public class DialogueController : MonoBehaviour
     {
         lastPressedOption = pressedOption;
         goToNext = true;
+    }
+
+    public void ForceQuitDialogue()
+    {
+        if(isActive)
+        {
+            StopAllCoroutines();
+        }
     }
 }

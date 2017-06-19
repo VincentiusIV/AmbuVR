@@ -9,7 +9,9 @@ namespace AmbuVR
         public static Player instance;
 
         public TeleportVive teleporter;
-        public Transform hmdPosition;
+        public Transform hmd;
+        public Transform leftController;
+        public Transform rightController;
 
         private void Awake()
         {

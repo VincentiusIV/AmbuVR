@@ -36,6 +36,7 @@ public class UIController : MonoBehaviour
 
     [Header("Dialogue")]
     public DialogueButton[] responseButtons;
+    public Follow followScript;
 
     private void Start()
     {
@@ -89,7 +90,7 @@ public class UIController : MonoBehaviour
         GameFlowManager.instance.currentEvent.EventFinished();
     }
 
-    public void UpdateResponses(Response[] responses, Transform npcToLookAt)
+    public void UpdateResponses(Response[] responses, Transform npcToLookAt, bool followHmd = true)
     {
         for (int i = 0; i < responses.Length; i++)
         {
@@ -97,14 +98,24 @@ public class UIController : MonoBehaviour
         }
         ToggleResponseUI(true, responses.Length);
 
-        // Aim response ui to the NPC
-        /*Vector3 direction = npcToLookAt.position - transform.parent.position;
-        Quaternion rotation = Quaternion.LookRotation(direction);
-        transform.parent.rotation = rotation;
+       
+        if(followHmd)
+        {
+            followScript.enabled = true;
+        }
+        else if(!followHmd)
+        {
+            followScript.enabled = false;
+            // Aim response ui to the NPC
+            Vector3 direction = npcToLookAt.position - transform.parent.position;
+            Quaternion rotation = Quaternion.LookRotation(direction);
+            transform.parent.rotation = rotation;
 
-        // Position the ui at the player
-        Vector3 hmd = AmbuVR.Player.instance.hmdPosition.position;
-        transform.parent.position = new Vector3(hmd.x, transform.parent.parent.position.y, hmd.z);*/
+            // Position the ui at the player
+            Vector3 hmd = AmbuVR.Player.instance.hmd.position;
+            transform.parent.position = new Vector3(hmd.x, transform.parent.parent.position.y, hmd.z);
+        }
+        
     }
 
     public void ToggleResponseUI(bool state, int amount = 4)
@@ -117,11 +128,17 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void ToggleManually(GameObject button, bool state)
+    {
+        isVisible = state;
+        button.SetActive(state);
+    }
+
     public void PlayGame()
     {
         //SceneManager.LoadScene(gSceneName);
         SteamVR_LoadLevel.Begin(gSceneName);
-        UIController.instance.ToggleUI(false);
+        instance.ToggleUI(false);
     }
 
     public void PlayTutorial()

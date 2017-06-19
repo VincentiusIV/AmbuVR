@@ -9,6 +9,8 @@ public class GameFlowManager : MonoBehaviour
 
     public List<GameStage> eventList = new List<GameStage>();
 
+    public GameState state;
+
     public bool moveToNext = false;
     public bool isGameActive = false;
 
@@ -32,15 +34,21 @@ public class GameFlowManager : MonoBehaviour
         {
             /// START DIALOGUE
             if (eventList[i].dialogueEventID != -1)
-            {   
+            {
                 // Do dialogue and wait for it to finish
+                state = GameState.Dialogue;
+
+                if(DialogueController.instance.isActive)
+                    DialogueController.instance.ForceQuitDialogue();
+
                 yield return DialogueController.instance.StartCoroutine(DialogueController.instance.DialogueSession(eventList[i].dialogueEventID));
-                NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].ChangeBehaviour(AIState.Patrol);
+                NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].ChangeBehaviour(AIState.Idle);
             }
             else Debug.Log(i + " Skipping dialogue cause event id is -1");
 
             if(eventList[i].gameEvent != null)
             {
+                state = GameState.Event;
                 Debug.Log("Current objective is: " + eventList[i].gameEvent.name);
                 objectiveTxt.text = eventList[i].gameEvent.name;
                 // Turn the new event on
@@ -52,7 +60,7 @@ public class GameFlowManager : MonoBehaviour
                 
             }  
         }
-
+        state = GameState.Finished;
         Debug.Log("You finished the game! Congrats!");
         objectiveTxt.text = "Thanks for playing!";
         isGameActive = false;
@@ -65,4 +73,10 @@ public class GameStage
     public int dialogueEventID;
     public GamePlayEvent gameEvent;
 }
+
+public enum GameState
+{
+    Dialogue, Event, Finished
+}
+
 

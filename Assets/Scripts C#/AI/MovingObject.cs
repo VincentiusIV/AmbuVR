@@ -12,6 +12,8 @@ public class MovingObject : MonoBehaviour
     public int id;
     public AIState state;
     public Animator anime;
+    public int questionDialogue;
+    public GameObject questionButton;
 
     [Header("Patrolling")]
     public Transform[] patrolPoints;
@@ -34,7 +36,7 @@ public class MovingObject : MonoBehaviour
 
     private Transform[] points;
     bool isWaitingForNext = false;
-
+    bool visibleToPlayer = false;
     IEnumerator waiting;
 
     Vector3 customPoint;
@@ -44,7 +46,7 @@ public class MovingObject : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         voice = GetComponent<AudioSource>();
 
-        player = AmbuVR.Player.instance.hmdPosition;
+        player = AmbuVR.Player.instance.hmd;
 
         waiting = WaitBeforeNextPoint();
 
@@ -143,7 +145,7 @@ public class MovingObject : MonoBehaviour
 
     private void Update()
     {
-        Debug.DrawLine(transform.position, AmbuVR.Player.instance.hmdPosition.position);
+        Debug.DrawLine(transform.position, AmbuVR.Player.instance.hmd.position);
 
         switch (state)
         {
@@ -152,12 +154,12 @@ public class MovingObject : MonoBehaviour
             case AIState.Follow:
                 if (reachedPlayer)
                     break;
-                agent.SetDestination(AmbuVR.Player.instance.hmdPosition.position);
-                reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.hmdPosition.position) < 3f;
+                agent.SetDestination(AmbuVR.Player.instance.hmd.position);
+                reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) < 3f;
 
                 if (reachedPlayer)
                 {
-                    Debug.Log("Distance between AI and player: " + Vector3.Distance(transform.position, AmbuVR.Player.instance.hmdPosition.position) + ", Path remaining: " + agent.remainingDistance);
+                    Debug.Log("Distance between AI and player: " + Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) + ", Path remaining: " + agent.remainingDistance);
                     UpdateAnimator(false);
                     agent.isStopped = true;
                     //AmbuVR.Player.instance.SetCanTeleport(false);
@@ -186,9 +188,46 @@ public class MovingObject : MonoBehaviour
             default:
                 break;
         }
+
+        if(GameFlowManager.instance.state != GameState.Dialogue && !DialogueController.instance.isActive && visibleToPlayer)
+        {
+            // See how close player is to NPC
+            float distanceHMD = Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position);
+            // When player is in a certain range -> enable ask question button
+            if (distanceHMD < 4 && !questionButton.activeInHierarchy)
+                UIController.instance.ToggleManually(questionButton, true);
+            else if (distanceHMD > 4 && questionButton.activeInHierarchy)
+            {
+                UIController.instance.ToggleManually(questionButton, false);
+            }
+
+        }
+        else if(questionButton.activeInHierarchy)
+        {
+            UIController.instance.ToggleManually(questionButton, false);
+        }
+
+        if(visibleToPlayer)
+        {
+            // Rotate towards player
+            Vector3 direction = transform.position - AmbuVR.Player.instance.hmd.position;
+            direction = new Vector3(direction.x, 0f, direction.z);
+            Quaternion rotation = Quaternion.LookRotation(-direction);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, .02f);
+        }
     }
 
-    private void OnMouseEnter()
+    public void BecameVisible()
+    {
+        visibleToPlayer = true;
+    }
+
+    public void BecameInvisible()
+    {
+        visibleToPlayer = false;
+    }
+
+    /*private void OnMouseEnter()
     {
         outline.Show();
     }
@@ -206,7 +245,7 @@ public class MovingObject : MonoBehaviour
             ChangeBehaviour(AIState.Patrol);
         if (Input.GetKeyDown(KeyCode.Keypad4))
             ChangeBehaviour(AIState.Command);
-    }
+    }*/
 
     // Plays a voice from this AI, 
     public void PlayVoice(AudioClip newClip)
@@ -214,6 +253,12 @@ public class MovingObject : MonoBehaviour
         ChangeBehaviour(AIState.Idle);
         voice.clip = newClip;
         voice.Play();
+    }
+
+    public void StartQuestion()
+    {
+        UIController.instance.ToggleManually(questionButton, false);
+        DialogueController.instance.StartCoroutine(DialogueController.instance.DialogueSession(questionDialogue));
     }
 }
 // Enum for animations
