@@ -33,7 +33,7 @@ public class Shower : MonoBehaviour {
         }
     }
 
-    void UseShower()
+    public void UseShower()
     {
         showerPS.Play();
         isPatientInShower = true;

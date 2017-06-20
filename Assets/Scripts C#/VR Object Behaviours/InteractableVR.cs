@@ -20,6 +20,7 @@ public class InteractableVR : MonoBehaviour
     public Vector3 minRotation;
     public Vector3 maxRotation;
 
+    public RotateAxis rotateAround;
     public float activationThreshold = 0f;
     public int valueRange = 100;
 
@@ -68,17 +69,50 @@ public class InteractableVR : MonoBehaviour
             Vector3 rotationDiff = oldRotationEuler - newRotationEuler;
             Vector3 newRotation = transform.rotation.eulerAngles - rotationDiff;
 
+            float xRotation = transform.eulerAngles.x;
+            float yRotation = transform.eulerAngles.y;
+            float zRotation = transform.eulerAngles.z;
+
             // Clamp new rotation between min and max rotation
-            float xRotation = CustomMathf.ClampAngle(newRotation.x, minRotation.x, maxRotation.x);
-            float yRotation = CustomMathf.ClampAngle(newRotation.y, minRotation.y, maxRotation.y);
-            float zRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.z, maxRotation.z);
+            switch (rotateAround)
+            {
+                case RotateAxis.x:
+                    xRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.x, maxRotation.x);
+                    break;
+                case RotateAxis.y:
+                    yRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.y, maxRotation.y);
+                    break;
+                case RotateAxis.z:
+                    zRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.z, maxRotation.z);
+                    break;
+                default:
+                    break;
+            }
 
-            newRotation = new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, Mathf.RoundToInt(zRotation));
+            newRotation = new Vector3(Mathf.RoundToInt(xRotation), Mathf.RoundToInt(yRotation), Mathf.RoundToInt(zRotation));
 
-            value = Mathf.RoundToInt(newRotation.z / (maxRotation.z / valueRange));
+            switch (rotateAround)
+            {
+                case RotateAxis.x:
+                    value = Mathf.RoundToInt(newRotation.x / (maxRotation.x / valueRange));
+                    break;
+                case RotateAxis.y:
+                    value = Mathf.RoundToInt(newRotation.y / (maxRotation.y / valueRange));
+                    break;
+                case RotateAxis.z:
+                    value = Mathf.RoundToInt(newRotation.z / (maxRotation.z / valueRange));
+                    break;
+                default:
+                    break;
+            }
 
             if (valueOutput != null)
                 valueOutput.text = Mathf.RoundToInt(value).ToString();
+
+            if(value > activationThreshold)
+            {
+                PerformSpecial();
+            }
 
             transform.rotation = Quaternion.Euler(newRotation);
             oldRotationEuler = newRotationEuler;
@@ -196,4 +230,10 @@ public class InteractableVR : MonoBehaviour
         outline.enabled = isSwitchOffActive = false;
     }
 }
+[System.Serializable]
+public enum RotateAxis
+{
+    x, y, z
+}
+
 
