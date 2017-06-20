@@ -49,8 +49,6 @@ public class InteractableVR : MonoBehaviour
     bool isSwitchOffActive;
     IEnumerator switchOff;
 
-    bool animState = false;
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -78,7 +76,9 @@ public class InteractableVR : MonoBehaviour
             newRotation = new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, Mathf.RoundToInt(zRotation));
 
             value = Mathf.RoundToInt(newRotation.z / (maxRotation.z / valueRange));
-            valueOutput.text = Mathf.RoundToInt(value).ToString();
+
+            if (valueOutput != null)
+                valueOutput.text = Mathf.RoundToInt(value).ToString();
 
             transform.rotation = Quaternion.Euler(newRotation);
             oldRotationEuler = newRotationEuler;

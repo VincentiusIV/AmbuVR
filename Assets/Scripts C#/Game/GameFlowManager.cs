@@ -42,7 +42,7 @@ public class GameFlowManager : MonoBehaviour
                     DialogueController.instance.ForceQuitDialogue();
 
                 yield return DialogueController.instance.StartCoroutine(DialogueController.instance.DialogueSession(eventList[i].dialogueEventID));
-                NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].ChangeBehaviour(AIState.Idle);
+                NPCManager.instance.npcs[DialogueController.instance.talkingNPCID].ChangeBehaviour(AIBehaviourState.Idle);
             }
             else Debug.Log(i + " Skipping dialogue cause event id is -1");
 

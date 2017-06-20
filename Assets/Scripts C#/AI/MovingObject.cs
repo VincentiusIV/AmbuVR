@@ -10,7 +10,7 @@ public class MovingObject : MonoBehaviour
 {
     [Header("State")]
     public int id;
-    public AIState state;
+    public AIBehaviourState state;
     public Animator anime;
     public int questionDialogue;
     public GameObject questionButton;
@@ -25,7 +25,7 @@ public class MovingObject : MonoBehaviour
     public bool reachedPlayer;
 
     [Header("Testing References")]
-    public AIState startState = AIState.Idle;
+    public AIBehaviourState startState = AIBehaviourState.Idle;
     public TextMesh stateMesh;
     public bool raycastingEnabled = false;
 
@@ -63,9 +63,9 @@ public class MovingObject : MonoBehaviour
         ChangeBehaviour(startState);
     }
 
-    public void ChangeBehaviour(AIState newBehaviour, Vector3 custom = new Vector3(), bool forceChange = false)
+    public void ChangeBehaviour(AIBehaviourState newBehaviour, Vector3 custom = new Vector3(), bool forceChange = false)
     {
-        if (state == AIState.Command && agent.isStopped != true)
+        if (state == AIBehaviourState.Command && agent.isStopped != true)
             return;
 
         state = newBehaviour;
@@ -80,16 +80,16 @@ public class MovingObject : MonoBehaviour
 
         switch (state)
         {
-            case AIState.Idle:
+            case AIBehaviourState.Idle:
                 break;
-            case AIState.Follow:
+            case AIBehaviourState.Follow:
                 points = new Transform[1];
                 points[0] = player;
                 break;
-            case AIState.Patrol:
+            case AIBehaviourState.Patrol:
                 points = patrolPoints;
                 break;
-            case AIState.Command:
+            case AIBehaviourState.Command:
                 points = new Transform[1];
                 Transform testCommand = GameObject.Find("TestCommandTransform").transform;
                 testCommand.position = custom;
@@ -111,7 +111,7 @@ public class MovingObject : MonoBehaviour
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
         // Returns if no points have been set up
-        if (points.Length == 0 || state == AIState.Idle)
+        if (points.Length == 0 || state == AIBehaviourState.Idle)
         {
             agent.isStopped = true;
             return;
@@ -149,9 +149,9 @@ public class MovingObject : MonoBehaviour
 
         switch (state)
         {
-            case AIState.Idle:
+            case AIBehaviourState.Idle:
                 break;
-            case AIState.Follow:
+            case AIBehaviourState.Follow:
                 if (reachedPlayer)
                     break;
                 agent.SetDestination(AmbuVR.Player.instance.hmd.position);
@@ -165,11 +165,11 @@ public class MovingObject : MonoBehaviour
                     //AmbuVR.Player.instance.SetCanTeleport(false);
                 }
                 break;
-            case AIState.Patrol:
+            case AIBehaviourState.Patrol:
                 if (!agent.pathPending && agent.remainingDistance < 0.5f || agent.isStopped)
                     GotoNextPoint();
                 break;
-            case AIState.Command:
+            case AIBehaviourState.Command:
                 if (raycastingEnabled && Input.GetButtonDown("Fire1"))
                 {
                     RaycastHit hit;
@@ -194,26 +194,24 @@ public class MovingObject : MonoBehaviour
             // See how close player is to NPC
             float distanceHMD = Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position);
             // When player is in a certain range -> enable ask question button
-            if (distanceHMD < 4 && !questionButton.activeInHierarchy)
+            if (distanceHMD < 3 && !questionButton.activeInHierarchy)
                 UIController.instance.ToggleManually(questionButton, true);
-            else if (distanceHMD > 4 && questionButton.activeInHierarchy)
-            {
+            else if (distanceHMD > 3 && questionButton.activeInHierarchy)
                 UIController.instance.ToggleManually(questionButton, false);
+
+            if (visibleToPlayer)
+            {
+                // Rotate towards player
+                Vector3 direction = transform.position - AmbuVR.Player.instance.hmd.position;
+                direction = new Vector3(direction.x, 0f, direction.z);
+                Quaternion rotation = Quaternion.LookRotation(-direction);
+                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, .02f);
             }
 
         }
         else if(questionButton.activeInHierarchy)
         {
             UIController.instance.ToggleManually(questionButton, false);
-        }
-
-        if(visibleToPlayer)
-        {
-            // Rotate towards player
-            Vector3 direction = transform.position - AmbuVR.Player.instance.hmd.position;
-            direction = new Vector3(direction.x, 0f, direction.z);
-            Quaternion rotation = Quaternion.LookRotation(-direction);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, .02f);
         }
     }
 
@@ -250,7 +248,7 @@ public class MovingObject : MonoBehaviour
     // Plays a voice from this AI, 
     public void PlayVoice(AudioClip newClip)
     {
-        ChangeBehaviour(AIState.Idle);
+        ChangeBehaviour(AIBehaviourState.Idle);
         voice.clip = newClip;
         voice.Play();
     }
@@ -262,10 +260,18 @@ public class MovingObject : MonoBehaviour
     }
 }
 // Enum for animations
-public enum AIState
+public enum AIBehaviourState
 {
     Idle,
     Follow,
     Patrol,
     Command
+}
+
+
+public enum AIEmotionalState
+{
+    Normal,
+    Crying,
+    Sad,
 }

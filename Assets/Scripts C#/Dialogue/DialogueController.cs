@@ -52,7 +52,7 @@ public class DialogueController : MonoBehaviour
         // Store which npc will start talking (for pathfinding)
         talkingNPCID = de[0].NPC_ID;
         // Before anything begins, the ai that is supposed to speak has to walk to the player
-        NPCManager.instance.npcs[instance.talkingNPCID].ChangeBehaviour(AIState.Follow);
+        NPCManager.instance.npcs[instance.talkingNPCID].ChangeBehaviour(AIBehaviourState.Follow);
         // Wait untill npc has reached player
         yield return new WaitUntil(() => NPCManager.instance.npcs[talkingNPCID].reachedPlayer);
         // Loop through all the dialogue events
@@ -88,7 +88,7 @@ public class DialogueController : MonoBehaviour
             else if (de[i].Responses[lastPressedOption].MoveNPCToLocation > -1)
             {
                 int locIndex = de[i].Responses[lastPressedOption].MoveNPCToLocation;
-                NPCManager.instance.npcs[de[i].NPC_ID].ChangeBehaviour(AIState.Command, customLocations[locIndex].position);
+                NPCManager.instance.npcs[de[i].NPC_ID].ChangeBehaviour(AIBehaviourState.Command, customLocations[locIndex].position);
                 break;
             }
             else break;
