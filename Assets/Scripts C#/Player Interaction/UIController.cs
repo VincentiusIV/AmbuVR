@@ -25,6 +25,7 @@ public class UIController : MonoBehaviour
 
     public bool isVisible;
     public bool isIntegerBeingRequested;
+    public bool teleportAnyway;
 
     [Header("Scene Options")]
     public string gSceneName = "GameFlowTesting";
@@ -102,7 +103,7 @@ public class UIController : MonoBehaviour
         if(followHmd)
         {
             followScript.enabled = true;
-        }
+        } 
         else if(!followHmd)
         {
             followScript.enabled = false;

@@ -84,7 +84,7 @@ public class ViveControllerNew : MonoBehaviour
             RaycastHit hit;
             pointer.SetPosition(0, pointerOrigin.position);
 
-            if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit, 100, uiLayer))
+            if (Physics.Raycast(pointerOrigin.position, pointerOrigin.forward, out hit, 1, uiLayer))
             {
                 pointer.SetPosition(1, hit.point);
 
@@ -93,7 +93,7 @@ public class ViveControllerNew : MonoBehaviour
                 if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
                     hit.collider.GetComponent<AmbuVR.Button>().UseButton();
             }
-            else pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * 100));
+            else pointer.SetPosition(1, pointerOrigin.position + (pointerOrigin.forward * 1));
         }
 
         if(device.GetTouchDown(SteamVR_Controller.ButtonMask.ApplicationMenu) && !isHolding)

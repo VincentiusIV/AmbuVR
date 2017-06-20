@@ -21,6 +21,7 @@ public class InteractableVR : MonoBehaviour
     public Vector3 maxRotation;
 
     public float activationThreshold = 0f;
+    public int valueRange = 100;
 
     [Header("Special onGripDown")]
     public ParticleSystem psToEmit;
@@ -75,7 +76,8 @@ public class InteractableVR : MonoBehaviour
             float zRotation = CustomMathf.ClampAngle(newRotation.z, minRotation.z, maxRotation.z);
 
             newRotation = new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, Mathf.RoundToInt(zRotation));
-            value = newRotation.z - minRotation.z;
+
+            value = Mathf.RoundToInt(newRotation.z / (maxRotation.z / valueRange));
             valueOutput.text = Mathf.RoundToInt(value).ToString();
 
             transform.rotation = Quaternion.Euler(newRotation);

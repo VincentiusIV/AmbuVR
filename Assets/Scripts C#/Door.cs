@@ -8,8 +8,9 @@ public class Door : MonoBehaviour
 {
 
     //--- Public ---//
-    public AudioClip knockSound;
+    public AudioClip[] knockSounds;
     public AudioClip openSound;
+    public AudioClip closeSound;
 
     public Animator anime;
 
@@ -23,6 +24,7 @@ public class Door : MonoBehaviour
     private void Start()
     {
         sound = GetComponent<AudioSource>();
+
         if (anime == null)
             anime = GetComponent<Animator>();
     }
@@ -49,19 +51,26 @@ public class Door : MonoBehaviour
         // Play sound
         Debug.Log("You knocked on the door");
 
-        sound.clip = knockSound;
-        sound.Play();
+        PlayClip(knockSounds[Random.Range(0, knockSounds.Length -1)]);
         OnKnock.Invoke();
     }
 
     public void OpenDoor()
     {
         anime.SetBool("Open", open = true);
+        PlayClip(openSound);
     }
 
     public void CloseDoor()
     {
         anime.SetBool("Open", open = false);
+        PlayClip(closeSound);
+    }
+
+    void PlayClip(AudioClip clip)
+    {
+        sound.clip = clip;
+        sound.Play();
     }
 
     public void SwitchDoor()
