@@ -11,6 +11,7 @@ public class DialogueEvent
     public int TextID;
     public string TextLine;
     public string AudioFile;
+    public int AngerLevel;
     public Response[] Responses;
 }
 [System.Serializable]

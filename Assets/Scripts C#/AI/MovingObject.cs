@@ -10,7 +10,11 @@ public class MovingObject : MonoBehaviour
 {
     [Header("State")]
     public int id;
-    public AIBehaviourState state;
+    public AIBehaviourState behaviouralState;
+    public AIMovementState movementState;
+    public AIEmotionalState emotionalState;
+    public float anger;
+    public float transitionLerp = .05f;
     public Animator anime;
     public int questionDialogue;
     public GameObject questionButton;
@@ -23,6 +27,7 @@ public class MovingObject : MonoBehaviour
     public GlowObjectCmd outline;
     public Transform player;
     public bool reachedPlayer;
+    public float distanceToPlayer = 2f;
 
     [Header("Testing References")]
     public AIBehaviourState startState = AIBehaviourState.Idle;
@@ -36,10 +41,12 @@ public class MovingObject : MonoBehaviour
 
     private Transform[] points;
     bool isWaitingForNext = false;
-    bool visibleToPlayer = false;
     IEnumerator waiting;
 
     Vector3 customPoint;
+
+    //--- Bools ---//
+    bool visibleToPlayer = false;
 
     void Start()
     {
@@ -65,20 +72,18 @@ public class MovingObject : MonoBehaviour
 
     public void ChangeBehaviour(AIBehaviourState newBehaviour, Vector3 custom = new Vector3(), bool forceChange = false)
     {
-        if (state == AIBehaviourState.Command && agent.isStopped != true)
+        if (behaviouralState == AIBehaviourState.Command && agent.isStopped != true)
             return;
 
-        state = newBehaviour;
-        Debug.Log(string.Format("new behaviour of {0} is {1}", gameObject.name, state.ToString()));
+        behaviouralState = newBehaviour;
+        Debug.Log(string.Format("new behaviour of {0} is {1}", gameObject.name, behaviouralState.ToString()));
         if (isWaitingForNext)
             StopCoroutine(waiting);
 
         if (stateMesh != null)
-            stateMesh.text = state.ToString();
+            stateMesh.text = behaviouralState.ToString();
 
-        UpdateAnimator(false);
-
-        switch (state)
+        switch (behaviouralState)
         {
             case AIBehaviourState.Idle:
                 break;
@@ -111,7 +116,7 @@ public class MovingObject : MonoBehaviour
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
         // Returns if no points have been set up
-        if (points.Length == 0 || state == AIBehaviourState.Idle)
+        if (points.Length == 0 || behaviouralState == AIBehaviourState.Idle)
         {
             agent.isStopped = true;
             return;
@@ -123,7 +128,7 @@ public class MovingObject : MonoBehaviour
         // Set the agent to go to the currently selected destination.
         agent.destination = points[destPoint].position;
         // Set animation
-        UpdateAnimator(true);
+        SetAnimator(AIMovementState.Walking);
 
         destPoint = (destPoint + 1) % points.Length;
     }
@@ -137,32 +142,26 @@ public class MovingObject : MonoBehaviour
 
     }
 
-    void UpdateAnimator(bool isMoving)
-    {
-        anime.SetBool("isWalking", isMoving);
-        // add more animations
-    }
-
     private void Update()
     {
         Debug.DrawLine(transform.position, AmbuVR.Player.instance.hmd.position);
+        reachedPlayer = Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) < distanceToPlayer;
 
-        switch (state)
+        switch (behaviouralState)
         {
             case AIBehaviourState.Idle:
                 break;
-            case AIBehaviourState.Follow:
+            case AIBehaviourState.Follow:  
                 if (reachedPlayer)
                     break;
                 agent.SetDestination(AmbuVR.Player.instance.hmd.position);
-                reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) < 3f;
+                reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) < distanceToPlayer;
 
                 if (reachedPlayer)
                 {
                     Debug.Log("Distance between AI and player: " + Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) + ", Path remaining: " + agent.remainingDistance);
-                    UpdateAnimator(false);
+                    SetAnimator(AIMovementState.Idle);
                     agent.isStopped = true;
-                    //AmbuVR.Player.instance.SetCanTeleport(false);
                 }
                 break;
             case AIBehaviourState.Patrol:
@@ -170,7 +169,7 @@ public class MovingObject : MonoBehaviour
                     GotoNextPoint();
                 break;
             case AIBehaviourState.Command:
-                if (raycastingEnabled && Input.GetButtonDown("Fire1"))
+                /*if (raycastingEnabled && Input.GetButtonDown("Fire1"))
                 {
                     RaycastHit hit;
                     if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
@@ -181,14 +180,12 @@ public class MovingObject : MonoBehaviour
                         points[0] = testCommand;
                         GotoNextPoint();
                     }
-                }
-
-
+                }*/
                 break;
             default:
                 break;
         }
-
+        //--- For asking questions ---//
         if(GameFlowManager.instance.state != GameState.Dialogue && !DialogueController.instance.isActive && visibleToPlayer)
         {
             // See how close player is to NPC
@@ -213,6 +210,13 @@ public class MovingObject : MonoBehaviour
         {
             UIController.instance.ToggleManually(questionButton, false);
         }
+
+        // Updates animator to idle when AI stopped talking
+        if (!voice.isPlaying && movementState == AIMovementState.Talking)
+            SetAnimator(AIMovementState.Idle);
+
+        anger = Mathf.Lerp(anger, (int)emotionalState * 0.5f, transitionLerp);
+        anime.SetFloat("Anger", anger);
     }
 
     public void BecameVisible()
@@ -246,9 +250,11 @@ public class MovingObject : MonoBehaviour
     }*/
 
     // Plays a voice from this AI, 
-    public void PlayVoice(AudioClip newClip)
+    public void PlayVoice(AudioClip newClip, AIEmotionalState _emoState)
     {
         ChangeBehaviour(AIBehaviourState.Idle);
+        SetAnimator(AIMovementState.Talking);
+        emotionalState = _emoState;
         voice.clip = newClip;
         voice.Play();
     }
@@ -258,8 +264,34 @@ public class MovingObject : MonoBehaviour
         UIController.instance.ToggleManually(questionButton, false);
         DialogueController.instance.StartCoroutine(DialogueController.instance.DialogueSession(questionDialogue));
     }
+
+    private void SetAnimator(AIMovementState _movementState)
+    {
+        movementState = _movementState;
+
+        switch (movementState)
+        {
+            case AIMovementState.Idle:
+                SetAnimatorBools(false, false);
+                break;
+            case AIMovementState.Walking:
+                SetAnimatorBools(true, false);
+                break;
+            case AIMovementState.Talking:
+                SetAnimatorBools(false, true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void SetAnimatorBools(bool _isWalking, bool _isTalking)
+    {
+        anime.SetBool("isWalking", _isWalking);
+        anime.SetBool("isTalking", _isTalking);
+    }
 }
-// Enum for animations
+// Enum for behaviour
 public enum AIBehaviourState
 {
     Idle,
@@ -267,11 +299,17 @@ public enum AIBehaviourState
     Patrol,
     Command
 }
-
-
+// Enum for animations
+public enum AIMovementState
+{
+    Idle = 0,
+    Walking = 1,
+    Talking = 2
+}
+// Enum for the intensity of some animations
 public enum AIEmotionalState
 {
     Normal = 0,
-    Normal1 = 1,
+    Aggrevated = 1,
     Angry = 2,
 }

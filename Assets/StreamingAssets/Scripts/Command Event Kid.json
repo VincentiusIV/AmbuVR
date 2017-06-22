@@ -16,6 +16,7 @@
     "TextID": 0,
     "TextLine": "Waar moet ik heen?",
     "AudioFile": "",
+    "AngerLevel": 0,
     "Responses": [
       {
         "ResponseText": "Kan ik u wat vragen?",

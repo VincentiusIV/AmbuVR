@@ -19,10 +19,6 @@ namespace JSONFactory
         {
             {0, "/StreamingAssets/Scripts/Event1.json" },
             {1, "/StreamingAssets/Scripts/tbsa.json" },
-            {2, "/StreamingAssets/Scripts/Negative feedback TBSA.json" },
-            {3, "/StreamingAssets/Scripts/Treatment.json" },
-            {4, "/StreamingAssets/Scripts/Positive feedback Treatment.json" },
-            {5, "/StreamingAssets/Scripts/Negative feedback Treatment.json" },
             {6, "/StreamingAssets/Scripts/Command Event.json" },
             {7, "/StreamingAssets/Scripts/Command Event Kid.json" },
             {8, "/StreamingAssets/Scripts/Command Event mom.json" },

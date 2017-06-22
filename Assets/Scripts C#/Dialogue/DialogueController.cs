@@ -51,10 +51,7 @@ public class DialogueController : MonoBehaviour
         DialogueEvent[] de = JSONAssembly.RunJSONFactoryForScene(index);
         // Store which npc will start talking (for pathfinding)
         talkingNPCID = de[0].NPC_ID;
-        // Before anything begins, the ai that is supposed to speak has to walk to the player
-        NPCManager.instance.npcs[instance.talkingNPCID].ChangeBehaviour(AIBehaviourState.Follow);
-        // Wait untill npc has reached player
-        yield return new WaitUntil(() => NPCManager.instance.npcs[talkingNPCID].reachedPlayer);
+        
         // Loop through all the dialogue events
         for (int i = 0; i < de.Length; i = nextSelection)
         {
@@ -64,8 +61,16 @@ public class DialogueController : MonoBehaviour
 
                 if(ac != null)          // If an audio clip was found
                 {
+                    if(!NPCManager.instance.npcs[talkingNPCID].reachedPlayer)
+                    {
+                        // Before anything begins, the ai that is supposed to speak has to walk to the player
+                        NPCManager.instance.npcs[instance.talkingNPCID].ChangeBehaviour(AIBehaviourState.Follow);
+                        // Wait untill npc has reached player
+                        yield return new WaitUntil(() => NPCManager.instance.npcs[talkingNPCID].reachedPlayer);
+                    }
+                    
                     // Let the NPC play the corresponding voice
-                    NPCManager.instance.npcs[de[i].NPC_ID].PlayVoice(ac);
+                    NPCManager.instance.npcs[de[i].NPC_ID].PlayVoice(ac, (AIEmotionalState)de[i].AngerLevel);
                     // Wait untill NPC is done talking
                     yield return new WaitForSeconds(ac.length);
                 }

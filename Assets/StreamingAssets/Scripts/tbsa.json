@@ -1,40 +1,51 @@
-[{
-		"NPC_ID": 0,
-		"TextID": 0,
-		"TextLine": "Waarom behandel je hem niet gelijks?",
-		"AudioFile": "Behandel",
-		"Responses": [{
-			"ResponseText": "Ik ga het TVLO vaststellen",
-			"MoveNPCToLocation": -1,
-			"NextTextID": 1
-		}, {
-			"ResponseText": "Ik zal hem wel gaan waterkoelen",
-			"MoveNPCToLocation": 1,
-			"NextTextID": 2
-		}]
-	},
+[
+  {
+    "NPC_ID": 0,
+    "TextID": 0,
+    "TextLine": "Waarom behandel je hem niet gelijks?",
+    "AudioFile": "Behandel",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Ik ga het TVLO vaststellen",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 1
+      },
+      {
+        "ResponseText": "Ik zal hem wel gaan waterkoelen",
+        "MoveNPCToLocation": 1,
+        "NextTextID": 2
+      }
+    ]
+  },
 
-	{
-		"NPC_ID": 0,
-		"TextID": 1,
-		"TextLine": "Oke",
-		"AudioFile": "2.0",
-		"Responses": [{
-			"ResponseText": "Continue..",
-			"MoveNPCToLocation": -1,
-			"NextTextID": -1
-		}]
-	},
+  {
+    "NPC_ID": 0,
+    "TextID": 1,
+    "TextLine": "Oke",
+    "AudioFile": "2.0",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
 
-	{
-		"NPC_ID": 0,
-		"TextID": 2,
-		"TextLine": "Dat klinkt goed",
-		"AudioFile": "5.1",
-		"Responses": [{
-			"ResponseText": "Continue..",
-			"MoveNPCToLocation": -1,
-			"NextTextID": -1
-		}]
-	}
+  {
+    "NPC_ID": 0,
+    "TextID": 2,
+    "TextLine": "Dat klinkt goed",
+    "AudioFile": "5.1",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Continue..",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  }
 ]
