@@ -271,7 +271,7 @@ public enum AIBehaviourState
 
 public enum AIEmotionalState
 {
-    Normal,
-    Crying,
-    Sad,
+    Normal = 0,
+    Normal1 = 1,
+    Angry = 2,
 }
