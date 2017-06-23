@@ -31,6 +31,7 @@ public class MovingObject : MonoBehaviour
 
     [Header("Testing References")]
     public AIBehaviourState startState = AIBehaviourState.Idle;
+
     public TextMesh stateMesh;
     public bool raycastingEnabled = false;
 
@@ -145,7 +146,7 @@ public class MovingObject : MonoBehaviour
     private void Update()
     {
         Debug.DrawLine(transform.position, AmbuVR.Player.instance.hmd.position);
-        reachedPlayer = Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) < distanceToPlayer;
+        reachedPlayer = Vector3.Distance(transform.position, AmbuVR.Player.instance.feet.position) < distanceToPlayer;
 
         switch (behaviouralState)
         {
@@ -155,7 +156,7 @@ public class MovingObject : MonoBehaviour
                 if (reachedPlayer)
                     break;
                 agent.SetDestination(AmbuVR.Player.instance.hmd.position);
-                reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position) < distanceToPlayer;
+                reachedPlayer = agent.remainingDistance < 2f && Vector3.Distance(transform.position, AmbuVR.Player.instance.feet.position) < distanceToPlayer;
 
                 if (reachedPlayer)
                 {
@@ -189,11 +190,11 @@ public class MovingObject : MonoBehaviour
         if(GameFlowManager.instance.state != GameState.Dialogue && !DialogueController.instance.isActive && visibleToPlayer)
         {
             // See how close player is to NPC
-            float distanceHMD = Vector3.Distance(transform.position, AmbuVR.Player.instance.hmd.position);
+            float distanceHMD = Vector3.Distance(transform.position, AmbuVR.Player.instance.feet.position);
             // When player is in a certain range -> enable ask question button
-            if (distanceHMD < 3 && !questionButton.activeInHierarchy)
+            if (distanceHMD < 1.5 && !questionButton.activeInHierarchy)
                 UIController.instance.ToggleManually(questionButton, true);
-            else if (distanceHMD > 3 && questionButton.activeInHierarchy)
+            else if (distanceHMD > 1.5 && questionButton.activeInHierarchy)
                 UIController.instance.ToggleManually(questionButton, false);
 
             if (visibleToPlayer)
@@ -312,4 +313,5 @@ public enum AIEmotionalState
     Normal = 0,
     Aggrevated = 1,
     Angry = 2,
+    Crying = 3,
 }

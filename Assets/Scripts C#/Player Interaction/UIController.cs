@@ -39,6 +39,8 @@ public class UIController : MonoBehaviour
     public DialogueButton[] responseButtons;
     public Follow followScript;
 
+    List<GameObject> visibleButtons = new List<GameObject>();
+
     private void Start()
     {
         if (instance == null)
@@ -61,14 +63,17 @@ public class UIController : MonoBehaviour
         ToggleResponseUI(false);
     }
 
+    private void Update()
+    {
+        isVisible = visibleButtons.Count > 0;
+    }
+
     public void ToggleUI(bool visible)
     {
         isVisible = visible;
         for (int i = 0; i < buttons.Count; i++)
         {
-            if (buttons[i] == null)
-                buttons[i] = transform.GetChild(i).GetComponent<AmbuVR.Button>();
-            buttons[i].gameObject.SetActive(visible);
+            ToggleManually(buttons[i].gameObject, visible);
         }
     }
 
@@ -121,18 +126,25 @@ public class UIController : MonoBehaviour
 
     public void ToggleResponseUI(bool state, int amount = 4)
     {
-        isVisible = state;
         for (int i = 0; i < amount; i++)
         {
-            responseButtons[i].gameObject.SetActive(state);
-            responseButtons[i].transform.GetChild(0).gameObject.SetActive(state);
+            ToggleManually(responseButtons[i].gameObject, state);
+            ToggleManually(responseButtons[i].transform.GetChild(0).gameObject, state);
         }
     }
 
     public void ToggleManually(GameObject button, bool state)
     {
-        isVisible = state;
         button.SetActive(state);
+        
+        if(state && !visibleButtons.Contains(button))
+        {
+            visibleButtons.Add(button);
+        }
+        else if(!state && visibleButtons.Contains(button))
+        {
+            visibleButtons.Remove(button);
+        }
     }
 
     public void PlayGame()

@@ -36,6 +36,8 @@ public class TutorialManager : MonoBehaviour {
     private IEnumerator Tutorial()
     {
         Debug.Log("Tutorial has started");
+        UIController.instance.ToggleUI(false);
+
         for (int i = 0; i < eventList.Count; i++)
         {
             Debug.Log(eventList[i].text);
@@ -53,7 +55,10 @@ public class TutorialManager : MonoBehaviour {
             {
                 sound.clip = eventList[i].clip;
                 sound.Play();
+                yield return new WaitUntil(() => sound.isPlaying == false);
             }
+
+            ControllerHint.instance.ShowHint(eventList[i].hintPart);
 
             if (eventList[i].tutEvent != null)
             {
@@ -83,6 +88,7 @@ public class TutorialStageData
 {
     public string text;
     public AudioClip clip;
+    public ControlPart hintPart;
     public float additionalWaitingTime;
     public bool canPlayerTeleport;
     public GamePlayEvent tutEvent;

@@ -29,6 +29,8 @@ public class PatientArea : MonoBehaviour
     public List<MedicalItem> placeOrder;        // The order in which med items were used on this area
     public List<MedicalItem> correctOrder;      // The correct order of med items
 
+    public GameObject wrapVisual;
+
     [Header("Area status")]
     AreaStatus areaStatus;            // Status of this burn wound
 
@@ -50,16 +52,21 @@ public class PatientArea : MonoBehaviour
         patient = transform.GetComponentInParent<Patient>();
 
         placeOrder = new List<MedicalItem>();
+
+        if(wrapVisual != null)
+            wrapVisual.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Pick Up"))
+        if(other.CompareTag("Medical Item"))
         {
             ItemData med = other.GetComponent<ItemData>();
             ApplyMed(med.thisItem);
             other.GetComponent<InteractableVR>().DisconnectFromObject(Vector3.zero, Vector3.zero);
-            Destroy(other.gameObject);
+            other.transform.position = transform.position;
+            other.transform.SetParent(transform);
+            //Destroy(other.gameObject);
         }
     }
 
@@ -69,8 +76,7 @@ public class PatientArea : MonoBehaviour
         {
             Debug.Log("This wound is finished!");
             return;
-        }
-            
+        } 
 
         Debug.Log(string.Format("{0} {1} being applied with {2}", status, areaType, item));
         
@@ -83,7 +89,12 @@ public class PatientArea : MonoBehaviour
             areaStatus.isCooled = true;
         
         if (item == MedicalItem.PlasticWrap)
+        {
             areaStatus.isWrapped = true;
+
+            if (wrapVisual != null)
+                wrapVisual.SetActive(true);
+        }     
 
         if (placeOrder.Count == correctOrder.Count && CheckOrder())
         {

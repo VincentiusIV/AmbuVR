@@ -9,7 +9,11 @@ public class TutorialItem : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Respawner"))
+        {
             transform.position = spawnPosition;
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
+            
     }
 
 }

@@ -8,11 +8,12 @@ public class Scissor : InteractableVR {
     {
         if(other.CompareTag("Clothes"))
         {
-            other.transform.SetParent(null);
-            other.GetComponent<Rigidbody>().isKinematic = false;
-            other.GetComponent<Rigidbody>().useGravity = true;
+            //other.transform.SetParent(null);
+            //other.GetComponent<Rigidbody>().isKinematic = false;
+            //other.GetComponent<Rigidbody>().useGravity = true;
 
-            other.GetComponent<Collider>().isTrigger = false;
+            //other.GetComponent<Collider>().isTrigger = false;
+            other.transform.parent.gameObject.SetActive(false);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace AmbuVR
         public Transform hmd;
         public Transform leftController;
         public Transform rightController;
+        public Transform feet;
 
         private void Awake()
         {

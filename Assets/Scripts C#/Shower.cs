@@ -27,23 +27,19 @@ public class Shower : MonoBehaviour {
     {
         if(other.CompareTag("AI") && didShower == false)
         {
-
-            UseShower();
-            
+            NPCManager.instance.npcs[1].transform.position = showerPosition.position;
+            //other.GetComponent<CapsuleCollider>().enabled = false;
+            //other.GetComponent<NavMeshAgent>().enabled = false;
+            NPCManager.instance.npcs[1].StopMoving();
+            NPCManager.instance.npcs[1].ChangeBehaviour(AIBehaviourState.Idle, Vector3.zero, true);
         }
     }
 
     public void UseShower()
     {
         showerPS.Play();
-        isPatientInShower = true;
-        NPCManager.instance.npcs[1].transform.position = showerPosition.position;
-        //other.GetComponent<CapsuleCollider>().enabled = false;
-        //other.GetComponent<NavMeshAgent>().enabled = false;
-        NPCManager.instance.npcs[1].StopMoving();
-        NPCManager.instance.npcs[1].ChangeBehaviour(AIBehaviourState.Idle, Vector3.zero, true);
-
         showerOpen.Play();
+        isPatientInShower = true;
     }
 
     private void Update()
@@ -51,8 +47,6 @@ public class Shower : MonoBehaviour {
         if(isPatientInShower)
         {
             showerTimer += Time.deltaTime;
-
-            
         }
     }
 
@@ -68,7 +62,6 @@ public class Shower : MonoBehaviour {
             showerOpen.Stop();
             GetComponent<BoxCollider>().enabled = false;
             this.enabled = false;
-            
         }
     }
 
