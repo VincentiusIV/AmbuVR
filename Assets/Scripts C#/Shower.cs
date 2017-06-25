@@ -42,6 +42,13 @@ public class Shower : MonoBehaviour {
         isPatientInShower = true;
     }
 
+    public void CloseShower()
+    {
+        showerPS.Stop();
+        showerOpen.Stop();
+        isPatientInShower = false;
+    }
+
     private void Update()
     {
         if(isPatientInShower)
