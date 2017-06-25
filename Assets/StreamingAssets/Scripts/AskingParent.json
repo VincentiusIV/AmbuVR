@@ -1,0 +1,288 @@
+/* Explanation on each variable:
+
+  - NPC_ID = ID for the NPC that should be talking
+  - TextID = ID for the text block (0, 1, 2, etc.)
+  - TextLine = text line that the NPC says
+  - AudioFile = name of the audio file that should be played
+  - Responses = list of responses that the player can choose
+  - ResponseText = the line that the player can choose to say
+  - Fx_Stress = the affect this choice has on the stress lvl of the NPC
+  - NextTextID = the response of the NPC to the chosen response of the player
+ */
+
+[
+  {
+    "NPC_ID": 0,
+    "TextID": 0,
+    "TextLine": "Waarom behandel je hem nog niet ?",
+    "AudioFile": "Mother/1.0",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Ik wil meer informatie",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 2
+      },
+      {
+        "ResponseText": "Ik ga aan de slag [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Ik ben klaar met de behandeling ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 12
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 2,
+    "TextLine": "Nou goed dan",
+    "AudioFile": "Mother/2.0",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Wat is er gebeurt ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 3
+      },
+      {
+        "ResponseText": "Wanneer is het gebeurt ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 4
+      }
+    ]
+  },
+
+  {
+    "NPC_ID": 0,
+    "TextID": 3,
+    "TextLine": "Ik had de theepot net op tafel gezet . Ik kreeg telefoon en rende terug toen ik hem hoorde huilen.",
+    "AudioFile": "Mother/2.1",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Was het water net gekookt",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 5
+      },
+      {
+        "ResponseText": "Was het water al gekoeld",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 6
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 5,
+    "TextLine": "Ik had het gekookte water net  in de theepot gegoten",
+    "AudioFile": "Mother/2.1.1",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "ik weet genoeg [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "ik heb nog meer vragen ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 7
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 6,
+    "TextLine": "Ik denk het niet ik had het net klaar gemaakt",
+    "AudioFile": "Mother/2.1.2",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "ik weet genoeg [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "ik heb nog meer vragen",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 3
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 7,
+    "TextLine": "Nog meer vragen?",
+    "AudioFile": "Mother/3",
+    "AngerLevel": 1,
+    "Responses": [
+      {
+        "ResponseText": "Wanneer is het gebeurt",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 4
+      },
+      {
+        "ResponseText": "Waren er chemicaliën bij betrokken",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 8
+      },
+      {
+        "ResponseText": "Was hij in de buurt van elektrische apparatuur ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 9
+      },
+      {
+        "ResponseText": "Hoe komt het dat de wond alleen op zijn hand is.",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 10
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 8,
+    "TextLine": "Nee het was alleen water uit de kraan",
+    "AudioFile": "Mother/3.1",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": " Was hij in de buurt van elektrische apparatuur",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 9
+      },
+      {
+        "ResponseText": "Hoe komt het dat de wond alleen op zijn hand is.  ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 10
+      },
+      {
+        "ResponseText": "ik weet genoeg [sluit gesprek] ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 9,
+    "TextLine": "Ik denk het niet , het gebeurde midden in kamer ",
+    "AudioFile": "Mother/3.2",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Waren er chemicaliën bij betrokken",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 8
+      },
+      {
+        "ResponseText": "Hoe komt het dat de wond alleen zijn hand bedekt.",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 10
+      },
+      {
+        "ResponseText": "Ik weet genoeg [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 10,
+    "TextLine": "Ik.. weet het niet, de theepot viel gewoon. ",
+    "AudioFile": "Mother/3.3",
+    "AngerLevel": 1,
+    "Responses": [
+      {
+        "ResponseText": "Hoe komt het dat de brandwond in een rechte lijn eindigt",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 11
+      },
+      {
+        "ResponseText": "ik weet genoeg [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Waren er chemicaliën bij betrokken",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 8
+      },
+      {
+        "ResponseText": "Was hij in de buurt van elektrische apparatuur ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 9
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 11,
+    "TextLine": "Ja…, zo gebeurde het gewoon ",
+    "AudioFile": "Mother/3.3.1",
+    "AngerLevel": 2,
+    "Responses": [
+      {
+        "ResponseText": "Ik heb nog meer vragen",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 3
+      },
+      {
+        "ResponseText": "Ik weet genoeg [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 4,
+    "TextLine": "Ik had meteen gebeld nadat het gebeurde.",
+    "AudioFile": "Mother/2.2",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Ik heb nog meer vragen",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 7
+      },
+      {
+        "ResponseText": "ik weet genoeg [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 0,
+    "TextID": 12,
+    "TextLine": "Wat gaat er nu gebeuren",
+    "AudioFile": "Mother/6",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Ik breng hem naar een brandwondencentrum",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Hij is in orde, ik laat hem hier ",
+        "MoveNPCToLocation": 2,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Ik breng hem naar het ziekenhuis ",
+        "MoveNPCToLocation": 2,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Ik heb me vergist ik moet nog meer doen[sluit gesprek]  ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  }
+]

@@ -20,8 +20,8 @@ namespace JSONFactory
             {0, "/StreamingAssets/Scripts/Event1.json" },
             {1, "/StreamingAssets/Scripts/tbsa.json" },
             {6, "/StreamingAssets/Scripts/Command Event.json" },
-            {7, "/StreamingAssets/Scripts/Command Event Kid.json" },
-            {8, "/StreamingAssets/Scripts/Command Event mom.json" },
+            {7, "/StreamingAssets/Scripts/AskingKid.json" },
+            {8, "/StreamingAssets/Scripts/AskingParent.json" },
         };
 
         public static DialogueEvent[] RunJSONFactoryForScene(int sceneNumber)

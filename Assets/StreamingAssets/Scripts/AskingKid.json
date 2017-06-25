@@ -1,0 +1,170 @@
+/* Explanation on each variable:
+
+  - NPC_ID = ID for the NPC that should be talking
+  - TextID = ID for the text block (0, 1, 2, etc.)
+  - TextLine = text line that the NPC says
+  - AudioFile = name of the audio file that should be played
+  - Responses = list of responses that the player can choose
+  - ResponseText = the line that the player can choose to say
+  - Fx_Stress = the affect this choice has on the stress lvl of the NPC
+  - NextTextID = the response of the NPC to the chosen response of the player
+ */
+
+[
+  {
+    "NPC_ID": 1,
+    "TextID": 0,
+    "TextLine": "Goed",
+    "AudioFile": "Kid/Goed",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Wat is er gebeurd",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 2
+      },
+      {
+        "ResponseText": "Ik ga aan de slag [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Waarom is de brandwond die vorm ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 4
+      },
+      {
+        "ResponseText": "Alles komt goed ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 6
+      }
+    ]
+  },
+  {
+    "NPC_ID": 1,
+    "TextID": 2,
+    "TextLine": "De theepot viel",
+    "AudioFile": "Kid/Theepot_viel",
+    "AngerLevel": 3,
+    "Responses": [
+      {
+        "ResponseText": "Alles komt goed ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 3
+      },
+      {
+        "ResponseText": "Waarom is de brandwond die vorm ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 4
+      },
+      {
+        "ResponseText": "Ik ga aan de slag [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 1,
+    "TextID": 6,
+    "TextLine": "Ja",
+    "AudioFile": "Kid/Ja",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Ik haal je pijn weg",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 1
+      },
+      {
+        "ResponseText": "Ga naar de douche [sluit gesprek]",
+        "MoveNPCToLocation": 0,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Ik ga aan de slag [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 1,
+    "TextID": 1,
+    "TextLine": "Ja",
+    "AudioFile": "Kid/Ja_2",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Wat is er echt gebeurt",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 5
+      },
+      {
+        "ResponseText": "Ik ga aan de slag [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 1,
+    "TextID": 4,
+    "TextLine": "Mag het niet zeggen",
+    "AudioFile": "Kid/Mag_niet_zeggen",
+    "AngerLevel": 1,
+    "Responses": [
+      {
+        "ResponseText": "Alles komt goed ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 3
+      },
+      {
+        "ResponseText": "Ik ga aan de slag [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  },
+  {
+    "NPC_ID": 1,
+    "TextID": 3,
+    "TextLine": "Ja",
+    "AudioFile": "Kid/Ja_2",
+    "AngerLevel": 0,
+    "Responses": [
+      {
+        "ResponseText": "Ik haal je pijn weg ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 1
+      },
+      {
+        "ResponseText": "Waarom is de brandwond die vorm ",
+        "MoveNPCToLocation": -1,
+        "NextTextID": 4
+      }
+    ]
+  },
+
+  {
+    "NPC_ID": 1,
+    "TextID": 5,
+    "TextLine": "Mama werd boos op mij",
+    "AudioFile": "Kid/Waarheid",
+    "AngerLevel": 3,
+    "Responses": [
+      {
+        "ResponseText": "Ik ga het in orde maken [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      },
+      {
+        "ResponseText": "Ik ga aan de slag [sluit gesprek]",
+        "MoveNPCToLocation": -1,
+        "NextTextID": -1
+      }
+    ]
+  }
+
+]
+ 
